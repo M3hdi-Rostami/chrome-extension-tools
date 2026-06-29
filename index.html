@@ -77,6 +77,48 @@
         </div>
 
         <div id="config-view" class="hidden min-h-full p-3 sm:p-4">
+            <div id="extension-update-section"
+                class="mb-4 rounded-xl bg-[#212833] border border-[#1e2636] p-3 space-y-3">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <h3 class="text-xs font-bold text-white mb-1">به‌روزرسانی اکستنشن</h3>
+                        <p class="text-[10px] text-[#8b95a8] leading-relaxed">
+                            نسخه فعلی:
+                            <span id="update-current-version" dir="ltr" class="text-white font-medium">—</span>
+                        </p>
+                        <p id="update-status" class="text-[10px] mt-2 leading-relaxed text-[#8b95a8]">
+                            برای بررسی نسخه جدید، دکمه زیر را بزنید.
+                        </p>
+                    </div>
+                </div>
+
+                <button id="update-action-btn" type="button"
+                    class="w-full bg-[#00e5a0] hover:opacity-90 text-[#111621] font-bold py-2.5 rounded-lg text-xs transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+                    بررسی و دریافت آخرین نسخه
+                </button>
+
+                <div id="update-instructions" class="hidden rounded-lg bg-[#1a2030] border border-[#2a3344] p-3 space-y-2">
+                    <p class="text-[10px] font-bold text-white">مراحل تکمیل به‌روزرسانی:</p>
+                    <ol class="text-[10px] text-[#c5cdd8] leading-relaxed space-y-1 list-decimal list-inside">
+                        <li>فایل ZIP در پوشه Downloads ذخیره شد.</li>
+                        <li>فایل را Extract کنید.</li>
+                        <li>محتوای پوشه داخل ZIP را جایگزین پوشه فعلی اکستنشن کنید.</li>
+                        <li>اگر با git نصب کرده‌اید: در همان پوشه <span dir="ltr" class="font-mono text-[#00e5a0]">git pull</span> بزنید.</li>
+                        <li>در صفحه افزونه‌های Chrome روی Reload کلیک کنید.</li>
+                    </ol>
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <button id="update-open-extensions-btn" type="button"
+                            class="flex-1 min-w-[8rem] bg-[#2a3344] hover:bg-[#343f52] text-white text-[10px] font-medium py-2 rounded-lg transition-colors">
+                            باز کردن chrome://extensions
+                        </button>
+                        <button id="update-open-repo-btn" type="button"
+                            class="flex-1 min-w-[8rem] bg-[#2a3344] hover:bg-[#343f52] text-white text-[10px] font-medium py-2 rounded-lg transition-colors">
+                            مشاهده در GitHub
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <h2 class="text-sm font-bold text-white mb-1">تنظیمات ابزارها</h2>
             <p class="text-[11px] text-[#8b95a8] mb-4 leading-relaxed">
                 ابزارهایی که نیاز ندارید را غیرفعال کنید تا در صفحه اصلی نمایش داده نشوند.
@@ -103,6 +145,7 @@
     <script src="assets/js/get-browser-tab.js"></script>
     <script src="assets/js/installed-tools-store.js"></script>
     <script src="assets/js/installed-tools-runtime.js"></script>
+    <script src="assets/js/extension-updater.js"></script>
     <script src="config.js"></script>
     <script src="popup.js"></script>
 </body>
