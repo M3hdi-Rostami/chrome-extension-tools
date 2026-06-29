@@ -1,0 +1,95 @@
+<template id="tpl-installer">
+    <div class="h-full flex flex-col gap-4 text-sm min-h-0">
+        <div class="bg-[#212833] p-4 rounded-xl border border-[#1e2636] shrink-0">
+            <h2 class="text-sm font-bold text-white mb-1">نصب ابزار جدید</h2>
+            <p class="text-[11px] text-[#8b95a8] leading-relaxed">
+                فایل ZIP ابزار را آپلود کنید — چه ساختار اکستنشن Chrome (popup.html) باشد چه HTML ساده. بعد از نصب در صفحه اصلی کنار بقیه ابزارها نمایش داده می‌شود.
+            </p>
+        </div>
+
+        <div id="inst-drop-zone"
+            class="shrink-0 border-2 border-dashed border-[#2a3344] rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:bg-[#212833] hover:border-[#00e5a0] relative bg-[#1a2030] overflow-hidden min-h-[140px]">
+
+            <div id="inst-empty" class="text-center p-4 pointer-events-none flex items-center justify-center flex-col">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-[#6b778c] mb-3" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <span class="text-xs text-[#c5cdd8] font-medium block">فایل ZIP را بکشید و رها کنید</span>
+                <span class="text-[10px] text-[#8b95a8] mt-1">یا کلیک کنید</span>
+            </div>
+
+            <div id="inst-loading"
+                class="hidden flex-col items-center justify-center w-full h-full absolute inset-0 bg-[#1a2030]/95 z-20">
+                <svg class="animate-spin h-8 w-8 text-[#00e5a0] mb-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <span class="text-xs font-medium text-[#00e5a0]">در حال بررسی فایل...</span>
+            </div>
+
+            <input type="file" id="inst-input" class="hidden" accept=".zip,application/zip">
+        </div>
+
+        <div id="inst-preview" class="hidden shrink-0 bg-[#212833] rounded-xl border border-[#1e2636] p-4 space-y-3">
+            <div class="flex items-start gap-3">
+                <div id="inst-preview-icon" class="text-2xl shrink-0">📦</div>
+                <div class="min-w-0">
+                    <p id="inst-preview-title" class="text-sm font-bold text-white"></p>
+                    <p id="inst-preview-id" class="text-[10px] text-[#8b95a8] mt-0.5 font-mono" dir="ltr"></p>
+                    <p id="inst-preview-desc" class="text-[11px] text-[#8b95a8] mt-1 leading-relaxed"></p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button id="inst-confirm-btn" type="button"
+                    class="flex-1 bg-[#00e5a0] hover:opacity-90 text-[#111621] font-bold py-2 rounded-lg text-xs transition-opacity">
+                    نصب ابزار
+                </button>
+                <button id="inst-cancel-btn" type="button"
+                    class="px-4 bg-[#2a3344] hover:bg-[#343f52] text-white font-medium py-2 rounded-lg text-xs transition-colors">
+                    انصراف
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-[#212833] rounded-xl border border-[#1e2636] p-4 flex-1 min-h-0 flex flex-col">
+            <div class="flex items-center justify-between gap-2 mb-3 shrink-0">
+                <h3 class="text-xs font-bold text-white">ابزارهای نصب‌شده</h3>
+                <span id="inst-count" class="text-[10px] text-[#8b95a8]">۰ ابزار</span>
+            </div>
+            <div id="inst-installed-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 min-h-0">
+                <p id="inst-installed-empty" class="text-[11px] text-[#8b95a8] text-center py-6 leading-relaxed">
+                    هنوز ابزاری نصب نشده است.
+                </p>
+            </div>
+        </div>
+
+        <details class="shrink-0 bg-[#1a2030] rounded-xl border border-[#1e2636] p-3">
+            <summary class="text-[11px] font-medium text-[#8b95a8] cursor-pointer">چه ZIPهایی پشتیبانی می‌شوند؟</summary>
+
+            <p class="text-[10px] text-[#c5cdd8] mt-2 leading-relaxed">
+                اگر ابزار را شخص دیگری ساخته، معمولاً همین ساختار اکستنشن Chrome کافی است — فقط کل پوشه را ZIP کنید:
+            </p>
+            <pre class="text-[10px] text-[#c5cdd8] mt-2 leading-relaxed overflow-x-auto" dir="ltr">manifest.json
+popup.html
+popup.js
+popup.css
+jalali.js</pre>
+
+            <p class="text-[10px] text-[#8b95a8] mt-3 leading-relaxed">
+                یا یک HTML ساده:
+            </p>
+            <pre class="text-[10px] text-[#c5cdd8] mt-1 leading-relaxed overflow-x-auto" dir="ltr">index.html
+style.css
+app.js</pre>
+
+            <p class="text-[10px] text-[#8b95a8] mt-3 leading-relaxed">
+                فایل <code class="text-[#00e5a0]">tool.json</code> اختیاری است. اگر نباشد، نام از <code class="text-[#00e5a0]">manifest.json</code> خوانده می‌شود.
+            </p>
+        </details>
+    </div>
+</template>

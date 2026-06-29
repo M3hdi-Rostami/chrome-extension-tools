@@ -1,0 +1,26 @@
+<template id="tpl-tech-detector">
+    <div class="h-full flex flex-col">
+        <div class="flex items-center justify-between px-1 pb-2 mb-1 tech-header">
+            <div>
+                <h3 class="text-xs font-bold text-gray-800">تکنولوژی‌های صفحه</h3>
+                <p class="text-[9px] text-gray-400">شناسایی فریم‌ورک، کتابخانه و ابزارهای وب</p>
+            </div>
+            <button id="tech-detector-refresh"
+                class="shrink-0 flex items-center gap-1 bg-white border border-indigo-100 hover:border-indigo-200 hover:bg-indigo-50 text-indigo-600 text-[9px] font-medium px-2 py-1 rounded-md transition-all"
+                title="اسکن مجدد">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                بروزرسانی
+            </button>
+        </div>
+
+        <div id="tech-detector-results" class="flex-1 overflow-y-auto no-scrollbar">
+            <div class="flex flex-col items-center justify-center py-10 text-center">
+                <div class="w-7 h-7 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-3"></div>
+                <p class="text-xs text-gray-500">در حال اسکن صفحه...</p>
+            </div>
+        </div>
+    </div>
+</template>

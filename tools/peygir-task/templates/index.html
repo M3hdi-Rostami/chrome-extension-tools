@@ -1,0 +1,110 @@
+<template id="tpl-peygir-task">
+    <div class="h-full flex flex-col gap-2 text-sm overflow-y-auto no-scrollbar pb-1">
+
+        <details class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <summary class="text-xs font-medium text-gray-600 cursor-pointer select-none">تنظیمات (یک‌بار)</summary>
+            <div class="mt-2 space-y-2">
+                <div>
+                    <label for="peygir-base-url" class="text-[11px] text-gray-600 block mb-1">آدرس پیگیر</label>
+                    <input id="peygir-base-url" type="url" dir="ltr" placeholder="https://rasa123.peygir.net"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                </div>
+                <div>
+                    <label for="peygir-project-id" class="text-[11px] text-gray-600 block mb-1">شناسه پروژه</label>
+                    <input id="peygir-project-id" type="text" dir="ltr" placeholder="nanoalvand_ieb"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                </div>
+                <p class="text-[10px] text-amber-600 leading-relaxed">
+                    باید در همان مرورگر به پیگیر وارد شده باشید.
+                </p>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label for="peygir-tracker" class="text-[11px] text-gray-600 block mb-1">نوع پیش‌فرض</label>
+                        <select id="peygir-tracker"
+                            class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                            <option value="">در حال بارگذاری...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="peygir-priority" class="text-[11px] text-gray-600 block mb-1">اولویت</label>
+                        <select id="peygir-priority"
+                            class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                            <option value="">در حال بارگذاری...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label for="peygir-category-topic" class="text-[11px] text-gray-600 block mb-1">دسته موضوعی</label>
+                        <select id="peygir-category-topic"
+                            class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                            <option value="Bugfix">Bugfix</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="peygir-category-module" class="text-[11px] text-gray-600 block mb-1">دسته ماژول</label>
+                        <select id="peygir-category-module"
+                            class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                            <option value="Public">Public</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="peygir-assign-to-me" class="rounded" checked />
+                    <label for="peygir-assign-to-me" class="text-[11px] text-gray-600">واگذاری به من</label>
+                </div>
+                <div>
+                    <label for="peygir-due-days" class="text-[11px] text-gray-600 block mb-1">سررسید (روز بعد)</label>
+                    <input id="peygir-due-days" type="number" min="1" max="90" value="7"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                </div>
+                <details class="text-xs border-t border-gray-100 pt-2">
+                    <summary class="text-gray-500 cursor-pointer select-none">کلید Gemini (دقت بیشتر)</summary>
+                    <div class="mt-2 space-y-2">
+                        <input type="password" id="peygir-gemini-key" dir="ltr" placeholder="AIza..."
+                            class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener"
+                            class="text-[10px] text-indigo-600 hover:underline">دریافت کلید رایگان</a>
+                    </div>
+                </details>
+                <button type="button" id="peygir-save-settings"
+                    class="w-full text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-3 py-1.5 rounded-lg transition-colors">
+                    ذخیره تنظیمات
+                </button>
+            </div>
+        </details>
+
+        <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100 space-y-2 flex-1">
+            <label for="peygir-raw-input" class="text-xs font-medium text-gray-600">متن دریافتی از تیم</label>
+            <textarea id="peygir-raw-input" rows="5" placeholder="پیام یا خطا را اینجا بچسبانید..."
+                class="w-full text-xs border border-gray-200 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300"></textarea>
+
+            <div id="peygir-drop-zone"
+                class="border-2 border-dashed border-gray-200 rounded-lg p-3 text-center cursor-pointer hover:border-indigo-400 transition-colors">
+                <input type="file" id="peygir-image-input" accept="image/*" class="hidden" />
+                <div id="peygir-image-empty">
+                    <p class="text-[11px] text-gray-500">عکس (اختیاری) — بکشید، Ctrl+V یا کلیک</p>
+                </div>
+                <div id="peygir-image-preview" class="hidden">
+                    <img id="peygir-preview-img" alt="پیش‌نمایش" class="max-h-20 mx-auto rounded-lg border border-gray-200" />
+                    <button type="button" id="peygir-remove-image"
+                        class="mt-2 text-[10px] text-red-600 hover:text-red-500">حذف عکس</button>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="peygir-create-btn"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-300 text-white text-sm font-bold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+            <svg id="peygir-create-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span id="peygir-create-text">ایجاد تسک در پیگیر</span>
+        </button>
+
+        <p id="peygir-status" class="text-[11px] text-center hidden"></p>
+        <a id="peygir-issue-link" href="#" target="_blank" rel="noopener"
+            class="hidden text-center text-[11px] text-indigo-600 hover:underline">مشاهده تسک در پیگیر</a>
+    </div>
+</template>

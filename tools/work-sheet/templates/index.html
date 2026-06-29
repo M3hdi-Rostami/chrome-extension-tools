@@ -1,0 +1,55 @@
+<template id="tpl-work-sheet">
+    <div class="h-full flex flex-col gap-4 text-sm">
+
+        <p class="text-xs text-gray-500 leading-relaxed text-center px-1">
+            شیت کارکرد ماهانه — با احتساب تعطیلات رسمی
+        </p>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
+            <label class="text-xs text-gray-600 font-medium" for="ws-full-name">نام و نام خانوادگی</label>
+            <input id="ws-full-name" type="text" placeholder="مثلاً: علی محمدی"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-gray-600 font-medium" for="ws-prev-leave">مانده مرخصی ماه قبل</label>
+                    <input id="ws-prev-leave" type="text" placeholder="20:44" dir="ltr"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 text-left" />
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-gray-600 font-medium" for="ws-prev-overtime">مانده اضافه‌کاری ماه قبل</label>
+                    <input id="ws-prev-overtime" type="text" placeholder="19:30" dir="ltr"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 text-left" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-gray-600 font-medium" for="ws-period-start">شروع دوره</label>
+                    <input id="ws-period-start" type="text" placeholder="1405/03/26" dir="ltr"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 text-left" />
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-gray-600 font-medium" for="ws-period-end">پایان دوره</label>
+                    <input id="ws-period-end" type="text" placeholder="1405/04/25" dir="ltr"
+                        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 text-left" />
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-3 text-xs text-indigo-800 leading-relaxed">
+                <p class="font-bold mb-1">دوره جاری:</p>
+                <p id="ws-period-info" class="text-indigo-700">—</p>
+            </div>
+
+            <button id="ws-generate-btn" type="button"
+                class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed text-white font-bold py-2.5 rounded-lg transition-colors">
+                دانلود شیت کارکرد
+            </button>
+        </div>
+
+        <div id="ws-toast"
+            class="fixed bottom-16 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-medium px-4 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+            فایل دانلود شد!
+        </div>
+    </div>
+</template>

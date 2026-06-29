@@ -1,0 +1,324 @@
+/* ── Design tokens (compact = Chrome side panel minimum ~360px) ── */
+:root {
+  --panel-min-width: 360px;
+  --tool-grid-gap: 0.625rem;
+  --tool-card-min-height: 6rem;
+  --tool-card-padding: 0.75rem;
+  --tool-icon-size: 1.75rem;
+  --tool-title-size: 0.6875rem;
+}
+
+/* ── App shell ── */
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+.app-shell {
+  width: 100%;
+  min-width: var(--panel-min-width);
+  height: 100%;
+  min-height: 0;
+}
+
+.app-main {
+  flex: 1;
+  min-height: 0;
+}
+
+.app-header {
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.app-header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── Home: tool cards grid ── */
+#home-view {
+  container-type: inline-size;
+  container-name: home;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--tool-grid-gap);
+  width: 100%;
+}
+
+.tools-grid .empty-state {
+  grid-column: 1 / -1;
+}
+
+.tools-section-split {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0.375rem 0 0.125rem;
+  padding: 0 0.125rem;
+}
+
+.tools-section-split::before,
+.tools-section-split::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #2a3344;
+}
+
+.tools-section-split-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #8b95a8;
+  white-space: nowrap;
+}
+
+.tool-card {
+  min-height: var(--tool-card-min-height);
+  height: 100%;
+  width: 100%;
+  padding: var(--tool-card-padding);
+  gap: 0.5rem;
+}
+
+.tool-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.tool-card-icon svg {
+  width: var(--tool-icon-size);
+  height: var(--tool-icon-size);
+}
+
+.tool-card-title {
+  font-size: var(--tool-title-size);
+}
+
+@container home (min-width: 500px) {
+  .tools-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@container home (min-width: 640px) {
+  .tools-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  :root {
+    --tool-card-min-height: 6.5rem;
+    --tool-icon-size: 1.875rem;
+  }
+}
+
+@container home (min-width: 780px) {
+  .tools-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+body[data-panel-breakpoint="wide"] {
+  --tool-card-min-height: 7rem;
+  --tool-card-padding: 0.875rem;
+  --tool-title-size: 0.75rem;
+}
+
+/* ── Settings list ── */
+#config-view {
+  container-type: inline-size;
+  container-name: config;
+}
+
+.config-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.config-section-split {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0.5rem 0 0.125rem;
+  padding: 0 0.125rem;
+}
+
+.config-section-split::before,
+.config-section-split::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #2a3344;
+}
+
+.config-section-split-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #8b95a8;
+  white-space: nowrap;
+}
+
+@container config (min-width: 520px) {
+  .config-tools-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container config (min-width: 700px) {
+  .config-tools-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.config-tool-row {
+  height: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* ── Open tool views ── */
+#tools-container {
+  container-type: inline-size;
+  container-name: tools;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0.75rem;
+}
+
+#tools-container > [id^="tool-"] {
+  min-height: 0;
+  height: 100%;
+  flex-direction: column;
+}
+
+#tools-container > [id^="tool-"]:not(.hidden) {
+  display: flex;
+}
+
+#tools-container > [id^="tool-"].hidden {
+  display: none !important;
+}
+
+#tools-container .h-full {
+  min-height: 0;
+}
+
+#tools-container .grid.grid-cols-2 {
+  grid-template-columns: 1fr;
+}
+
+@container tools (min-width: 320px) {
+  #tools-container .grid.grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container tools (min-width: 560px) {
+  #tools-container {
+    padding: 1rem;
+  }
+}
+
+#tools-container .flex {
+  min-width: 0;
+}
+
+#tools-container .flex > .min-w-0,
+#tools-container .flex > .flex-1 {
+  min-width: 0;
+}
+
+/* ── Market prices ── */
+.market-header {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.price-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+@container tools (min-width: 400px) {
+  .price-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container tools (min-width: 580px) {
+  .price-cards-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.price-cards-grid .price-card-full {
+  grid-column: 1 / -1;
+}
+
+.other-currencies-body.hidden {
+  display: none !important;
+}
+
+@container tools (max-width: 579px) {
+  .price-cards-grid .price-card-wide-mobile {
+    grid-column: 1 / -1;
+  }
+}
+
+.price-card {
+  height: 100%;
+}
+
+/* ── API tester ── */
+.api-method-row {
+  flex-wrap: wrap;
+}
+
+@container tools (max-width: 279px) {
+  .api-method-row {
+    flex-direction: column;
+  }
+
+  .api-method-row select {
+    width: 100% !important;
+  }
+}
+
+/* ── Bale news ── */
+.bale-actions {
+  flex-wrap: wrap;
+}
+
+.bale-actions > button {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* ── Tech detector ── */
+.tech-header {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ── National ID action row ── */
+.nid-actions {
+  flex-wrap: wrap;
+}
+
+.nid-actions > button {
+  min-width: min(100%, 8rem);
+  flex: 1 1 auto;
+}

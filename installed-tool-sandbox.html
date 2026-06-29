@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>Installed Tool Sandbox</title>
+</head>
+<body>
+<script>
+(function () {
+  var loaded = false;
+
+  function notifyLoaded() {
+    if (loaded) return;
+    loaded = true;
+    window.parent.postMessage({ type: "installed-tool-loaded" }, "*");
+  }
+
+  function notifyError(message) {
+    window.parent.postMessage({
+      type: "installed-tool-error",
+      message: message || "خطا در اجرای ابزار",
+    }, "*");
+  }
+
+  window.addEventListener("message", function (event) {
+    if (loaded) return;
+    if (!event.data || event.data.type !== "installed-tool-load") return;
+    if (typeof event.data.html !== "string" || !event.data.html.trim()) {
+      notifyError("محتوای ابزار خالی است.");
+      return;
+    }
+
+    try {
+      document.open();
+      document.write(event.data.html);
+      document.close();
+      notifyLoaded();
+    } catch (error) {
+      notifyError(error && error.message ? error.message : String(error));
+    }
+  });
+
+  window.parent.postMessage({ type: "installed-tool-ready" }, "*");
+})();
+</script>
+</body>
+</html>

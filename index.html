@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جعبه ابزار توسعه‌دهنده</title>
+    <!-- لود کردن تیلویند از CDN -->
+    <script src="assets/js/browser@4.js"></script>
+    <!-- کتابخانه JSZip -->
+    <script src="assets/js/jszip.js"></script>
+    <link rel="stylesheet" href="assets/css/Vazir-FD.css">
+    <link rel="stylesheet" href="assets/css/tool-theme.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <style>
+        html,
+        body {
+            direction: rtl;
+            font-family: "Vazir-FD", sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        :root {
+            --theme-bg: #111621;
+            --theme-surface: #212833;
+            --theme-surface-hover: #2a3344;
+            --theme-border: #1e2636;
+            --theme-text: #ffffff;
+            --theme-text-muted: #8b95a8;
+            --theme-accent: #00e5a0;
+            --theme-badge: #ff4d6d;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="app-shell bg-[#111621] w-full h-full text-white font-sans select-none overflow-hidden flex flex-col">
+
+    <header class="app-header bg-[#111621] text-white px-3 sm:px-4 py-3 border-b border-[#1e2636] z-10 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🧰</span>
+            <div class="flex flex-col">
+                <h1 class="font-bold text-sm leading-tight">جعبه ابزار</h1>
+                <span id="page-title" class="text-xs text-[#8b95a8] font-medium hidden"></span>
+            </div>
+        </div>
+        <div class="app-header-actions flex items-center gap-2">
+            <button id="configBtn" type="button" title="تنظیمات ابزارها"
+                class="bg-[#212833] hover:bg-[#2a3344] text-[#8b95a8] hover:text-white p-1.5 rounded-lg transition-colors border border-[#1e2636]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+            <button id="backBtn" type="button"
+                class="hidden bg-[#212833] hover:bg-[#2a3344] text-white px-3 py-1 rounded-lg text-sm transition-colors border border-[#1e2636]">
+                بازگشت
+            </button>
+        </div>
+    </header>
+
+
+    <main class="app-main overflow-y-auto no-scrollbar relative bg-[#111621]">
+        <div id="home-view" class="min-h-full p-2 sm:p-3">
+            <div id="tools-list" class="tools-grid"></div>
+        </div>
+
+        <div id="config-view" class="hidden min-h-full p-3 sm:p-4">
+            <h2 class="text-sm font-bold text-white mb-1">تنظیمات ابزارها</h2>
+            <p class="text-[11px] text-[#8b95a8] mb-4 leading-relaxed">
+                ابزارهایی که نیاز ندارید را غیرفعال کنید تا در صفحه اصلی نمایش داده نشوند.
+            </p>
+            <div id="tools-config-list" class="config-tools-grid"></div>
+        </div>
+
+        <div id="tools-container" class="hidden h-full min-h-0 bg-[#111621]"></div>
+    </main>
+
+    <footer class="app-footer bg-[#111621] border-t border-[#1e2636] p-2 sm:p-3 text-center">
+        <p class="text-[10px] text-[#8b95a8] font-medium">
+            طراحی و توسعه توسط
+            <span dir="ltr" class="text-[#00e5a0] font-bold mx-1">m3hdi_v1</span>
+            |
+            <span id="current-year"></span> &copy;
+        </p>
+    </footer>
+
+    <script src="assets/js/panel-layout.js"></script>
+    <script src="assets/js/get-browser-tab.js"></script>
+    <script src="assets/js/installed-tools-store.js"></script>
+    <script src="assets/js/installed-tools-runtime.js"></script>
+    <script src="config.js"></script>
+    <script src="popup.js"></script>
+</body>
+
+</html>

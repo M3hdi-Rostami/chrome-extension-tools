@@ -1,0 +1,68 @@
+<template id="tpl-bale-news">
+    <div class="h-full flex flex-col gap-3">
+        <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100 space-y-2">
+            <label for="bale-channels-input" class="text-xs font-medium text-gray-600">کانال‌های خبری (هر خط یک کانال)</label>
+            <textarea id="bale-channels-input" rows="3" placeholder="@info&#10;baleguide&#10;Bale_advertisement"
+                class="w-full text-xs border border-gray-200 rounded-lg p-2 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300"></textarea>
+            <div class="flex items-center gap-2 bale-actions">
+                <button type="button" id="bale-save-channels-btn"
+                    class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-3 py-1.5 rounded-lg transition-colors">
+                    ذخیره لیست
+                </button>
+                <button type="button" id="bale-fetch-btn"
+                    class="flex-1 flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium px-3 py-2 rounded-lg transition-colors">
+                    <svg id="bale-fetch-icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                    چکیده اخبار امروز
+                </button>
+            </div>
+            <p id="bale-status-msg" style="display:none" class="text-[11px] text-green-600 text-center"></p>
+            <details class="text-xs border-t border-gray-100 pt-2">
+                <summary class="text-gray-500 cursor-pointer select-none">تنظیمات هوش مصنوعی (اختیاری)</summary>
+                <div class="mt-2 space-y-2">
+                    <label for="bale-gemini-key" class="text-[11px] text-gray-600 block">کلید Gemini API</label>
+                    <input type="password" id="bale-gemini-key" placeholder="AIza..."
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="bale-save-key-btn"
+                            class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-3 py-1.5 rounded-lg transition-colors">
+                            ذخیره کلید
+                        </button>
+                        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener"
+                            class="text-[10px] text-indigo-600 hover:underline">دریافت کلید رایگان</a>
+                    </div>
+                    <p class="text-[10px] text-gray-400 leading-relaxed">با کلید Gemini چکیده دقیق‌تری می‌گیری. بدون کلید از AI داخلی Chrome (در صورت پشتیبانی) استفاده می‌شود.</p>
+                </div>
+            </details>
+        </div>
+
+        <div id="bale-loading" style="display:none" class="flex-1 flex flex-col items-center justify-center gap-3">
+            <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <span id="bale-loading-msg" class="text-sm text-gray-500">در حال دریافت اخبار...</span>
+        </div>
+
+        <div id="bale-error" style="display:none" class="flex-1 flex flex-col items-center justify-center gap-3 text-center p-4">
+            <div class="bg-red-100 text-red-600 p-3 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <p id="bale-error-msg" class="text-sm text-gray-600">خطا در دریافت اطلاعات</p>
+            <button type="button" id="bale-retry-btn"
+                class="text-sm text-indigo-600 hover:text-indigo-500 font-medium">تلاش مجدد</button>
+        </div>
+
+        <div id="bale-result" style="display:none" class="flex-1 overflow-y-auto no-scrollbar space-y-3 pb-2"></div>
+    </div>
+</template>

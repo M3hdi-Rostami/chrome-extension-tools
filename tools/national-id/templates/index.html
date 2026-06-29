@@ -1,0 +1,45 @@
+<template id="tpl-national-id">
+    <div class="h-full flex flex-col gap-4 text-sm">
+
+        <p class="text-xs text-gray-500 leading-relaxed text-center px-1">
+            کد ملی معتبر ۱۰ رقمی تولید کنید. برای تست نرم‌افزارها و کاربردهای توسعه
+        </p>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3">
+            <button id="nid-generate-btn" type="button"
+                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg transition-colors">
+                تولید کد ملی
+            </button>
+            <button id="nid-generate-round-btn" type="button"
+                class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold py-2.5 rounded-lg transition-colors border border-indigo-100">
+                تولید کد ملی رند
+            </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3 flex-1">
+            <span class="text-xs text-gray-500 font-medium">کد ملی تولید شده:</span>
+
+            <div id="nid-code-display"
+                class="text-2xl font-bold text-gray-300 tracking-widest text-center py-4 min-h-[3.5rem] flex items-center justify-center"
+                dir="ltr">
+                — — — — —
+            </div>
+
+            <div class="flex gap-2 mt-auto nid-actions">
+                <button id="nid-regenerate-btn" type="button" disabled
+                    class="flex-1 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed text-gray-700 font-medium py-2 rounded-lg transition-colors border border-gray-200 text-xs">
+                    تولید مجدد
+                </button>
+                <button id="nid-copy-btn" type="button" disabled
+                    class="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed text-white font-medium py-2 rounded-lg transition-colors text-xs">
+                    کپی کد
+                </button>
+            </div>
+        </div>
+
+        <div id="nid-toast"
+            class="fixed bottom-16 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-medium px-4 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
+            کد ملی کپی شد!
+        </div>
+    </div>
+</template>

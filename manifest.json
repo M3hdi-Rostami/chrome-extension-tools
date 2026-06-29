@@ -1,0 +1,54 @@
+{
+    "manifest_version": 3,
+    "name": "Developer Widgets",
+    "version": "1.0",
+    "description": "some widgets for developers",
+    "permissions": [
+        "downloads",
+        "scripting",
+        "activeTab",
+        "storage",
+        "contextMenus",
+        "sidePanel"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' https://cdn.simpleicons.org data: blob:"
+    },
+    "sandbox": {
+        "pages": [
+            "installed-tool-sandbox.html"
+        ]
+    },
+    "action": {
+        "default_title": "Developer Widgets"
+    },
+    "side_panel": {
+        "default_path": "index.html",
+        "default_width": 360
+    },
+    "icons": {
+        "16": "icons/icon-16.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "tools/*",
+                "config.js",
+                "popup.js",
+                "background.js",
+                "Vazir-FD.css"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}
