@@ -1,5 +1,24 @@
 const InstalledToolChromeBridge = {
   injectedContentScripts: new Set(),
+  preferredTabId: null,
+  activeToolId: null,
+  pendingScriptFiles: new Map(),
+
+  setPreferredTabId(tabId) {
+    this.preferredTabId = typeof tabId === "number" ? tabId : null;
+  },
+
+  clearPreferredTabId() {
+    this.preferredTabId = null;
+  },
+
+  setActiveToolId(toolId) {
+    this.activeToolId = toolId || null;
+  },
+
+  clearActiveToolId() {
+    this.activeToolId = null;
+  },
 
   normalizeToolPath(filePath) {
     const value = String(filePath || "").trim();
@@ -13,7 +32,15 @@ const InstalledToolChromeBridge = {
     if (!record?.files) return null;
 
     const normalized = this.normalizeToolPath(filePath);
-    const base64 = record.files[normalized];
+    let base64 = record.files[normalized];
+
+    if (!base64) {
+      const suffixMatch = Object.keys(record.files).find(
+        (key) => key === normalized || key.endsWith(`/${normalized}`),
+      );
+      if (suffixMatch) base64 = record.files[suffixMatch];
+    }
+
     if (!base64) return null;
 
     return InstalledToolsRuntime.decodeBase64Utf8(base64);
@@ -27,11 +54,33 @@ const InstalledToolChromeBridge = {
     return record;
   },
 
+  registeredContentScripts: new Map(),
+
+  normalizeContentScriptEntry(entry) {
+    return {
+      js: Array.isArray(entry?.js) ? entry.js.map((p) => this.normalizeToolPath(p)) : [],
+      css: Array.isArray(entry?.css) ? entry.css.map((p) => this.normalizeToolPath(p)) : [],
+      all_frames: entry?.all_frames !== false,
+      world: entry?.world || "ISOLATED",
+    };
+  },
+
   getContentScriptsFromRecord(record) {
     const entries = [];
+    const seen = new Set();
 
-    if (Array.isArray(record.manifest?.contentScripts) && record.manifest.contentScripts.length > 0) {
-      entries.push(...record.manifest.contentScripts);
+    const pushEntry = (entry) => {
+      const normalized = this.normalizeContentScriptEntry(entry);
+      if (normalized.js.length === 0 && normalized.css.length === 0) return;
+
+      const key = JSON.stringify(normalized);
+      if (seen.has(key)) return;
+      seen.add(key);
+      entries.push(normalized);
+    };
+
+    if (Array.isArray(record.manifest?.contentScripts)) {
+      record.manifest.contentScripts.forEach(pushEntry);
     }
 
     const manifestText = this.getToolFileText(record, "manifest.json");
@@ -39,7 +88,7 @@ const InstalledToolChromeBridge = {
       try {
         const manifest = JSON.parse(manifestText);
         if (Array.isArray(manifest.content_scripts)) {
-          entries.push(...manifest.content_scripts);
+          manifest.content_scripts.forEach(pushEntry);
         }
       } catch {
         // ignore invalid manifest
@@ -55,28 +104,55 @@ const InstalledToolChromeBridge = {
 
   discoverLikelyContentScripts(record) {
     const files = Object.keys(record.files || {});
-    const candidates = [
-      "content.js",
-      "content/content.js",
-      "scripts/content.js",
-      "js/content.js",
-      "inject.js",
-      "injected.js",
-      "filler.js",
-      "fill.js",
-      "page.js",
-    ];
+    const manifest = InstalledToolBackgroundHost?.getParsedManifest?.(record) || null;
+    const reserved = new Set(
+      [
+        record.manifest?.entry,
+        manifest?.action?.default_popup,
+        manifest?.browser_action?.default_popup,
+        manifest?.side_panel?.default_path,
+        InstalledToolBackgroundHost?.getBackgroundScriptPath?.(record),
+        "options.html",
+        "options.js",
+      ]
+        .filter(Boolean)
+        .map((path) => this.normalizeToolPath(path)),
+    );
 
-    for (const candidate of candidates) {
-      if (files.includes(candidate)) {
-        return [{ js: [candidate], all_frames: false, world: "ISOLATED" }];
-      }
+    const jsFiles = files
+      .map((path) => this.normalizeToolPath(path))
+      .filter((path) => {
+        if (!path.endsWith(".js")) return false;
+        if (reserved.has(path)) return false;
+        if (/(^|\/)(popup|background|service[-_]?worker|options|devtools|webpack|vendor|bundle)\b/i.test(path)) {
+          return false;
+        }
+        return true;
+      });
+
+    const prioritized = jsFiles.filter((path) =>
+      /(content|inject|fill|filler|page[-_]?script|dom|autofill)/i.test(path),
+    );
+    const selected = prioritized.length > 0 ? prioritized : jsFiles;
+
+    if (selected.length === 0) {
+      return [];
     }
 
-    return [];
+    return [
+      {
+        js: selected,
+        all_frames: true,
+        world: "ISOLATED",
+      },
+    ];
   },
 
   isInjectableTab(tab) {
+    if (typeof isInjectableBrowserTab === "function") {
+      return isInjectableBrowserTab(tab);
+    }
+
     if (!tab?.id || !tab.url) return false;
     const blockedPrefixes = [
       "chrome://",
@@ -90,23 +166,35 @@ const InstalledToolChromeBridge = {
   },
 
   async getTargetTab(preferredTabId = null) {
-    if (preferredTabId) {
+    if (typeof getActiveBrowserTab === "function") {
       try {
-        const tab = await chrome.tabs.get(preferredTabId);
+        const freshTab = await getActiveBrowserTab();
+        if (this.isInjectableTab(freshTab)) {
+          this.preferredTabId = freshTab.id;
+          return freshTab;
+        }
+      } catch {
+        // fall through
+      }
+    }
+
+    const tabId = preferredTabId ?? this.preferredTabId;
+    if (tabId) {
+      try {
+        const tab = await chrome.tabs.get(tabId);
         if (this.isInjectableTab(tab)) return tab;
       } catch {
         // fall through
       }
     }
 
-    if (typeof getActiveBrowserTab === "function") {
-      const tab = await getActiveBrowserTab();
-      if (this.isInjectableTab(tab)) return tab;
-    }
-
     const tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
     const tab = tabs.find((item) => this.isInjectableTab(item));
     if (tab) return tab;
+
+    const normalTabs = await chrome.tabs.query({ windowType: "normal" });
+    const fallback = normalTabs.find((item) => this.isInjectableTab(item));
+    if (fallback) return fallback;
 
     throw new Error("تب مرورگر مناسبی برای اجرای ابزار یافت نشد. ابتدا یک صفحه وب باز کنید.");
   },
@@ -166,11 +254,75 @@ const InstalledToolChromeBridge = {
     this.injectedContentScripts.add(preludeKey);
   },
 
+  sortInjectedScriptFiles(filePaths) {
+    const score = (filePath) => {
+      const path = String(filePath || "");
+      if (/content\.js$/i.test(path)) return 1000;
+      if (/^lib\//i.test(path) || /\/lib\//i.test(path)) return 100;
+      return 500;
+    };
+
+    return [...filePaths].sort((a, b) => score(a) - score(b));
+  },
+
+  getPageMessageBridgeSource() {
+    return "";
+  },
+
+  appendContentScriptDispatchHook(source, filePath) {
+    if (!/\/content\.js$/i.test(String(filePath || ""))) {
+      return source;
+    }
+
+    const hook = `
+  globalThis.__installedToolDispatchPageMessage = function (message) {
+    var msg = message || {};
+    var opts = {
+      lang: msg.lang || 'en',
+      mode: msg.mode || 'fake',
+      profile: msg.profile || null,
+      onlyEmpty: !!msg.onlyEmpty
+    };
+    var n = 0;
+    try {
+      if (msg.action === 'fill') { n = fillAll(opts); toast(label(opts.lang, 'filled', n)); }
+      else if (msg.action === 'clear') { n = clearAll(); toast(label(opts.lang, 'cleared', n)); }
+      else if (msg.action === 'fillField') { n = fillSingle(window.__formFillerTarget, opts); toast(label(opts.lang, 'filled', n)); }
+    } catch (error) {}
+    return { count: n };
+  };
+`;
+
+    if (/\}\)\(\);\s*$/s.test(source)) {
+      return source.replace(/\}\)\(\);\s*$/s, `${hook}\n})();`);
+    }
+
+    return `${source}\n${hook}`;
+  },
+
+  combineToolScriptSources(record, filePaths) {
+    const parts = [];
+
+    for (const filePath of this.sortInjectedScriptFiles(filePaths)) {
+      let source = this.getToolFileText(record, filePath);
+      if (!source) {
+        throw new Error(`فایل اسکریپت یافت نشد: ${filePath}`);
+      }
+      source = this.appendContentScriptDispatchHook(source, filePath);
+      parts.push(`;// ${filePath}\n${source}`);
+    }
+
+    return parts.join("\n");
+  },
+
   runScriptInjection(tabId, source, world, allFrames) {
+    const injectionTarget = { tabId, allFrames };
+
     if (world === "MAIN") {
       return chrome.scripting.executeScript({
-        target: { tabId, allFrames },
+        target: injectionTarget,
         world: "MAIN",
+        injectImmediately: true,
         func: (code) => {
           const script = document.createElement("script");
           script.textContent = code;
@@ -182,11 +334,11 @@ const InstalledToolChromeBridge = {
     }
 
     return chrome.scripting.executeScript({
-      target: { tabId, allFrames },
+      target: injectionTarget,
       world: "ISOLATED",
+      injectImmediately: true,
       func: (code) => {
-        const execute = new Function(code);
-        execute();
+        (0, eval)(code);
       },
       args: [source],
     });
@@ -208,6 +360,33 @@ const InstalledToolChromeBridge = {
       }
       throw primaryError;
     }
+  },
+
+  getDefaultInjectableFiles(record) {
+    const entries = this.getContentScriptsFromRecord(record);
+    const files = new Set();
+
+    for (const entry of entries) {
+      for (const filePath of entry.js || []) {
+        files.add(this.normalizeToolPath(filePath));
+      }
+    }
+
+    return [...files];
+  },
+
+  async injectToolBundle(toolId, tabId, filePaths = null) {
+    const record = await this.getToolRecord(toolId);
+    const files =
+      filePaths ||
+      this.pendingScriptFiles.get(toolId) ||
+      this.getDefaultInjectableFiles(record);
+
+    if (!files.length) return false;
+
+    const combined = this.combineToolScriptSources(record, files);
+    await this.injectScriptSource(tabId, combined, { allFrames: false, world: "ISOLATED" });
+    return true;
   },
 
   async ensureContentScripts(toolId, tabId, options = {}) {
@@ -239,11 +418,9 @@ const InstalledToolChromeBridge = {
       await this.ensureRuntimePrelude(tabId, toolId, record, world, allFrames);
 
       const jsFiles = Array.isArray(entry.js) ? entry.js : [];
-      for (const jsFile of jsFiles) {
-        const source = this.getToolFileText(record, jsFile);
-        if (!source) continue;
-
-        await this.injectScriptSource(tabId, source, { allFrames, world });
+      if (jsFiles.length > 0) {
+        const combined = this.combineToolScriptSources(record, jsFiles);
+        await this.injectScriptSource(tabId, combined, { allFrames, world });
         injectedAny = true;
       }
 
@@ -266,6 +443,23 @@ const InstalledToolChromeBridge = {
     this.injectedContentScripts.add(injectionKey);
   },
 
+  async injectBundledDependencies(tabId, record) {
+    const candidates = Object.keys(record.files || {})
+      .map((path) => this.normalizeToolPath(path))
+      .filter((path) => /\.m?js$/i.test(path) && /(faker|locale|lib\/|vendor\/)/i.test(path));
+
+    for (const filePath of candidates) {
+      const source = this.getToolFileText(record, filePath);
+      if (!source) continue;
+
+      try {
+        await this.injectScriptSource(tabId, source, { allFrames: true, world: "ISOLATED" });
+      } catch (error) {
+        console.warn("Installed tool dependency inject skipped:", filePath, error);
+      }
+    }
+  },
+
   rebuildExecuteScriptFunction(funcSource) {
     const trimmed = String(funcSource || "").trim();
     if (!trimmed) {
@@ -273,6 +467,16 @@ const InstalledToolChromeBridge = {
     }
 
     return new Function(`return (${trimmed});`)();
+  },
+
+  buildComposedFunctionScript(funcSource, args = []) {
+    const argsLiteral = JSON.stringify(args ?? []);
+    return `(function () {
+  var __installedToolArgs = ${argsLiteral};
+  var __installedToolFn = (${funcSource});
+  if (typeof __installedToolFn !== "function") return;
+  return __installedToolFn.apply(null, __installedToolArgs);
+})();`;
   },
 
   normalizeExecuteScriptInjection(toolId, injection = {}) {
@@ -289,7 +493,22 @@ const InstalledToolChromeBridge = {
   },
 
   async executeScript(toolId, injection = {}) {
+    if (Array.isArray(injection)) {
+      let combined = [];
+      for (const item of injection) {
+        const result = await this.executeScript(toolId, item);
+        if (Array.isArray(result)) combined = combined.concat(result);
+      }
+      return combined;
+    }
+
     const normalizedInjection = this.normalizeExecuteScriptInjection(toolId, injection);
+
+    if (typeof normalizedInjection.code === "string" && normalizedInjection.code.trim()) {
+      normalizedInjection.funcSource = `function() { ${normalizedInjection.code} }`;
+      delete normalizedInjection.code;
+    }
+
     const tabId = normalizedInjection?.target?.tabId;
 
     if (!tabId) {
@@ -301,46 +520,35 @@ const InstalledToolChromeBridge = {
     }
 
     const resolvedTabId = normalizedInjection.target.tabId;
-    await this.ensureContentScripts(toolId, resolvedTabId);
 
     if (Array.isArray(normalizedInjection.files) && normalizedInjection.files.length > 0) {
+      this.pendingScriptFiles.set(toolId, normalizedInjection.files);
+
       const record = await this.getToolRecord(toolId);
       const world = normalizedInjection.world || "ISOLATED";
       const allFrames = Boolean(normalizedInjection.target?.allFrames);
 
       await this.ensureRuntimePrelude(resolvedTabId, toolId, record, world, allFrames);
 
-      let lastResult = [];
-
-      for (const filePath of normalizedInjection.files) {
-        const source = this.getToolFileText(record, filePath);
-        if (!source) {
-          throw new Error(`فایل اسکریپت یافت نشد: ${filePath}`);
-        }
-
-        lastResult = await this.injectScriptSource(resolvedTabId, source, {
-          allFrames: Boolean(normalizedInjection.target?.allFrames),
-          world: normalizedInjection.world || "ISOLATED",
-        });
-      }
-
-      return lastResult;
+      const combined = this.combineToolScriptSources(record, normalizedInjection.files);
+      return this.injectScriptSource(resolvedTabId, combined, { allFrames, world });
     }
+
+    await this.ensureContentScripts(toolId, resolvedTabId);
 
     if (normalizedInjection.funcSource) {
       const record = await this.getToolRecord(toolId);
       const world = normalizedInjection.world || "ISOLATED";
       const allFrames = Boolean(normalizedInjection.target?.allFrames);
       await this.ensureRuntimePrelude(resolvedTabId, toolId, record, world, allFrames);
+      await this.injectBundledDependencies(resolvedTabId, record);
 
-      const func = this.rebuildExecuteScriptFunction(normalizedInjection.funcSource);
-      return chrome.scripting.executeScript({
-        target: normalizedInjection.target,
-        world: normalizedInjection.world,
-        injectImmediately: normalizedInjection.injectImmediately,
-        args: normalizedInjection.args,
-        func,
-      });
+      const composed = this.buildComposedFunctionScript(
+        normalizedInjection.funcSource,
+        normalizedInjection.args,
+      );
+
+      return this.injectScriptSource(resolvedTabId, composed, { allFrames, world });
     }
 
     throw new Error("نوع اجرای اسکریپت پشتیبانی نمی‌شود.");
@@ -397,8 +605,7 @@ const InstalledToolChromeBridge = {
     return args[0];
   },
 
-  async sendRuntimeMessage(toolId, args = []) {
-    const message = this.extractRuntimeMessage(args);
+  async sendMessageToContentScript(toolId, message) {
     if (message == null) {
       throw new Error("پیام ارسالی خالی است.");
     }
@@ -410,12 +617,114 @@ const InstalledToolChromeBridge = {
       return await chrome.tabs.sendMessage(tab.id, message);
     } catch (error) {
       await this.ensureContentScripts(toolId, tab.id, { force: true });
-      return chrome.tabs.sendMessage(tab.id, message);
+
+      try {
+        return await chrome.tabs.sendMessage(tab.id, message);
+      } catch (retryError) {
+        return this.dispatchMessageViaInjection(tab.id, message);
+      }
     }
   },
 
+  async dispatchMessageViaInjection(tabId, message) {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      world: "ISOLATED",
+      injectImmediately: true,
+      func: (payload) => {
+        if (typeof globalThis.__installedToolDispatchPageMessage === "function") {
+          return globalThis.__installedToolDispatchPageMessage(payload);
+        }
+
+        const listeners = globalThis.__installedToolRuntimeMessageListeners;
+        if (!Array.isArray(listeners) || listeners.length === 0) {
+          return undefined;
+        }
+
+        let response;
+        const sendResponse = (value) => {
+          response = value;
+          return true;
+        };
+
+        for (const listener of listeners) {
+          try {
+            listener(payload, {}, sendResponse);
+            if (response !== undefined) return response;
+          } catch {
+            // try next listener
+          }
+        }
+
+        return response;
+      },
+      args: [message],
+    });
+
+    const frameResults = Array.isArray(results) ? results : [];
+    for (const entry of frameResults) {
+      if (entry?.result !== undefined) return entry.result;
+    }
+
+    return undefined;
+  },
+
+  async installMessageListenerBridge(tabId) {
+    const bridgeKey = `message-bridge:${tabId}`;
+    if (this.injectedContentScripts.has(bridgeKey)) return;
+
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      world: "ISOLATED",
+      injectImmediately: true,
+      func: () => {
+        if (globalThis.__installedToolMessageBridgeReady) return;
+        globalThis.__installedToolMessageBridgeReady = true;
+
+        if (!Array.isArray(globalThis.__installedToolRuntimeMessageListeners)) {
+          globalThis.__installedToolRuntimeMessageListeners = [];
+        }
+
+        const onMessage = chrome.runtime.onMessage;
+        const originalAdd = onMessage.addListener.bind(onMessage);
+
+        onMessage.addListener = (listener) => {
+          if (typeof listener === "function") {
+            globalThis.__installedToolRuntimeMessageListeners.push(listener);
+          }
+          return originalAdd(listener);
+        };
+      },
+    });
+
+    this.injectedContentScripts.add(bridgeKey);
+  },
+
+  async sendRuntimeMessage(toolId, args = []) {
+    const message = this.extractRuntimeMessage(args);
+    if (message == null) {
+      throw new Error("پیام ارسالی خالی است.");
+    }
+
+    const tab = await this.getTargetTab();
+    const sender = { tab, id: toolId };
+
+    if (typeof InstalledToolBackgroundHost !== "undefined") {
+      const backgroundResult = await InstalledToolBackgroundHost.dispatch(toolId, message, sender);
+      if (backgroundResult.handled) {
+        return backgroundResult.response;
+      }
+    }
+
+    return this.sendMessageToContentScript(toolId, message);
+  },
+
   async sendTabMessage(toolId, tabId, message, options) {
-    await this.ensureContentScripts(toolId, tabId);
+    try {
+      await this.injectToolBundle(toolId, tabId);
+    } catch (error) {
+      console.warn("Installed tool inject before send failed:", error);
+    }
 
     try {
       if (options !== undefined) {
@@ -423,12 +732,7 @@ const InstalledToolChromeBridge = {
       }
       return await chrome.tabs.sendMessage(tabId, message);
     } catch (error) {
-      await this.ensureContentScripts(toolId, tabId, { force: true });
-
-      if (options !== undefined) {
-        return chrome.tabs.sendMessage(tabId, message, options);
-      }
-      return chrome.tabs.sendMessage(tabId, message);
+      return this.dispatchMessageViaInjection(tabId, message);
     }
   },
 
@@ -471,6 +775,46 @@ const InstalledToolChromeBridge = {
     return Array.isArray(result) ? result.map((entry) => entry.result) : result;
   },
 
+  async registerContentScripts(toolId, definitions = []) {
+    const defs = Array.isArray(definitions) ? definitions : [definitions];
+    const existing = this.registeredContentScripts.get(toolId) || [];
+    this.registeredContentScripts.set(toolId, existing.concat(defs));
+
+    const tab = await this.getTargetTab();
+    const record = await this.getToolRecord(toolId);
+
+    for (const def of defs) {
+      const entry = this.normalizeContentScriptEntry({
+        js: def.js,
+        css: def.css,
+        all_frames: def.allFrames ?? def.all_frames,
+        world: def.world,
+      });
+
+      await this.ensureRuntimePrelude(tab.id, toolId, record, entry.world, entry.all_frames);
+
+      for (const jsFile of entry.js) {
+        const source = this.getToolFileText(record, jsFile);
+        if (!source) continue;
+        await this.injectScriptSource(tab.id, source, {
+          allFrames: entry.all_frames,
+          world: entry.world,
+        });
+      }
+
+      for (const cssFile of entry.css) {
+        const css = this.getToolFileText(record, cssFile);
+        if (!css) continue;
+        await chrome.scripting.insertCSS({
+          target: { tabId: tab.id, allFrames: entry.all_frames },
+          css,
+        });
+      }
+    }
+
+    return defs;
+  },
+
   async preInjectForTool(toolId) {
     const tab = await this.getTargetTab();
     await this.ensureContentScripts(toolId, tab.id, { force: true });
@@ -500,6 +844,9 @@ const InstalledToolChromeBridge = {
       case "scripting.insertCSS":
         return this.insertCss(toolId, args[0]);
 
+      case "scripting.registerContentScripts":
+        return this.registerContentScripts(toolId, args[0]);
+
       case "runtime.sendMessage":
         return this.sendRuntimeMessage(toolId, args);
 
@@ -511,6 +858,13 @@ const InstalledToolChromeBridge = {
   clearInjectionCache(toolId = null) {
     if (!toolId) {
       this.injectedContentScripts.clear();
+      this.registeredContentScripts.clear();
+      this.pendingScriptFiles.clear();
+      this.clearPreferredTabId();
+      this.clearActiveToolId();
+      if (typeof InstalledToolBackgroundHost !== "undefined") {
+        InstalledToolBackgroundHost.unload();
+      }
       return;
     }
 
@@ -519,6 +873,18 @@ const InstalledToolChromeBridge = {
       if (key.startsWith(prefix)) {
         this.injectedContentScripts.delete(key);
       }
+    }
+
+    if (this.activeToolId === toolId) {
+      this.clearPreferredTabId();
+      this.clearActiveToolId();
+    }
+
+    this.registeredContentScripts.delete(toolId);
+    this.pendingScriptFiles.delete(toolId);
+
+    if (typeof InstalledToolBackgroundHost !== "undefined") {
+      InstalledToolBackgroundHost.unload(toolId);
     }
   },
 };

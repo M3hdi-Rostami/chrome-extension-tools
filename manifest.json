@@ -8,7 +8,11 @@
         "scripting",
         "activeTab",
         "storage",
-        "contextMenus"
+        "contextMenus",
+        "sidePanel",
+        "windows",
+        "clipboardRead",
+        "clipboardWrite"
     ],
     "background": {
         "service_worker": "background.js"
@@ -25,7 +29,11 @@
         ]
     },
     "action": {
-        "default_title": "جعبه ابزار توسعه‌دهنده"
+        "default_title": "Developer Widgets"
+    },
+    "side_panel": {
+        "default_path": "index.html",
+        "default_width": 360
     },
     "icons": {
         "16": "icons/icon-16.png",

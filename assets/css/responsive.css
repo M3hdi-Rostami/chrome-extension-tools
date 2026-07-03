@@ -1,4 +1,4 @@
-/* ── Design tokens (compact layout for toolbox tab) ── */
+/* ── Design tokens (compact = Chrome side panel minimum ~360px) ── */
 :root {
   --panel-min-width: 360px;
   --tool-grid-gap: 0.625rem;

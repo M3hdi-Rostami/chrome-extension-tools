@@ -171,6 +171,7 @@ const InstalledToolsRuntime = {
     return `(function () {
   if (window.__installedToolChromeShim) return;
   window.__installedToolChromeShim = true;
+  var toolId = ${JSON.stringify(toolId)};
   var prefix = ${JSON.stringify(storagePrefix)};
   var pathMap = ${pathMapJson};
 
@@ -279,85 +280,269 @@ const InstalledToolsRuntime = {
 
   window.fetch = proxyFetch;
 
-  function normalizeKeys(keys) {
-    if (keys == null) return { list: null, defaults: null };
-    if (typeof keys === "string") return { list: [keys], defaults: null };
-    if (Array.isArray(keys)) return { list: keys, defaults: null };
-    return { list: Object.keys(keys), defaults: keys };
+  function getParentWindow() {
+    return window.parent && window.parent !== window ? window.parent : window;
+  }
+
+  function proxyClipboardRequest(type, payload) {
+    return new Promise(function (resolve, reject) {
+      var requestId = "clip_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+      var timeoutId = setTimeout(function () {
+        window.removeEventListener("message", onResponse);
+        reject(new Error("Clipboard request failed"));
+      }, 30000);
+
+      function onResponse(event) {
+        if (!event.data || event.data.type !== "installed-tool-clipboard-response") return;
+        if (event.data.id !== requestId) return;
+        clearTimeout(timeoutId);
+        window.removeEventListener("message", onResponse);
+
+        if (event.data.error) {
+          reject(new Error(event.data.error));
+          return;
+        }
+
+        resolve(event.data.result);
+      }
+
+      window.addEventListener("message", onResponse);
+      getParentWindow().postMessage({
+        type: type,
+        id: requestId,
+        text: payload && payload.text != null ? String(payload.text) : undefined,
+      }, "*");
+    });
+  }
+
+  function extractCopyTextFromDocument() {
+    var text = "";
+
+    try {
+      var selection = window.getSelection && window.getSelection();
+      if (selection && String(selection).trim()) {
+        return String(selection);
+      }
+    } catch (error) {
+      // ignore
+    }
+
+    var active = document.activeElement;
+    if (active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT")) {
+      var start = active.selectionStart;
+      var end = active.selectionEnd;
+      if (typeof start === "number" && typeof end === "number" && end > start) {
+        return String(active.value).slice(start, end);
+      }
+      if (active.value) return String(active.value);
+    }
+
+    var copyTarget = document.querySelector("[data-copy-target], [data-clipboard-target], #copy-target, #output, #result, .copy-target, pre.copy, textarea[readonly], #task-output, #output-text");
+    if (copyTarget) {
+      text = copyTarget.value != null ? String(copyTarget.value) : String(copyTarget.textContent || "");
+      if (text.trim()) return text;
+    }
+
+    return text;
+  }
+
+  function patchNavigatorClipboard() {
+    if (!navigator.clipboard) {
+      navigator.clipboard = {};
+    }
+
+    var nativeWriteText = navigator.clipboard.writeText
+      ? navigator.clipboard.writeText.bind(navigator.clipboard)
+      : null;
+    var nativeReadText = navigator.clipboard.readText
+      ? navigator.clipboard.readText.bind(navigator.clipboard)
+      : null;
+
+    navigator.clipboard.writeText = function (text) {
+      return proxyClipboardRequest("installed-tool-clipboard-write", { text: text }).catch(function (error) {
+        if (nativeWriteText) return nativeWriteText(text);
+        throw error;
+      });
+    };
+
+    navigator.clipboard.readText = function () {
+      return proxyClipboardRequest("installed-tool-clipboard-read", {}).then(function (result) {
+        return result == null ? "" : String(result);
+      }).catch(function (error) {
+        if (nativeReadText) return nativeReadText();
+        throw error;
+      });
+    };
+  }
+
+  function patchDocumentExecCommand() {
+    var nativeExecCommand = document.execCommand.bind(document);
+
+    function captureTextFromCopyEvent(event) {
+      try {
+        if (!event.clipboardData) return "";
+        var types = event.clipboardData.types || [];
+        for (var i = 0; i < types.length; i++) {
+          var type = types[i];
+          var data = event.clipboardData.getData(type);
+          if (data) return String(data);
+        }
+      } catch (error) {
+        // ignore
+      }
+      return "";
+    }
+
+    document.execCommand = function (command, showUI, value) {
+      var normalized = String(command || "").toLowerCase();
+
+      if (normalized === "copy" || normalized === "cut") {
+        var capturedFromEvent = "";
+        var captureListener = function (event) {
+          var captured = captureTextFromCopyEvent(event);
+          if (captured) capturedFromEvent = captured;
+        };
+
+        document.addEventListener("copy", captureListener, false);
+        document.addEventListener("cut", captureListener, false);
+
+        var copiedNatively = false;
+        try {
+          copiedNatively = nativeExecCommand(command, showUI, value);
+        } catch (error) {
+          copiedNatively = false;
+        }
+
+        document.removeEventListener("copy", captureListener, false);
+        document.removeEventListener("cut", captureListener, false);
+
+        if (copiedNatively) return true;
+
+        var text = value != null
+          ? String(value)
+          : (capturedFromEvent || extractCopyTextFromDocument());
+
+        if (text) {
+          try {
+            var textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";
+            textarea.style.left = "-9999px";
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            var copiedLocally = nativeExecCommand("copy");
+            document.body.removeChild(textarea);
+            if (copiedLocally) return true;
+          } catch (error) {
+            // fall through to parent clipboard bridge
+          }
+
+          void proxyClipboardRequest("installed-tool-clipboard-write", { text: text });
+          return true;
+        }
+
+        return false;
+      }
+
+      return nativeExecCommand(command, showUI, value);
+    };
+
+    if (document.queryCommandSupported) {
+      var nativeQueryCommandSupported = document.queryCommandSupported.bind(document);
+      document.queryCommandSupported = function (command) {
+        var normalized = String(command || "").toLowerCase();
+        if (normalized === "copy" || normalized === "cut" || normalized === "paste") {
+          return true;
+        }
+        return nativeQueryCommandSupported(command);
+      };
+    }
+  }
+
+  patchNavigatorClipboard();
+  patchDocumentExecCommand();
+
+  function proxyStorageRequest(method, payload) {
+    return new Promise(function (resolve, reject) {
+      var requestId = "store_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+      var timeoutId = setTimeout(function () {
+        window.removeEventListener("message", onResponse);
+        reject(new Error("Storage request failed"));
+      }, 30000);
+
+      function onResponse(event) {
+        if (!event.data || event.data.type !== "installed-tool-storage-response") return;
+        if (event.data.id !== requestId) return;
+        clearTimeout(timeoutId);
+        window.removeEventListener("message", onResponse);
+
+        if (event.data.error) {
+          reject(new Error(event.data.error));
+          return;
+        }
+
+        resolve(event.data.result);
+      }
+
+      window.addEventListener("message", onResponse);
+      getParentWindow().postMessage({
+        type: "installed-tool-storage",
+        id: requestId,
+        toolId: toolId,
+        method: method,
+        payload: payload || {},
+      }, "*");
+    });
   }
 
   function createStorageArea() {
     return {
       get: function (keys, callback) {
         var cb = typeof keys === "function" ? keys : callback;
-        var normalized = normalizeKeys(typeof keys === "function" ? null : keys);
-        var result = {};
-        try {
-          if (normalized.list) {
-            normalized.list.forEach(function (key) {
-              var raw = localStorage.getItem(prefix + key);
-              if (raw !== null) result[key] = JSON.parse(raw);
-            });
-          } else {
-            for (var i = 0; i < localStorage.length; i++) {
-              var storageKey = localStorage.key(i);
-              if (storageKey && storageKey.indexOf(prefix) === 0) {
-                var itemKey = storageKey.slice(prefix.length);
-                result[itemKey] = JSON.parse(localStorage.getItem(storageKey));
-              }
-            }
-          }
-          if (normalized.defaults) {
-            Object.keys(normalized.defaults).forEach(function (key) {
-              if (result[key] === undefined) result[key] = normalized.defaults[key];
-            });
-          }
+        var normalizedKeys = typeof keys === "function" ? null : keys;
+        return proxyStorageRequest("get", { keys: normalizedKeys }).then(function (result) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = null;
-        } catch (error) {
+          if (typeof cb === "function") cb(result);
+          return result;
+        }, function (error) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = { message: String(error) };
-        }
-        if (typeof cb === "function") cb(result);
-        return Promise.resolve(result);
+          if (typeof cb === "function") cb({});
+          throw error;
+        });
       },
       set: function (items, callback) {
-        try {
-          Object.keys(items || {}).forEach(function (key) {
-            localStorage.setItem(prefix + key, JSON.stringify(items[key]));
-          });
+        return proxyStorageRequest("set", { items: items || {} }).then(function (result) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = null;
-        } catch (error) {
+          if (typeof callback === "function") callback();
+          return result;
+        }, function (error) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = { message: String(error) };
-        }
-        if (typeof callback === "function") callback();
-        return Promise.resolve();
+          if (typeof callback === "function") callback();
+          throw error;
+        });
       },
       remove: function (keys, callback) {
-        var keyList = typeof keys === "string" ? [keys] : keys || [];
-        try {
-          keyList.forEach(function (key) {
-            localStorage.removeItem(prefix + key);
-          });
+        return proxyStorageRequest("remove", { keys: keys }).then(function (result) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = null;
-        } catch (error) {
+          if (typeof callback === "function") callback();
+          return result;
+        }, function (error) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = { message: String(error) };
-        }
-        if (typeof callback === "function") callback();
-        return Promise.resolve();
+          if (typeof callback === "function") callback();
+          throw error;
+        });
       },
       clear: function (callback) {
-        try {
-          var toRemove = [];
-          for (var i = 0; i < localStorage.length; i++) {
-            var storageKey = localStorage.key(i);
-            if (storageKey && storageKey.indexOf(prefix) === 0) toRemove.push(storageKey);
-          }
-          toRemove.forEach(function (key) { localStorage.removeItem(key); });
+        return proxyStorageRequest("clear", {}).then(function (result) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = null;
-        } catch (error) {
+          if (typeof callback === "function") callback();
+          return result;
+        }, function (error) {
           if (window.chrome && chrome.runtime) chrome.runtime.lastError = { message: String(error) };
-        }
-        if (typeof callback === "function") callback();
-        return Promise.resolve();
+          if (typeof callback === "function") callback();
+          throw error;
+        });
       },
     };
   }
@@ -374,7 +559,40 @@ const InstalledToolsRuntime = {
     window.chrome.runtime.getURL = function (path) { return resolveToolAsset(path); };
   }
 
-  var toolId = ${JSON.stringify(toolId)};
+  if (!window.chrome.runtime.onInstalled) {
+    window.chrome.runtime.onInstalled = { addListener: function () {}, removeListener: function () {} };
+  }
+  if (!window.chrome.runtime.onStartup) {
+    window.chrome.runtime.onStartup = { addListener: function () {}, removeListener: function () {} };
+  }
+  if (!window.chrome.contextMenus) {
+    window.chrome.contextMenus = {
+      removeAll: function (callback) {
+        if (typeof callback === "function") callback();
+        return Promise.resolve();
+      },
+      create: function (options, callback) {
+        if (typeof callback === "function") callback();
+        return Promise.resolve();
+      },
+      update: function (id, options, callback) {
+        if (typeof callback === "function") callback();
+        return Promise.resolve();
+      },
+      remove: function (id, callback) {
+        if (typeof callback === "function") callback();
+        return Promise.resolve();
+      },
+      onClicked: { addListener: function () {}, removeListener: function () {} },
+    };
+  }
+
+  function extractRuntimeMessage(args) {
+    if (!args || args.length === 0) return null;
+    if (args.length === 1) return args[0];
+    if (typeof args[0] === "string" && args[0].length <= 64) return args[1];
+    return args[0];
+  }
 
   function proxyChromeApi(path, args) {
     var callback = typeof args[args.length - 1] === "function" ? args.pop() : null;
@@ -415,7 +633,15 @@ const InstalledToolsRuntime = {
       if (typeof callback === "function") callback(result);
       return result;
     }, function (error) {
-      if (typeof callback === "function") callback(undefined);
+      if (window.chrome && chrome.runtime) {
+        chrome.runtime.lastError = {
+          message: String(error && error.message ? error.message : error),
+        };
+      }
+      if (typeof callback === "function") {
+        callback(undefined);
+        return undefined;
+      }
       throw error;
     });
   }
@@ -456,19 +682,25 @@ const InstalledToolsRuntime = {
       } else if (options !== undefined) {
         args.push(options);
       }
-      return proxyChromeApi("tabs.sendMessage", args).then(function (result) {
-        if (typeof callback === "function") callback(result);
-        return result;
-      });
+      return proxyChromeApi("tabs.sendMessage", args);
     },
   };
 
   window.chrome.scripting = {
-    executeScript: function (injection) {
-      return proxyChromeApi("scripting.executeScript", [serializeExecuteScriptArg(injection)]);
+    executeScript: function (injection, callback) {
+      var args = [serializeExecuteScriptArg(injection)];
+      if (typeof callback === "function") args.push(callback);
+      return proxyChromeApi("scripting.executeScript", args);
     },
-    insertCSS: function (injection) {
-      return proxyChromeApi("scripting.insertCSS", [injection]);
+    insertCSS: function (injection, callback) {
+      var args = [injection];
+      if (typeof callback === "function") args.push(callback);
+      return proxyChromeApi("scripting.insertCSS", args);
+    },
+    registerContentScripts: function (definitions, callback) {
+      var args = [definitions];
+      if (typeof callback === "function") args.push(callback);
+      return proxyChromeApi("scripting.registerContentScripts", args);
     },
   };
 
@@ -481,14 +713,94 @@ const InstalledToolsRuntime = {
     });
   };
 
+  var runtimeMessageListeners = [];
+  window.chrome.runtime.onMessage = window.chrome.runtime.onMessage || {
+    addListener: function (callback) {
+      if (typeof callback === "function") runtimeMessageListeners.push(callback);
+    },
+    removeListener: function (callback) {
+      var index = runtimeMessageListeners.indexOf(callback);
+      if (index >= 0) runtimeMessageListeners.splice(index, 1);
+    },
+  };
+
+  function dispatchLocalRuntimeMessage(message, sender) {
+    if (!runtimeMessageListeners.length) {
+      return Promise.resolve({ handled: false, response: undefined });
+    }
+
+    return new Promise(function (resolve) {
+      var settled = false;
+      var responded = false;
+
+      var finish = function (response) {
+        if (settled) return;
+        settled = true;
+        resolve({ handled: responded, response: response });
+      };
+
+      var sendResponse = function (response) {
+        responded = true;
+        finish(response);
+        return true;
+      };
+
+      var waitingForAsync = false;
+
+      for (var i = 0; i < runtimeMessageListeners.length; i++) {
+        try {
+          var keepOpen = runtimeMessageListeners[i](message, sender || {}, sendResponse);
+          if (keepOpen === true) waitingForAsync = true;
+        } catch (error) {
+          // ignore listener errors
+        }
+      }
+
+      if (!waitingForAsync && !responded) {
+        finish(undefined);
+      }
+    });
+  }
+
   window.chrome.runtime.sendMessage = function () {
     var args = Array.prototype.slice.call(arguments);
     var callback = typeof args[args.length - 1] === "function" ? args.pop() : null;
-    return proxyChromeApi("runtime.sendMessage", args).then(function (result) {
-      if (typeof callback === "function") callback(result);
-      return result;
+    var message = extractRuntimeMessage(args);
+    var sender = { id: toolId };
+
+    return dispatchLocalRuntimeMessage(message, sender).then(function (localResult) {
+      if (localResult.handled) {
+        if (typeof callback === "function") callback(localResult.response);
+        return localResult.response;
+      }
+
+      return proxyChromeApi("runtime.sendMessage", args).then(function (result) {
+        if (typeof callback === "function") callback(result);
+        return result;
+      });
     });
   };
+
+  window.addEventListener("message", function (event) {
+    if (!event.data || event.data.type !== "installed-tool-runtime-message") return;
+    if (event.data.toolId !== toolId) return;
+
+    var message = event.data.message;
+    var sender = event.data.sender || {};
+    runtimeMessageListeners.forEach(function (listener) {
+      try {
+        listener(message, sender, function () {});
+      } catch (error) {
+        // ignore listener errors
+      }
+    });
+  });
+
+  if (!window.chrome.runtime.getManifest) {
+    window.chrome.runtime.getManifest = function () {
+      return window.__installedToolManifest || { name: "Installed Tool", manifest_version: 3 };
+    };
+  }
   window.chrome.downloads = window.chrome.downloads || {
     download: function (options, callback) {
       try {
@@ -530,6 +842,23 @@ const InstalledToolsRuntime = {
       return html.replace(/<html([^>]*)>/i, `<html$1><head>${shimScript}</head>`);
     }
     return `${shimScript}${html}`;
+  },
+
+  injectBackgroundScript(html, record, textMap) {
+    const backgroundPath = this.getBackgroundScriptPath(record);
+    if (!backgroundPath || !textMap.has(backgroundPath)) return html;
+
+    const backgroundSource = textMap.get(backgroundPath);
+    if (!backgroundSource?.trim()) return html;
+
+    const scriptTag = `<script>\n${backgroundSource}\n</script>`;
+    if (/<head[\s>]/i.test(html)) {
+      return html.replace(/<\/head>/i, `${scriptTag}\n</head>`);
+    }
+    if (/<body[\s>]/i.test(html)) {
+      return html.replace(/<body([^>]*)>/i, `<body$1>${scriptTag}`);
+    }
+    return `${scriptTag}${html}`;
   },
 
   inlineStylesheets(html, baseDir, textMap, urlMap = null) {
@@ -690,6 +1019,40 @@ const InstalledToolsRuntime = {
     return { urlMap, revokeList };
   },
 
+  getToolChromeManifest(record) {
+    const manifestBase64 = record?.files?.["manifest.json"];
+    if (!manifestBase64) {
+      return {
+        name: record?.manifest?.title || "Installed Tool",
+        manifest_version: 3,
+      };
+    }
+
+    try {
+      return JSON.parse(this.decodeBase64Utf8(manifestBase64));
+    } catch {
+      return {
+        name: record?.manifest?.title || "Installed Tool",
+        manifest_version: 3,
+      };
+    }
+  },
+
+  getBackgroundScriptPath(record) {
+    const manifest = this.getToolChromeManifest(record);
+    if (!manifest?.background) return null;
+
+    if (typeof manifest.background.service_worker === "string") {
+      return manifest.background.service_worker.replace(/^\/+/, "");
+    }
+
+    if (Array.isArray(manifest.background.scripts) && manifest.background.scripts[0]) {
+      return String(manifest.background.scripts[0]).replace(/^\/+/, "");
+    }
+
+    return null;
+  },
+
   prepareLaunchHtml(record) {
     const entryPath = record.manifest?.entry;
     const files = record.files || {};
@@ -721,6 +1084,11 @@ const InstalledToolsRuntime = {
     html = this.rewriteNonScriptAssetUrls(html, baseDir, urlMap);
     html = this.injectRuntimeCsp(html);
     html = this.injectChromeShim(html, record.id, pathUrlMap);
+    html = this.injectBackgroundScript(html, record, textMap);
+    html = this.appendScript(
+      html,
+      `window.__installedToolManifest = ${JSON.stringify(this.getToolChromeManifest(record))};`,
+    );
 
     if (record.manifest.script && textMap.has(record.manifest.script)) {
       const scriptContent = textMap.get(record.manifest.script);

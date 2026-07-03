@@ -5,11 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جعبه ابزار توسعه‌دهنده</title>
-    <!-- لود کردن تیلویند از CDN -->
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem("super-extension-theme") === "light" ? "light" : "dark";
+                document.documentElement.setAttribute("data-theme", theme);
+                document.documentElement.style.colorScheme = theme;
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+        })();
+    </script>
     <script src="assets/js/browser@4.js"></script>
-    <!-- کتابخانه JSZip -->
     <script src="assets/js/jszip.js"></script>
     <link rel="stylesheet" href="assets/css/Vazir-FD.css">
+    <link rel="stylesheet" href="assets/css/app-theme.css">
     <link rel="stylesheet" href="assets/css/tool-theme.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <style>
@@ -20,17 +30,6 @@
             margin: 0;
             padding: 0;
             height: 100%;
-        }
-
-        :root {
-            --theme-bg: #111621;
-            --theme-surface: #212833;
-            --theme-surface-hover: #2a3344;
-            --theme-border: #1e2636;
-            --theme-text: #ffffff;
-            --theme-text-muted: #8b95a8;
-            --theme-accent: #00e5a0;
-            --theme-badge: #ff4d6d;
         }
 
         .no-scrollbar::-webkit-scrollbar {
@@ -44,19 +43,21 @@
     </style>
 </head>
 
-<body class="app-shell bg-[#111621] w-full h-full text-white font-sans select-none overflow-hidden flex flex-col">
+<body class="app-shell w-full h-full font-sans select-none overflow-hidden flex flex-col">
 
-    <header class="app-header bg-[#111621] text-white px-3 sm:px-4 py-3 border-b border-[#1e2636] z-10 flex justify-between items-center">
+    <header class="app-header px-3 sm:px-4 py-3 z-10 flex justify-between items-center">
         <div class="flex items-center gap-2">
             <span class="text-2xl">🧰</span>
             <div class="flex flex-col">
                 <h1 class="font-bold text-sm leading-tight">جعبه ابزار</h1>
-                <span id="page-title" class="text-xs text-[#8b95a8] font-medium hidden"></span>
+                <span id="page-title" class="text-xs font-medium hidden"></span>
             </div>
         </div>
         <div class="app-header-actions flex items-center gap-2">
+            <button id="themeToggleBtn" type="button" class="theme-toggle-btn p-1.5 rounded-lg text-base leading-none"
+                aria-pressed="true" title="تم روشن" aria-label="تم روشن">☀️</button>
             <button id="configBtn" type="button" title="تنظیمات ابزارها"
-                class="bg-[#212833] hover:bg-[#2a3344] text-[#8b95a8] hover:text-white p-1.5 rounded-lg transition-colors border border-[#1e2636]">
+                class="app-icon-btn p-1.5 rounded-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -64,76 +65,74 @@
                 </svg>
             </button>
             <button id="backBtn" type="button"
-                class="hidden bg-[#212833] hover:bg-[#2a3344] text-white px-3 py-1 rounded-lg text-sm transition-colors border border-[#1e2636]">
+                class="hidden app-back-btn px-3 py-1 rounded-lg text-sm transition-colors">
                 بازگشت
             </button>
         </div>
     </header>
 
-
-    <main class="app-main overflow-y-auto no-scrollbar relative bg-[#111621]">
+    <main class="app-main overflow-y-auto no-scrollbar relative">
         <div id="home-view" class="min-h-full p-2 sm:p-3">
             <div id="tools-list" class="tools-grid"></div>
         </div>
 
         <div id="config-view" class="hidden min-h-full p-3 sm:p-4">
-            <div id="extension-update-section"
-                class="mb-4 rounded-xl bg-[#212833] border border-[#1e2636] p-3 space-y-3">
+            <div id="extension-update-section" class="update-panel mb-4 rounded-xl border p-3 space-y-3">
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <h3 class="text-xs font-bold text-white mb-1">به‌روزرسانی اکستنشن</h3>
-                        <p class="text-[10px] text-[#8b95a8] leading-relaxed">
+                        <h3 class="text-xs font-bold mb-1">به‌روزرسانی اکستنشن</h3>
+                        <p class="update-desc text-[10px] leading-relaxed">
                             نسخه فعلی:
-                            <span id="update-current-version" dir="ltr" class="text-white font-medium">—</span>
+                            <span id="update-current-version" dir="ltr" class="update-version font-medium">—</span>
                         </p>
-                        <p id="update-status" class="text-[10px] mt-2 leading-relaxed text-[#8b95a8]">
+                        <p id="update-status" class="text-[10px] mt-2 leading-relaxed">
                             برای بررسی نسخه جدید، دکمه زیر را بزنید.
                         </p>
                     </div>
                 </div>
 
                 <button id="update-action-btn" type="button"
-                    class="w-full bg-[#00e5a0] hover:opacity-90 text-[#111621] font-bold py-2.5 rounded-lg text-xs transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="update-primary-btn w-full font-bold py-2.5 rounded-lg text-xs transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed">
                     بررسی و دریافت آخرین نسخه
                 </button>
 
-                <div id="update-instructions" class="hidden rounded-lg bg-[#1a2030] border border-[#2a3344] p-3 space-y-2">
-                    <p class="text-[10px] font-bold text-white">مراحل تکمیل به‌روزرسانی:</p>
-                    <ol class="text-[10px] text-[#c5cdd8] leading-relaxed space-y-1 list-decimal list-inside">
+                <div id="update-instructions" class="update-instructions-panel hidden rounded-lg border p-3 space-y-2">
+                    <p class="text-[10px] font-bold">مراحل تکمیل به‌روزرسانی:</p>
+                    <ol class="update-steps text-[10px] leading-relaxed space-y-1 list-decimal list-inside">
                         <li>فایل ZIP در پوشه Downloads ذخیره شد.</li>
                         <li>فایل را Extract کنید.</li>
                         <li>محتوای پوشه داخل ZIP را جایگزین پوشه فعلی اکستنشن کنید.</li>
-                        <li>اگر با git نصب کرده‌اید: در همان پوشه <span dir="ltr" class="font-mono text-[#00e5a0]">git pull</span> بزنید.</li>
+                        <li>اگر با git نصب کرده‌اید: در همان پوشه <span dir="ltr" class="font-mono">git pull</span> بزنید.</li>
                         <li>در صفحه افزونه‌های Chrome روی Reload کلیک کنید.</li>
                     </ol>
                     <div class="flex flex-wrap gap-2 pt-1">
                         <button id="update-open-extensions-btn" type="button"
-                            class="flex-1 min-w-[8rem] bg-[#2a3344] hover:bg-[#343f52] text-white text-[10px] font-medium py-2 rounded-lg transition-colors">
+                            class="update-secondary-btn flex-1 min-w-[8rem] text-[10px] font-medium py-2 rounded-lg transition-colors">
                             باز کردن chrome://extensions
                         </button>
                         <button id="update-open-repo-btn" type="button"
-                            class="flex-1 min-w-[8rem] bg-[#2a3344] hover:bg-[#343f52] text-white text-[10px] font-medium py-2 rounded-lg transition-colors">
+                            class="update-secondary-btn flex-1 min-w-[8rem] text-[10px] font-medium py-2 rounded-lg transition-colors">
                             مشاهده در GitHub
                         </button>
                     </div>
                 </div>
             </div>
 
-            <h2 class="text-sm font-bold text-white mb-1">تنظیمات ابزارها</h2>
-            <p class="text-[11px] text-[#8b95a8] mb-4 leading-relaxed">
+            <h2 class="config-heading text-sm font-bold mb-1">تنظیمات ابزارها</h2>
+            <p class="config-desc text-[11px] mb-4 leading-relaxed">
                 ابزارهایی که نیاز ندارید را غیرفعال کنید تا در صفحه اصلی نمایش داده نشوند.
             </p>
             <div id="tools-config-list" class="config-tools-grid"></div>
         </div>
 
-        <div id="tools-container" class="hidden h-full min-h-0 bg-[#111621]"></div>
+        <div id="tools-container" class="hidden h-full min-h-0"></div>
     </main>
 
-    <footer class="app-footer bg-[#111621] border-t border-[#1e2636] p-2 sm:p-3 text-center">
-        <p class="text-[10px] text-[#8b95a8] font-medium leading-relaxed">
+    <footer class="app-footer p-2 sm:p-3 text-center">
+        <p class="text-[10px] font-medium leading-relaxed" style="color: var(--theme-text-muted);">
             طراحی و توسعه توسط
             <a href="https://t.me/m3hdi_v1" target="_blank" rel="noopener noreferrer" dir="ltr"
-                class="text-[#00e5a0] font-bold mx-1 hover:underline">m3hdi_v1</a>
+                class="font-bold mx-1 hover:underline">m3hdi_v1</a>
             |
             نسخه <span id="app-version" dir="ltr">—</span>
             |
@@ -141,11 +140,14 @@
         </p>
     </footer>
 
+    <script src="assets/js/app-theme.js"></script>
     <script src="assets/js/panel-layout.js"></script>
     <script src="assets/js/get-browser-tab.js"></script>
     <script src="assets/js/installed-tools-store.js"></script>
     <script src="assets/js/installed-tools-runtime.js"></script>
+    <script src="assets/js/installed-tool-storage-proxy.js"></script>
     <script src="assets/js/installed-tool-chrome-bridge.js"></script>
+    <script src="assets/js/installed-tool-background-host.js"></script>
     <script src="assets/js/extension-updater.js"></script>
     <script src="config.js"></script>
     <script src="popup.js"></script>
