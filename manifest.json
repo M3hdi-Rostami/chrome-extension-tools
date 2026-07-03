@@ -8,8 +8,7 @@
         "scripting",
         "activeTab",
         "storage",
-        "contextMenus",
-        "sidePanel"
+        "contextMenus"
     ],
     "background": {
         "service_worker": "background.js"
@@ -26,11 +25,7 @@
         ]
     },
     "action": {
-        "default_title": "Developer Widgets"
-    },
-    "side_panel": {
-        "default_path": "index.html",
-        "default_width": 360
+        "default_title": "جعبه ابزار توسعه‌دهنده"
     },
     "icons": {
         "16": "icons/icon-16.png",

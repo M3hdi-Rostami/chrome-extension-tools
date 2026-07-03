@@ -373,16 +373,121 @@ const InstalledToolsRuntime = {
   if (!window.chrome.runtime.getURL) {
     window.chrome.runtime.getURL = function (path) { return resolveToolAsset(path); };
   }
-  window.chrome.tabs = window.chrome.tabs || {
-    query: function (queryInfo, callback) {
-      var result = [];
+
+  var toolId = ${JSON.stringify(toolId)};
+
+  function proxyChromeApi(path, args) {
+    var callback = typeof args[args.length - 1] === "function" ? args.pop() : null;
+
+    return new Promise(function (resolve, reject) {
+      var requestId = "chrome_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+      var timeoutId = setTimeout(function () {
+        window.removeEventListener("message", onResponse);
+        reject(new Error("Chrome API request timed out"));
+      }, 120000);
+
+      function onResponse(event) {
+        if (!event.data || event.data.type !== "installed-tool-chrome-api-response") return;
+        if (event.data.id !== requestId) return;
+        clearTimeout(timeoutId);
+        window.removeEventListener("message", onResponse);
+
+        if (event.data.error) {
+          if (window.chrome && chrome.runtime) chrome.runtime.lastError = { message: event.data.error };
+          reject(new Error(event.data.error));
+          return;
+        }
+
+        if (window.chrome && chrome.runtime) chrome.runtime.lastError = null;
+        resolve(event.data.result);
+      }
+
+      window.addEventListener("message", onResponse);
+      var parentWindow = window.parent && window.parent !== window ? window.parent : window;
+      parentWindow.postMessage({
+        type: "installed-tool-chrome-api",
+        id: requestId,
+        toolId: toolId,
+        path: path,
+        args: args,
+      }, "*");
+    }).then(function (result) {
       if (typeof callback === "function") callback(result);
-      return Promise.resolve(result);
+      return result;
+    }, function (error) {
+      if (typeof callback === "function") callback(undefined);
+      throw error;
+    });
+  }
+
+  function serializeExecuteScriptArg(injection) {
+    if (!injection || typeof injection !== "object") return injection;
+    var copy = Object.assign({}, injection);
+    if (typeof injection.func === "function") {
+      copy.funcSource = injection.func.toString();
+      delete copy.func;
+    }
+    return copy;
+  }
+
+  window.chrome.tabs = {
+    query: function (queryInfo, callback) {
+      return proxyChromeApi("tabs.query", [queryInfo]).then(function (result) {
+        if (typeof callback === "function") callback(result);
+        return result;
+      });
+    },
+    get: function (tabId, callback) {
+      return proxyChromeApi("tabs.get", [tabId]).then(function (result) {
+        if (typeof callback === "function") callback(result);
+        return result;
+      });
     },
     create: function (createProperties, callback) {
-      if (typeof callback === "function") callback({});
-      return Promise.resolve({});
+      return proxyChromeApi("tabs.create", [createProperties]).then(function (result) {
+        if (typeof callback === "function") callback(result);
+        return result;
+      });
     },
+    sendMessage: function (tabId, message, options, callback) {
+      var args = [tabId, message];
+      if (typeof options === "function") {
+        callback = options;
+      } else if (options !== undefined) {
+        args.push(options);
+      }
+      return proxyChromeApi("tabs.sendMessage", args).then(function (result) {
+        if (typeof callback === "function") callback(result);
+        return result;
+      });
+    },
+  };
+
+  window.chrome.scripting = {
+    executeScript: function (injection) {
+      return proxyChromeApi("scripting.executeScript", [serializeExecuteScriptArg(injection)]);
+    },
+    insertCSS: function (injection) {
+      return proxyChromeApi("scripting.insertCSS", [injection]);
+    },
+  };
+
+  window.chrome.tabs.executeScript = function () {
+    var args = Array.prototype.slice.call(arguments);
+    var callback = typeof args[args.length - 1] === "function" ? args.pop() : null;
+    return proxyChromeApi("tabs.executeScript", args).then(function (result) {
+      if (typeof callback === "function") callback(result);
+      return result;
+    });
+  };
+
+  window.chrome.runtime.sendMessage = function () {
+    var args = Array.prototype.slice.call(arguments);
+    var callback = typeof args[args.length - 1] === "function" ? args.pop() : null;
+    return proxyChromeApi("runtime.sendMessage", args).then(function (result) {
+      if (typeof callback === "function") callback(result);
+      return result;
+    });
   };
   window.chrome.downloads = window.chrome.downloads || {
     download: function (options, callback) {
@@ -718,6 +823,7 @@ const InstalledToolsRuntime = {
         icon: "🧩",
         entry,
         packageType: "chrome-extension",
+        contentScripts: Array.isArray(json.content_scripts) ? json.content_scripts : [],
       };
     } catch {
       return null;
@@ -786,6 +892,7 @@ const InstalledToolsRuntime = {
       initFunction: rawManifest?.initFunction || null,
       containerId: rawManifest?.containerId || null,
       packageType: rawManifest.packageType || "html-only",
+      contentScripts: rawManifest?.contentScripts || [],
     };
 
     const bundledHtml = await this.bundleToolHtml(filesMap, manifest);
