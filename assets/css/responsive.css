@@ -1,4 +1,4 @@
-/* ── Design tokens (compact = toolbox popup window ~420px) ── */
+/* ── Design tokens (compact layout for toolbox tab) ── */
 :root {
   --panel-min-width: 360px;
   --tool-grid-gap: 0.625rem;
