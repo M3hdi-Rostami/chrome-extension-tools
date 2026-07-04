@@ -1,5 +1,5 @@
 <template id="tpl-market-prices">
-    <div class="h-full flex flex-col gap-2">
+    <div class="market-prices-root h-full flex flex-col min-h-0">
         <div class="flex items-center justify-between gap-2 market-header">
             <div>
                 <p class="text-xs text-gray-400">آخرین بروزرسانی قیمت ها</p>
@@ -16,32 +16,82 @@
             </button>
         </div>
 
-        <p id="market-current-datetime" class="text-xs text-center font-medium tabular-nums" style="color: var(--mp-muted-2, #6b778c);">—</p>
+        <p id="market-current-datetime" class="text-xs text-center font-medium tabular-nums"
+            style="color: var(--mp-muted-2, #6b778c);">—</p>
 
-        <div id="market-loading" class="hidden flex-1 flex flex-col items-center justify-center gap-3">
-            <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                </path>
-            </svg>
-            <span class="text-sm text-gray-500">در حال دریافت قیمت‌ها...</span>
-        </div>
-
-        <div id="market-error" class="hidden flex-1 flex flex-col items-center justify-center gap-3 text-center p-4">
-            <div class="bg-red-100 text-red-600 p-3 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div id="market-view-prices" class="market-view flex flex-col flex-1 min-h-0 gap-2">
+            <div id="market-loading" class="hidden flex-1 flex flex-col items-center justify-center gap-3">
+                <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
                 </svg>
+                <span class="text-sm text-gray-500">در حال دریافت قیمت‌ها...</span>
             </div>
-            <p id="market-error-msg" class="text-sm text-gray-600">خطا در دریافت اطلاعات</p>
-            <button id="market-retry-btn"
-                class="text-sm text-indigo-600 hover:text-indigo-500 font-medium">تلاش مجدد</button>
+
+            <div id="market-error" class="hidden flex-1 flex flex-col items-center justify-center gap-3 text-center p-4">
+                <div class="bg-red-100 text-red-600 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <p id="market-error-msg" class="text-sm text-gray-600">خطا در دریافت اطلاعات</p>
+                <button id="market-retry-btn"
+                    class="text-sm text-indigo-600 hover:text-indigo-500 font-medium">تلاش مجدد</button>
+            </div>
+
+            <div id="market-prices-list" class="price-cards-grid flex-1 overflow-y-auto no-scrollbar market-scroll-area">
+            </div>
         </div>
 
-        <div id="market-prices-list" class="price-cards-grid flex-1 overflow-y-auto no-scrollbar pb-2"></div>
+        <div id="market-view-cars" class="market-view hidden flex flex-col flex-1 min-h-0 gap-2">
+            <div class="cars-search-wrap">
+                <input id="cars-search" type="search" inputmode="search" autocomplete="off"
+                    placeholder="جستجو برند یا مدل..." class="cars-search-input" />
+            </div>
+
+            <div id="cars-loading" class="hidden flex-1 flex flex-col items-center justify-center gap-3">
+                <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+                <span class="text-sm text-gray-500">در حال دریافت قیمت خودرو...</span>
+            </div>
+
+            <div id="cars-error" class="hidden flex-1 flex flex-col items-center justify-center gap-3 text-center p-4">
+                <div class="bg-red-100 text-red-600 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <p id="cars-error-msg" class="text-sm text-gray-600">خطا در دریافت اطلاعات</p>
+                <button id="cars-retry-btn"
+                    class="text-sm text-indigo-600 hover:text-indigo-500 font-medium">تلاش مجدد</button>
+            </div>
+
+            <div id="cars-list-wrap" class="cars-list-wrap hidden flex-1 min-h-0 market-scroll-area">
+                <div id="cars-list" class="cars-list"></div>
+            </div>
+        </div>
+
+        <nav class="market-bottom-nav" aria-label="منوی قیمت‌ها">
+            <button type="button" class="market-nav-btn is-active" data-market-tab="prices">
+                <span class="market-nav-icon" aria-hidden="true">💰</span>
+                <span class="market-nav-label">طلا و دلار</span>
+            </button>
+            <button type="button" class="market-nav-btn" data-market-tab="cars">
+                <span class="market-nav-icon" aria-hidden="true">🚗</span>
+                <span class="market-nav-label">قیمت خودرو</span>
+            </button>
+        </nav>
     </div>
 </template>
