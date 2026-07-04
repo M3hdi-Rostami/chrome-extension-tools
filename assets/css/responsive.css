@@ -282,6 +282,68 @@ body[data-panel-breakpoint="wide"] {
   height: 100%;
 }
 
+.price-card-compact {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 0.375rem 0.5rem;
+  padding: 0.625rem;
+}
+
+.price-card-compact .price-card-icon {
+  width: 1.75rem;
+  font-size: 1.125rem;
+}
+
+.price-card-compact .price-card-body {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.price-card-compact .price-card-title {
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price-card-compact .price-card-time {
+  max-width: 46%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.price-card-compact .price-card-value {
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.price-card-compact .price-card-change {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem;
+  padding-top: 0.375rem;
+  margin-top: 0.125rem;
+  border-top: 1px solid var(--mp-border);
+  text-align: unset;
+}
+
+.price-card-compact .price-card-change .inline-flex {
+  font-size: 0.6875rem;
+  padding: 0.1875rem 0.4375rem;
+  white-space: nowrap;
+}
+
+.price-card-compact .price-card-pct {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
 /* ── API tester ── */
 .api-method-row {
   flex-wrap: wrap;
