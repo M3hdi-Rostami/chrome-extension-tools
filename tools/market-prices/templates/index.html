@@ -2,7 +2,7 @@
     <div class="h-full flex flex-col gap-2">
         <div class="flex items-center justify-between gap-2 market-header">
             <div>
-                <p class="text-xs text-gray-400">آخرین بروزرسانی</p>
+                <p class="text-xs text-gray-400">آخرین بروزرسانی قیمت ها</p>
                 <p id="market-last-update" class="text-sm font-medium text-gray-600">—</p>
             </div>
             <button id="market-refresh-btn"
@@ -15,6 +15,8 @@
                 بروزرسانی قیمت ها
             </button>
         </div>
+
+        <p id="market-current-datetime" class="text-xs text-center font-medium tabular-nums" style="color: var(--mp-muted-2, #6b778c);">—</p>
 
         <div id="market-loading" class="hidden flex-1 flex flex-col items-center justify-center gap-3">
             <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
