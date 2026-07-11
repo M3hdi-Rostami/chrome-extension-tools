@@ -628,6 +628,14 @@
       gap: 12px;
     }
 
+    .exercise-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 0;
+      gap: 2px;
+    }
+
     .exercise-thumb-wrap {
       position: relative;
       width: 58px;
@@ -862,6 +870,50 @@
     tr.exercise-done .exercise-name {
       text-decoration: line-through;
       text-decoration-color: rgba(143,163,188,.5);
+    }
+
+    tr.exercise-current {
+      background: rgba(59, 130, 246, .1);
+      box-shadow: inset -3px 0 0 var(--accent);
+    }
+
+    tr.exercise-current .exercise-name {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .exercise-current-badge {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      width: fit-content;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, .22);
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    tr.exercise-current .exercise-current-badge {
+      display: inline-flex;
+    }
+
+    .exercise-current-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, .55);
+      animation: currentPulse 1.6s ease-out infinite;
+    }
+
+    @keyframes currentPulse {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, .55); }
+      70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
 
     /* Rest timer bar — hidden until .visible; sits above bottom nav */
@@ -1144,6 +1196,22 @@
 
       tbody tr:last-child { margin-bottom: 0; }
       tbody tr:hover { background: var(--surface2); }
+
+      tbody tr.exercise-current {
+        background: rgba(59, 130, 246, .14);
+        border-color: rgba(59, 130, 246, .55);
+        box-shadow:
+          inset 0 0 0 1px rgba(59, 130, 246, .35),
+          0 0 0 1px rgba(59, 130, 246, .2);
+      }
+
+      tbody tr.exercise-current:hover {
+        background: rgba(59, 130, 246, .16);
+      }
+
+      tbody tr.exercise-done.exercise-current {
+        opacity: 1;
+      }
 
       tbody td { padding: 0; border: none; width: auto; }
       tbody td:nth-child(2) { width: 100%; flex: 1 1 100%; }
@@ -1934,7 +2002,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.9"
+  "currentVersion": "1.0.10"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -2469,6 +2537,18 @@ const APP_UPDATE_CONFIG = {
     timerCount.textContent = formatTime(timerRemaining);
   });
 
+  function updateCurrentExercise(panel) {
+    if (!panel) return;
+    const rows = [...panel.querySelectorAll('tr.exercise-row')];
+    let currentMarked = false;
+    rows.forEach(row => {
+      const isDone = row.classList.contains('exercise-done');
+      const isCurrent = !currentMarked && !isDone;
+      row.classList.toggle('exercise-current', isCurrent);
+      if (isCurrent) currentMarked = true;
+    });
+  }
+
   function updateRowState(row, buttons) {
     const allDone = buttons.every(btn => btn.classList.contains('done'));
     row.classList.toggle('exercise-done', allDone);
@@ -2476,6 +2556,7 @@ const APP_UPDATE_CONFIG = {
       btn.classList.toggle('next-up', !allDone && !btn.classList.contains('done') &&
         buttons.slice(0, i).every(b => b.classList.contains('done')));
     });
+    updateCurrentExercise(row.closest('.day-panel'));
   }
 
   function dayHasProgress(panel) {
@@ -2555,6 +2636,18 @@ const APP_UPDATE_CONFIG = {
         const exerciseName = row.querySelector('.exercise-name')?.textContent?.trim() || `حرکت ${exerciseIndex + 1}`;
         const exerciseId = `${dayId}-${exerciseIndex++}`;
 
+        const nameEl = row.querySelector('.exercise-name');
+        if (nameEl && !row.querySelector('.exercise-current-badge')) {
+          const info = document.createElement('div');
+          info.className = 'exercise-info';
+          nameEl.replaceWith(info);
+          info.appendChild(nameEl);
+          const badge = document.createElement('span');
+          badge.className = 'exercise-current-badge';
+          badge.textContent = 'در حال انجام';
+          info.appendChild(badge);
+        }
+
         const col = document.createElement('td');
         col.className = 'set-check-col';
         col.colSpan = 1;
@@ -2612,6 +2705,7 @@ const APP_UPDATE_CONFIG = {
         row.classList.add('exercise-row');
         updateRowState(row, buttons);
       });
+      updateCurrentExercise(panel);
     });
   }
 
