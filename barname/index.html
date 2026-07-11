@@ -1879,7 +1879,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.7"
+  "currentVersion": "1.0.8"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -1986,6 +1986,16 @@ const APP_UPDATE_CONFIG = {
   }
 
   const HISTORY_KEY = 'barname-workout-history';
+  const DATES_KEY = 'barname-workout-set-dates';
+  const dayIdToJsWeekday = {
+    shanbe: 6,
+    yekshanbe: 0,
+    doshanbe: 1,
+    seshanbe: 2,
+    chaharshanbe: 3,
+    panjshanbe: 4,
+    jome: 5,
+  };
 
   function todayKey(date = new Date()) {
     const y = date.getFullYear();
@@ -2002,13 +2012,88 @@ const APP_UPDATE_CONFIG = {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(data));
   }
 
-  function recordSetHistory(delta) {
-    if (!delta) return;
-    const data = loadHistory();
-    const key = todayKey();
-    data[key] = Math.max(0, (data[key] || 0) + delta);
-    if (data[key] === 0) delete data[key];
-    saveHistory(data);
+  function loadSetDates() {
+    try { return JSON.parse(localStorage.getItem(DATES_KEY) || '{}'); } catch { return {}; }
+  }
+
+  function saveSetDates(data) {
+    localStorage.setItem(DATES_KEY, JSON.stringify(data));
+  }
+
+  function latestDateForWeekday(jsWeekday, ref = new Date()) {
+    const d = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate());
+    for (let i = 0; i < 21; i++) {
+      if (d.getDay() === jsWeekday) return todayKey(d);
+      d.setDate(d.getDate() - 1);
+    }
+    return todayKey(ref);
+  }
+
+  function rebuildHistoryFromDates() {
+    const dates = loadSetDates();
+    const history = {};
+    Object.keys(dates).forEach(exerciseId => {
+      (dates[exerciseId] || []).forEach(dateKey => {
+        if (!dateKey) return;
+        history[dateKey] = (history[dateKey] || 0) + 1;
+      });
+    });
+    saveHistory(history);
+    return history;
+  }
+
+  function migrateSetDatesFromSaved() {
+    const sets = loadSavedSets();
+    const dates = loadSetDates();
+    let changed = false;
+
+    Object.keys(sets).forEach(exerciseId => {
+      const dayId = String(exerciseId).split('-')[0];
+      const jsWeekday = dayIdToJsWeekday[dayId];
+      if (jsWeekday == null) return;
+
+      const fallbackDate = latestDateForWeekday(jsWeekday);
+      if (!Array.isArray(dates[exerciseId])) dates[exerciseId] = [];
+
+      const arr = sets[exerciseId] || [];
+      arr.forEach((done, index) => {
+        if (done) {
+          if (!dates[exerciseId][index]) {
+            dates[exerciseId][index] = fallbackDate;
+            changed = true;
+          }
+        } else if (dates[exerciseId][index]) {
+          dates[exerciseId][index] = null;
+          changed = true;
+        }
+      });
+    });
+
+    if (changed) saveSetDates(dates);
+    rebuildHistoryFromDates();
+  }
+
+  function recordSetCompletion(exerciseId, setIndex, done) {
+    const dates = loadSetDates();
+    if (!Array.isArray(dates[exerciseId])) dates[exerciseId] = [];
+    dates[exerciseId][setIndex] = done ? todayKey() : null;
+    saveSetDates(dates);
+    rebuildHistoryFromDates();
+  }
+
+  function clearSetDatesForDay(dayId) {
+    const dates = loadSetDates();
+    let changed = false;
+    Object.keys(dates).forEach(key => {
+      if (key.startsWith(`${dayId}-`)) {
+        delete dates[key];
+        changed = true;
+      }
+    });
+    if (changed) {
+      saveSetDates(dates);
+      rebuildHistoryFromDates();
+    }
   }
 
   function getMonthMeta(date = new Date()) {
@@ -2076,7 +2161,7 @@ const APP_UPDATE_CONFIG = {
 
     const now = new Date();
     const { year, month, daysInMonth, title } = getMonthMeta(now);
-    const history = loadHistory();
+    const history = rebuildHistoryFromDates();
     const prefix = `${year}-${String(month + 1).padStart(2, '0')}-`;
 
     let monthDone = 0;
@@ -2251,6 +2336,7 @@ const APP_UPDATE_CONFIG = {
     if (!data[exerciseId]) data[exerciseId] = [];
     data[exerciseId][setIndex] = done;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    recordSetCompletion(exerciseId, setIndex, done);
   }
 
   const timerBar = document.getElementById('rest-timer');
@@ -2356,6 +2442,7 @@ const APP_UPDATE_CONFIG = {
       if (key.startsWith(`${dayId}-`)) delete data[key];
     });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    clearSetDatesForDay(dayId);
 
     panel.querySelectorAll('tr.exercise-row').forEach(row => {
       const buttons = [...row.querySelectorAll('.set-check')];
@@ -2448,7 +2535,6 @@ const APP_UPDATE_CONFIG = {
             const isDone = btn.classList.toggle('done');
             btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
             saveSetState(exerciseId, i, isDone);
-            recordSetHistory(isDone ? 1 : -1);
             updateRowState(row, buttons);
             updateResetButtonVisibility(panel);
             if (document.getElementById('view-progress')?.classList.contains('active')) {
@@ -2476,6 +2562,7 @@ const APP_UPDATE_CONFIG = {
 
   initSetChecklists();
   initDayResetButtons();
+  migrateSetDatesFromSaved();
 })();
 
 (function () {
