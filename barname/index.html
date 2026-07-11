@@ -827,7 +827,7 @@
 
     .set-checklist {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       gap: 8px;
       flex-wrap: wrap;
     }
@@ -837,12 +837,20 @@
       color: var(--muted);
       font-weight: 600;
       margin-left: 4px;
+      align-self: center;
+    }
+
+    .set-item {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 4px;
     }
 
     .set-check {
-      min-width: 42px;
+      min-width: 46px;
       height: 38px;
-      padding: 0 10px;
+      padding: 0 8px;
       border-radius: 10px;
       border: 1px solid var(--border);
       background: var(--surface);
@@ -866,6 +874,45 @@
     .set-check.next-up {
       box-shadow: 0 0 0 2px rgba(6,182,212,.45);
       border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    .set-weight {
+      width: 46px;
+      height: 28px;
+      padding: 0 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .72rem;
+      font-weight: 600;
+      text-align: center;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .set-weight::-webkit-outer-spin-button,
+    .set-weight::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .set-weight::placeholder {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: .65rem;
+    }
+
+    .set-weight:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, .2);
+    }
+
+    .set-item:has(.set-check.done) .set-weight {
+      border-color: rgba(6, 182, 212, .35);
       color: var(--accent2);
     }
 
@@ -1286,7 +1333,8 @@
         border-top: 1px solid rgba(45,63,86,.45);
       }
 
-      .set-check { min-width: 46px; height: 42px; font-size: .88rem; }
+      .set-check { min-width: 50px; height: 42px; font-size: .88rem; }
+      .set-weight { width: 50px; height: 30px; font-size: .76rem; }
       .set-checklist-label { font-size: .8rem; }
 
       .rest-timer-count { font-size: 1.5rem; }
@@ -1390,6 +1438,209 @@
     }
 
     .app-update-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .reminder-card {
+      margin-bottom: 16px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface2);
+      text-align: right;
+    }
+
+    .reminder-card-title {
+      font-size: .95rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+      color: var(--text);
+    }
+
+    .reminder-card-desc {
+      font-size: .78rem;
+      color: var(--muted);
+      margin: 0 0 12px;
+      line-height: 1.6;
+    }
+
+    .reminder-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .reminder-toggle-label {
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .reminder-switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .reminder-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .reminder-switch-slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+
+    .reminder-switch-slider::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform .2s, background .2s;
+    }
+
+    .reminder-switch input:checked + .reminder-switch-slider {
+      background: rgba(6, 182, 212, .2);
+      border-color: rgba(6, 182, 212, .5);
+    }
+
+    .reminder-switch input:checked + .reminder-switch-slider::before {
+      transform: translateX(-20px);
+      background: var(--accent2);
+    }
+
+    .reminder-fields[hidden] { display: none !important; }
+
+    .reminder-time-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .reminder-time-row label {
+      font-size: .82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .reminder-time-row input[type="time"] {
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      direction: ltr;
+    }
+
+    .reminder-days {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .reminder-day {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 7px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+
+    .reminder-day.active {
+      background: rgba(59, 130, 246, .16);
+      border-color: rgba(59, 130, 246, .45);
+      color: var(--accent);
+    }
+
+    .reminder-status {
+      min-height: 1.2rem;
+      font-size: .75rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .reminder-status.ok { color: var(--success); }
+    .reminder-status.warn { color: #fbbf24; }
+    .reminder-status.error { color: var(--danger); }
+
+    .reminder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .reminder-link-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 7px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .today-reminder-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(59, 130, 246, .4);
+      background: rgba(59, 130, 246, .12);
+    }
+
+    .today-reminder-banner.visible {
+      display: flex;
+    }
+
+    .today-reminder-banner p {
+      margin: 0;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .today-reminder-banner button {
+      flex-shrink: 0;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: .8rem;
+      cursor: pointer;
+      padding: 4px 6px;
+    }
 
     .app-footer-credit {
       font-size: .8rem;
@@ -1611,6 +1862,10 @@
 <body>
 <div class="wrap">
   <section id="view-workout" class="app-view active" data-view="workout">
+  <div id="todayReminderBanner" class="today-reminder-banner" role="status">
+    <p id="todayReminderText"></p>
+    <button type="button" id="todayReminderDismiss" aria-label="بستن">بستن</button>
+  </div>
   <div class="day-tabs-wrap">
     <div class="day-tabs" role="tablist" aria-label="روزهای هفته">
       <button type="button" role="tab" class="day-tab pull" data-day="shanbe" aria-selected="false"><span class="day-name">شنبه</span><span class="day-type">Pull A</span></button>
@@ -1896,7 +2151,32 @@
   <section id="view-more" class="app-view" data-view="more">
     <div class="view-page">
       <h2>بیشتر</h2>
-      <p class="view-lead">بروزرسانی اپلیکیشن و اطلاعات</p>
+      <p class="view-lead">یادآور تمرین، بروزرسانی و اطلاعات</p>
+
+      <div class="reminder-card" id="reminderCard">
+        <h3 class="reminder-card-title">یادآور روز تمرین</h3>
+        <p class="reminder-card-desc">در روزهای برنامه، یک اعلان ساده می‌آید تا تمرین را از دست ندهی.</p>
+        <div class="reminder-toggle-row">
+          <span class="reminder-toggle-label">فعال‌سازی یادآور</span>
+          <label class="reminder-switch">
+            <input type="checkbox" id="reminderEnabled" />
+            <span class="reminder-switch-slider"></span>
+          </label>
+        </div>
+        <div class="reminder-fields" id="reminderFields" hidden>
+          <div class="reminder-time-row">
+            <label for="reminderTime">ساعت یادآوری</label>
+            <input type="time" id="reminderTime" value="17:00" />
+          </div>
+          <div class="reminder-days" id="reminderDays" role="group" aria-label="روزهای یادآور"></div>
+          <div class="reminder-actions" id="reminderActions" hidden>
+            <button type="button" class="reminder-link-btn" id="reminderPermissionBtn">اجازه اعلان</button>
+            <button type="button" class="reminder-link-btn" id="reminderExactBtn">اجازه زنگ دقیق</button>
+          </div>
+        </div>
+        <p class="reminder-status" id="reminderStatus"></p>
+      </div>
+
       <footer class="app-footer" style="margin-top:0;padding-top:0;border-top:none">
         <div id="appUpdateSection" class="app-update">
           <div class="app-update-row">
@@ -2008,7 +2288,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.11"
+  "currentVersion": "1.0.12"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -2425,6 +2705,7 @@ const APP_UPDATE_CONFIG = {
 
   // Set checklist + rest timer
   const STORAGE_KEY = 'barname-workout-sets';
+  const WEIGHTS_KEY = 'barname-workout-weights';
   const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
 
   function toEnglishDigits(value) {
@@ -2460,12 +2741,34 @@ const APP_UPDATE_CONFIG = {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
   }
 
+  function loadSavedWeights() {
+    try { return JSON.parse(localStorage.getItem(WEIGHTS_KEY) || '{}'); } catch { return {}; }
+  }
+
   function saveSetState(exerciseId, setIndex, done) {
     const data = loadSavedSets();
     if (!data[exerciseId]) data[exerciseId] = [];
     data[exerciseId][setIndex] = done;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     recordSetCompletion(exerciseId, setIndex, done);
+  }
+
+  function saveSetWeight(exerciseId, setIndex, weight) {
+    const data = loadSavedWeights();
+    if (!data[exerciseId]) data[exerciseId] = [];
+    const cleaned = toEnglishDigits(String(weight || '')).trim().replace(',', '.');
+    if (!cleaned) {
+      data[exerciseId][setIndex] = '';
+    } else {
+      const num = Number(cleaned);
+      data[exerciseId][setIndex] = Number.isFinite(num) ? String(num) : cleaned;
+    }
+    localStorage.setItem(WEIGHTS_KEY, JSON.stringify(data));
+  }
+
+  function formatWeightDisplay(value) {
+    if (value == null || value === '') return '';
+    return String(value);
   }
 
   const timerBar = document.getElementById('rest-timer');
@@ -2633,6 +2936,7 @@ const APP_UPDATE_CONFIG = {
 
   function initSetChecklists() {
     const saved = loadSavedSets();
+    const savedWeights = loadSavedWeights();
 
     document.querySelectorAll('.day-panel').forEach(panel => {
       const dayId = panel.dataset.day;
@@ -2674,8 +2978,12 @@ const APP_UPDATE_CONFIG = {
         wrap.appendChild(label);
 
         const buttons = [];
+        const weightInputs = [];
 
         for (let i = 0; i < setCount; i++) {
+          const item = document.createElement('div');
+          item.className = 'set-item';
+
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'set-check';
@@ -2688,6 +2996,24 @@ const APP_UPDATE_CONFIG = {
             btn.setAttribute('aria-pressed', 'true');
           }
 
+          const weightInput = document.createElement('input');
+          weightInput.type = 'number';
+          weightInput.className = 'set-weight';
+          weightInput.inputMode = 'decimal';
+          weightInput.step = '0.5';
+          weightInput.min = '0';
+          weightInput.placeholder = 'کیلو';
+          weightInput.setAttribute('aria-label', `وزن ست ${i + 1} از ${exerciseName}`);
+          weightInput.value = formatWeightDisplay(savedWeights[exerciseId]?.[i]);
+
+          weightInput.addEventListener('change', () => {
+            saveSetWeight(exerciseId, i, weightInput.value);
+          });
+          weightInput.addEventListener('blur', () => {
+            saveSetWeight(exerciseId, i, weightInput.value);
+            weightInput.value = formatWeightDisplay(loadSavedWeights()[exerciseId]?.[i]);
+          });
+
           btn.addEventListener('click', () => {
             if (!audioCtx) {
               try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
@@ -2696,6 +3022,20 @@ const APP_UPDATE_CONFIG = {
             const isDone = btn.classList.toggle('done');
             btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
             saveSetState(exerciseId, i, isDone);
+
+            if (isDone && !String(weightInput.value || '').trim()) {
+              const prevWeight = weightInputs.slice(0, i)
+                .map(inp => String(inp.value || '').trim())
+                .filter(Boolean)
+                .pop();
+              if (prevWeight) {
+                weightInput.value = prevWeight;
+                saveSetWeight(exerciseId, i, prevWeight);
+              } else {
+                setTimeout(() => weightInput.focus(), 30);
+              }
+            }
+
             updateRowState(row, buttons);
             updateResetButtonVisibility(panel);
             if (document.getElementById('view-progress')?.classList.contains('active')) {
@@ -2710,7 +3050,10 @@ const APP_UPDATE_CONFIG = {
           });
 
           buttons.push(btn);
-          wrap.appendChild(btn);
+          weightInputs.push(weightInput);
+          item.appendChild(btn);
+          item.appendChild(weightInput);
+          wrap.appendChild(item);
         }
 
         col.appendChild(wrap);
@@ -2725,6 +3068,261 @@ const APP_UPDATE_CONFIG = {
   initSetChecklists();
   initDayResetButtons();
   migrateSetDatesFromSaved();
+})();
+
+(function () {
+  const REMINDER_KEY = 'barname-workout-reminders';
+  const REMINDER_SEEN_PREFIX = 'barname-reminder-seen-';
+  const dayIdToJsWeekday = {
+    shanbe: 6,
+    yekshanbe: 0,
+    doshanbe: 1,
+    seshanbe: 2,
+    chaharshanbe: 3,
+    panjshanbe: 4,
+    jome: 5,
+  };
+  const defaultWorkoutDays = ['shanbe', 'yekshanbe', 'seshanbe', 'chaharshanbe', 'panjshanbe', 'jome'];
+
+  const enabledEl = document.getElementById('reminderEnabled');
+  const fieldsEl = document.getElementById('reminderFields');
+  const timeEl = document.getElementById('reminderTime');
+  const daysEl = document.getElementById('reminderDays');
+  const statusEl = document.getElementById('reminderStatus');
+  const actionsEl = document.getElementById('reminderActions');
+  const permissionBtn = document.getElementById('reminderPermissionBtn');
+  const exactBtn = document.getElementById('reminderExactBtn');
+  const bannerEl = document.getElementById('todayReminderBanner');
+  const bannerTextEl = document.getElementById('todayReminderText');
+  const bannerDismissBtn = document.getElementById('todayReminderDismiss');
+
+  if (!enabledEl || !daysEl) return;
+
+  function hasAndroidReminders() {
+    return typeof AndroidApp !== 'undefined' &&
+      typeof AndroidApp.scheduleWorkoutReminders === 'function';
+  }
+
+  function safeParse(json, fallback) {
+    try { return JSON.parse(json); } catch { return fallback; }
+  }
+
+  function loadConfig() {
+    const saved = safeParse(localStorage.getItem(REMINDER_KEY) || 'null', null);
+    if (saved && typeof saved === 'object') {
+      return {
+        enabled: !!saved.enabled,
+        hour: Number.isFinite(+saved.hour) ? +saved.hour : 17,
+        minute: Number.isFinite(+saved.minute) ? +saved.minute : 0,
+        days: Array.isArray(saved.days) && saved.days.length ? saved.days : defaultWorkoutDays.slice(),
+      };
+    }
+    return {
+      enabled: false,
+      hour: 17,
+      minute: 0,
+      days: defaultWorkoutDays.slice(),
+    };
+  }
+
+  function saveConfig(config) {
+    localStorage.setItem(REMINDER_KEY, JSON.stringify(config));
+  }
+
+  function dayMeta(dayId) {
+    const tab = document.querySelector(`.day-tab[data-day="${dayId}"]`);
+    const name = tab?.querySelector('.day-name')?.textContent?.trim() || dayId;
+    const type = tab?.querySelector('.day-type')?.textContent?.trim() || '';
+    return { dayId, name, type, weekday: dayIdToJsWeekday[dayId] };
+  }
+
+  function buildNativePayload(config) {
+    const days = config.days
+      .map(dayId => dayMeta(dayId))
+      .filter(d => d.weekday != null)
+      .map(d => ({
+        weekday: d.weekday,
+        title: 'امروز تمرین داری',
+        body: d.type ? `${d.name} — ${d.type}` : d.name,
+      }));
+    return {
+      enabled: !!config.enabled,
+      hour: config.hour,
+      minute: config.minute,
+      days,
+    };
+  }
+
+  function setStatus(message, kind) {
+    if (!statusEl) return;
+    statusEl.textContent = message || '';
+    statusEl.className = 'reminder-status' + (kind ? ` ${kind}` : '');
+  }
+
+  function renderDayButtons(config) {
+    daysEl.innerHTML = '';
+    Object.keys(dayIdToJsWeekday).forEach(dayId => {
+      const meta = dayMeta(dayId);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'reminder-day' + (config.days.includes(dayId) ? ' active' : '');
+      btn.textContent = meta.name;
+      btn.dataset.day = dayId;
+      btn.setAttribute('aria-pressed', config.days.includes(dayId) ? 'true' : 'false');
+      btn.addEventListener('click', () => {
+        const current = loadConfig();
+        if (current.days.includes(dayId)) {
+          if (current.days.length <= 1) return;
+          current.days = current.days.filter(d => d !== dayId);
+        } else {
+          current.days = [...current.days, dayId];
+        }
+        saveConfig(current);
+        renderDayButtons(current);
+        syncReminders(current);
+      });
+      daysEl.appendChild(btn);
+    });
+  }
+
+  function applyConfigToUi(config) {
+    enabledEl.checked = !!config.enabled;
+    fieldsEl.hidden = !config.enabled;
+    const hh = String(config.hour).padStart(2, '0');
+    const mm = String(config.minute).padStart(2, '0');
+    timeEl.value = `${hh}:${mm}`;
+    renderDayButtons(config);
+  }
+
+  function syncReminders(config) {
+    saveConfig(config);
+    if (!config.enabled) {
+      if (hasAndroidReminders() && typeof AndroidApp.cancelWorkoutReminders === 'function') {
+        try { AndroidApp.cancelWorkoutReminders(); } catch (_) {}
+      }
+      setStatus('یادآور خاموش است.', '');
+      updateTodayBanner();
+      return;
+    }
+
+    if (!hasAndroidReminders()) {
+      setStatus('اعلان سیستمی فقط در اپ اندروید فعال می‌شود. بنر داخل برنامه برای امروز کار می‌کند.', 'warn');
+      updateTodayBanner();
+      return;
+    }
+
+    try {
+      const raw = AndroidApp.scheduleWorkoutReminders(JSON.stringify(buildNativePayload(config)));
+      const result = safeParse(raw, { success: false });
+      if (!result.success) {
+        setStatus(result.message || 'خطا در تنظیم یادآور', 'error');
+        return;
+      }
+      const status = result.status || safeParse(AndroidApp.getReminderSupport?.() || '{}', {});
+      if (actionsEl) {
+        actionsEl.hidden = !(status.needsNotificationPermission || status.needsExactAlarmSettings);
+      }
+      if (permissionBtn) permissionBtn.hidden = !status.needsNotificationPermission;
+      if (exactBtn) exactBtn.hidden = !status.needsExactAlarmSettings;
+
+      if (status.needsNotificationPermission) {
+        setStatus('یادآور ذخیره شد. اجازه اعلان را فعال کن.', 'warn');
+      } else if (status.needsExactAlarmSettings) {
+        setStatus('یادآور فعال شد. برای دقت بیشتر، اجازه زنگ دقیق را بده.', 'warn');
+      } else {
+        setStatus('یادآور فعال شد. در روزهای انتخاب‌شده اعلان می‌آید.', 'ok');
+      }
+    } catch (_) {
+      setStatus('خطا در ارتباط با یادآور اندروید', 'error');
+    }
+    updateTodayBanner();
+  }
+
+  function todayKey(date = new Date()) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function updateTodayBanner() {
+    if (!bannerEl || !bannerTextEl) return;
+    const config = loadConfig();
+    const jsToIran = { 6: 'shanbe', 0: 'yekshanbe', 1: 'doshanbe', 2: 'seshanbe', 3: 'chaharshanbe', 4: 'panjshanbe', 5: 'jome' };
+    const todayId = jsToIran[new Date().getDay()];
+    const seenKey = REMINDER_SEEN_PREFIX + todayKey();
+    const shouldShow = config.enabled &&
+      config.days.includes(todayId) &&
+      !localStorage.getItem(seenKey);
+
+    if (!shouldShow) {
+      bannerEl.classList.remove('visible');
+      return;
+    }
+
+    const meta = dayMeta(todayId);
+    bannerTextEl.textContent = meta.type
+      ? `امروز ${meta.name} — ${meta.type}`
+      : `امروز روز تمرین «${meta.name}» است`;
+    bannerEl.classList.add('visible');
+  }
+
+  enabledEl.addEventListener('change', async () => {
+    const config = loadConfig();
+    config.enabled = enabledEl.checked;
+    fieldsEl.hidden = !config.enabled;
+
+    if (config.enabled && hasAndroidReminders() && typeof AndroidApp.requestReminderPermission === 'function') {
+      try {
+        const raw = AndroidApp.requestReminderPermission();
+        const result = safeParse(raw, {});
+        if (result.requested) {
+          setStatus('در حال دریافت اجازه اعلان...', 'warn');
+        }
+      } catch (_) {}
+    }
+
+    syncReminders(config);
+  });
+
+  timeEl.addEventListener('change', () => {
+    const config = loadConfig();
+    const [hh, mm] = String(timeEl.value || '17:00').split(':');
+    config.hour = Math.min(23, Math.max(0, parseInt(hh, 10) || 17));
+    config.minute = Math.min(59, Math.max(0, parseInt(mm, 10) || 0));
+    syncReminders(config);
+  });
+
+  permissionBtn?.addEventListener('click', () => {
+    if (!hasAndroidReminders()) return;
+    try { AndroidApp.requestReminderPermission(); } catch (_) {}
+  });
+
+  exactBtn?.addEventListener('click', () => {
+    if (!hasAndroidReminders()) return;
+    try { AndroidApp.openExactAlarmSettings(); } catch (_) {}
+  });
+
+  bannerDismissBtn?.addEventListener('click', () => {
+    localStorage.setItem(REMINDER_SEEN_PREFIX + todayKey(), '1');
+    bannerEl.classList.remove('visible');
+  });
+
+  window.__onReminderPermissionResult = function (payload) {
+    const config = loadConfig();
+    if (payload?.granted) {
+      setStatus('اجازه اعلان داده شد.', 'ok');
+      syncReminders(config);
+    } else {
+      setStatus('برای دریافت یادآور، اجازه اعلان لازم است.', 'warn');
+    }
+  };
+
+  const initial = loadConfig();
+  applyConfigToUi(initial);
+  if (initial.enabled) syncReminders(initial);
+  else setStatus(hasAndroidReminders() ? 'یادآور خاموش است.' : 'اعلان سیستمی فقط در اپ اندروید فعال می‌شود.', '');
+  updateTodayBanner();
 })();
 
 (function () {
