@@ -263,7 +263,13 @@
       box-shadow: 0 10px 36px rgba(0, 0, 0, .45);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      transition: opacity .25s ease, transform .3s ease;
+      transition: opacity .28s ease, transform .32s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    body:has(.rest-timer.visible) .bottom-nav {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(calc(100% + 24px));
     }
 
     .bottom-nav-item {
@@ -916,20 +922,20 @@
       100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
 
-    /* Rest timer bar — hidden until .visible; sits above bottom nav */
+    /* Rest timer bar — hidden until .visible; takes nav space while open */
     .rest-timer {
       position: fixed;
       left: 12px;
       right: 12px;
-      bottom: calc(92px + env(safe-area-inset-bottom, 0px));
-      z-index: 3500;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      z-index: 4100;
       padding: 0;
       background: transparent;
       border: none;
       opacity: 0;
       visibility: hidden;
       transform: translateY(calc(100% + 140px));
-      transition: transform .3s ease, opacity .25s ease, visibility .25s;
+      transition: transform .32s cubic-bezier(0.32, 0.72, 0, 1), opacity .25s ease, visibility .25s;
       pointer-events: none;
     }
 
@@ -2002,7 +2008,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.10"
+  "currentVersion": "1.0.11"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -2491,12 +2497,20 @@ const APP_UPDATE_CONFIG = {
     if (navigator.vibrate) navigator.vibrate([180, 80, 180]);
   }
 
-  function stopTimer() {
+  function clearTimerInterval() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = null;
+  }
+
+  function hideRestTimer() {
     timerBar.classList.remove('visible', 'urgent');
     timerBar.setAttribute('aria-hidden', 'true');
     timerBar.hidden = true;
+  }
+
+  function stopTimer() {
+    clearTimerInterval();
+    hideRestTimer();
   }
 
   function tickTimer() {
@@ -2504,23 +2518,22 @@ const APP_UPDATE_CONFIG = {
     timerCount.textContent = formatTime(timerRemaining);
     timerBar.classList.toggle('urgent', timerRemaining <= 5 && timerRemaining > 0);
     if (timerRemaining <= 0) {
-      stopTimer();
+      clearTimerInterval();
       playAlertSound();
       timerLabel.textContent = 'استراحت تمام شد — ست بعدی!';
       timerCount.textContent = '۰:۰۰';
+      timerBar.classList.remove('urgent');
       timerBar.hidden = false;
       timerBar.setAttribute('aria-hidden', 'false');
       timerBar.classList.add('visible');
       setTimeout(() => {
-        timerBar.classList.remove('visible');
-        timerBar.setAttribute('aria-hidden', 'true');
-        timerBar.hidden = true;
+        if (!timerInterval) hideRestTimer();
       }, 2500);
     }
   }
 
   function startRestTimer(seconds, exerciseName) {
-    stopTimer();
+    clearTimerInterval();
     timerRemaining = seconds;
     timerCount.textContent = formatTime(timerRemaining);
     timerLabel.textContent = `استراحت — ${exerciseName}`;
