@@ -1,0 +1,227 @@
+{
+  "barbell-row": {
+    "start": "barbell-row.jpg",
+    "end": "barbell-row-end.jpg",
+    "source": "Bent Over Barbell Row"
+  },
+  "pull-up": {
+    "start": "pull-up.jpg",
+    "end": "pull-up-end.jpg",
+    "source": "Pullups"
+  },
+  "seated-row": {
+    "start": "seated-row.jpg",
+    "end": "seated-row-end.jpg",
+    "source": "Seated Cable Rows"
+  },
+  "face-pull": {
+    "start": "face-pull.jpg",
+    "end": "face-pull-end.jpg",
+    "source": "Face Pull"
+  },
+  "pullover": {
+    "start": "pullover.jpg",
+    "end": "pullover-end.jpg",
+    "source": "Straight-Arm Pulldown"
+  },
+  "shrug": {
+    "start": "shrug.jpg",
+    "end": "shrug-end.jpg",
+    "source": "Barbell Shrug"
+  },
+  "hammer-curl": {
+    "start": "hammer-curl.jpg",
+    "end": "hammer-curl-end.jpg",
+    "source": "Hammer Curls"
+  },
+  "reverse-curl": {
+    "start": "reverse-curl.jpg",
+    "end": "reverse-curl-end.jpg",
+    "source": "Reverse Barbell Curl"
+  },
+  "wrist-curl": {
+    "start": "wrist-curl.jpg",
+    "end": "wrist-curl-end.jpg",
+    "source": "Palms-Up Barbell Wrist Curl Over A Bench"
+  },
+  "bench-press": {
+    "start": "bench-press.jpg",
+    "end": "bench-press-end.jpg",
+    "source": "Barbell Bench Press - Medium Grip"
+  },
+  "incline-press": {
+    "start": "incline-press.jpg",
+    "end": "incline-press-end.jpg",
+    "source": "Incline Dumbbell Press"
+  },
+  "shoulder-press": {
+    "start": "shoulder-press.jpg",
+    "end": "shoulder-press-end.jpg",
+    "source": "Dumbbell Shoulder Press"
+  },
+  "chest-fly": {
+    "start": "chest-fly.jpg",
+    "end": "chest-fly-end.jpg",
+    "source": "Dumbbell Flyes"
+  },
+  "skull-crusher": {
+    "start": "skull-crusher.jpg",
+    "end": "skull-crusher-end.jpg",
+    "source": "Lying Triceps Press"
+  },
+  "triceps-pushdown": {
+    "start": "triceps-pushdown.jpg",
+    "end": "triceps-pushdown-end.jpg",
+    "source": "Triceps Pushdown"
+  },
+  "lateral-raise": {
+    "start": "lateral-raise.jpg",
+    "end": "lateral-raise-end.jpg",
+    "source": "Side Lateral Raise"
+  },
+  "cable-crunch": {
+    "start": "cable-crunch.jpg",
+    "end": "cable-crunch-end.jpg",
+    "source": "Cable Crunch"
+  },
+  "plank": {
+    "start": "plank.jpg",
+    "end": "plank-end.jpg",
+    "source": "Plank"
+  },
+  "squat": {
+    "start": "squat.jpg",
+    "end": "squat-end.jpg",
+    "source": "Barbell Squat"
+  },
+  "leg-press": {
+    "start": "leg-press.jpg",
+    "end": "leg-press-end.jpg",
+    "source": "Leg Press"
+  },
+  "bulgarian-lunge": {
+    "start": "bulgarian-lunge.jpg",
+    "end": "bulgarian-lunge-end.jpg",
+    "source": "Barbell Lunge"
+  },
+  "leg-extension": {
+    "start": "leg-extension.jpg",
+    "end": "leg-extension-end.jpg",
+    "source": "Leg Extensions"
+  },
+  "calf-standing": {
+    "start": "calf-standing.jpg",
+    "end": "calf-standing-end.jpg",
+    "source": "Standing Calf Raises"
+  },
+  "reverse-crunch": {
+    "start": "reverse-crunch.jpg",
+    "end": "reverse-crunch-end.jpg",
+    "source": "Reverse Crunch"
+  },
+  "russian-twist": {
+    "start": "russian-twist.jpg",
+    "end": "russian-twist-end.jpg",
+    "source": "Russian Twist"
+  },
+  "hanging-leg-raise": {
+    "start": "hanging-leg-raise.jpg",
+    "end": "hanging-leg-raise-end.jpg",
+    "source": "Hanging Leg Raise"
+  },
+  "cable-crossover": {
+    "start": "cable-crossover.jpg",
+    "end": "cable-crossover-end.jpg",
+    "source": "Cable Crossover"
+  },
+  "front-raise": {
+    "start": "front-raise.jpg",
+    "end": "front-raise-end.jpg",
+    "source": "Front Dumbbell Raise"
+  },
+  "one-arm-triceps": {
+    "start": "one-arm-triceps.jpg",
+    "end": "one-arm-triceps-end.jpg",
+    "source": "Tricep Dumbbell Kickback"
+  },
+  "triceps-overhead": {
+    "start": "triceps-overhead.jpg",
+    "end": "triceps-overhead-end.jpg",
+    "source": "Standing Overhead Barbell Triceps Extension"
+  },
+  "side-plank": {
+    "start": "side-plank.jpg",
+    "end": "side-plank-end.jpg",
+    "source": "Side Bridge"
+  },
+  "vacuum": {
+    "start": "vacuum.jpg",
+    "end": "vacuum-end.jpg",
+    "source": "Stomach Vacuum"
+  },
+  "rdl": {
+    "start": "rdl.jpg",
+    "end": "rdl-end.jpg",
+    "source": "Romanian Deadlift"
+  },
+  "lat-pulldown": {
+    "start": "lat-pulldown.jpg",
+    "end": "lat-pulldown-end.jpg",
+    "source": "Wide-Grip Lat Pulldown"
+  },
+  "one-arm-pulldown": {
+    "start": "one-arm-pulldown.jpg",
+    "end": "one-arm-pulldown-end.jpg",
+    "source": "One Arm Lat Pulldown"
+  },
+  "one-arm-row": {
+    "start": "one-arm-row.jpg",
+    "end": "one-arm-row-end.jpg",
+    "source": "One-Arm Dumbbell Row"
+  },
+  "rear-delt": {
+    "start": "rear-delt.jpg",
+    "end": "rear-delt-end.jpg",
+    "source": "Bent Over Dumbbell Rear Delt Raise With Head On Bench"
+  },
+  "drag-curl": {
+    "start": "drag-curl.jpg",
+    "end": "drag-curl-end.jpg",
+    "source": "Drag Curl"
+  },
+  "farmers-walk": {
+    "start": "farmers-walk.jpg",
+    "end": "farmers-walk-end.jpg",
+    "source": "Farmer's Walk"
+  },
+  "behind-back-wrist": {
+    "start": "behind-back-wrist.jpg",
+    "end": "behind-back-wrist-end.jpg",
+    "source": "Standing Palms-Up Barbell Behind The Back Wrist Curl"
+  },
+  "leg-press-high": {
+    "start": "leg-press-high.jpg",
+    "end": "leg-press-high-end.jpg",
+    "source": "Leg Press"
+  },
+  "leg-curl": {
+    "start": "leg-curl.jpg",
+    "end": "leg-curl-end.jpg",
+    "source": "Lying Leg Curls"
+  },
+  "hip-thrust": {
+    "start": "hip-thrust.jpg",
+    "end": "hip-thrust-end.jpg",
+    "source": "Barbell Hip Thrust"
+  },
+  "calf-seated": {
+    "start": "calf-seated.jpg",
+    "end": "calf-seated-end.jpg",
+    "source": "Seated Calf Raise"
+  },
+  "machine-press": {
+    "start": "machine-press.jpg",
+    "end": "machine-press-end.jpg",
+    "source": "Machine Bench Press"
+  }
+}

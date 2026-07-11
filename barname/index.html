@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>برنامه ۵ روزه بدنسازی — Pull / Push / Leg</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css');
+
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface2: #243044;
+      --border: #2d3f56;
+      --text: #e8edf4;
+      --muted: #8fa3bc;
+      --accent: #3b82f6;
+      --accent2: #06b6d4;
+      --push: #f59e0b;
+      --pull: #10b981;
+      --leg: #8b5cf6;
+      --rest: #64748b;
+      --radius: 14px;
+      --shadow: 0 8px 32px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Vazir', 'Tahoma', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,.18), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(6,182,212,.1), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 40px 24px 32px;
+      margin-bottom: 32px;
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    header .badge {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      letter-spacing: .5px;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #fff, #94c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    /* Stats row */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    .stat .val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent2);
+    }
+
+    .stat .lbl {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Day tabs */
+    .day-tabs-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin: 0 -20px 20px;
+      padding: 10px 20px 12px;
+      background: linear-gradient(to bottom, var(--bg) 70%, transparent);
+      backdrop-filter: blur(8px);
+    }
+
+    .day-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+
+    .day-tabs::-webkit-scrollbar { display: none; }
+
+    .day-tab {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      border-radius: 12px;
+      padding: 10px 14px;
+      text-align: center;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: inherit;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform .15s, border-color .15s, box-shadow .15s;
+      min-width: 72px;
+    }
+
+    .day-tab:hover { transform: translateY(-1px); }
+
+    .day-tab.active {
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      transform: translateY(-2px);
+    }
+
+    .day-tab .day-name {
+      display: block;
+      font-size: .82rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .day-tab .day-type {
+      display: block;
+      font-size: .65rem;
+      opacity: .85;
+      white-space: nowrap;
+    }
+
+    .day-tab.push  { color: #fbbf24; }
+    .day-tab.pull  { color: #34d399; }
+    .day-tab.leg   { color: #a78bfa; }
+    .day-tab.rest  { color: #94a3b8; }
+
+    .day-tab.push.active  { background: rgba(245,158,11,.18); border-color: rgba(245,158,11,.5); }
+    .day-tab.pull.active  { background: rgba(16,185,129,.18); border-color: rgba(16,185,129,.5); }
+    .day-tab.leg.active   { background: rgba(139,92,246,.18); border-color: rgba(139,92,246,.5); }
+    .day-tab.rest.active  { background: rgba(100,116,139,.15); border-color: rgba(100,116,139,.45); }
+
+    .workout-panels { min-height: 200px; }
+
+    .day-panel { display: none; animation: fadeIn .25s ease; }
+    .day-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Legacy week grid - removed */
+
+    /* Section */
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 28px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Workout cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-header-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .day-reset-btn {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s, background .15s;
+      white-space: nowrap;
+    }
+
+    .day-reset-btn:hover {
+      color: #f87171;
+      border-color: rgba(248,113,113,.45);
+      background: rgba(248,113,113,.1);
+    }
+
+    .day-reset-btn:active { transform: scale(.97); }
+
+    .day-reset-btn[hidden] { display: none; }
+
+    .card-header .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .card-header.push .icon { background: rgba(245,158,11,.2); }
+    .card-header.pull .icon { background: rgba(16,185,129,.2); }
+    .card-header.leg  .icon { background: rgba(139,92,246,.2); }
+    .card-header.rest .icon { background: rgba(100,116,139,.2); }
+
+    .card-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .card-header .sub {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .card-body { padding: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+
+    thead th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: .75rem;
+      padding: 10px 16px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr { border-bottom: 1px solid rgba(45,63,86,.6); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(59,130,246,.04); }
+
+    tbody td {
+      padding: 10px 16px;
+      vertical-align: middle;
+    }
+
+    tbody td:first-child {
+      color: var(--muted);
+      font-size: .78rem;
+      width: 36px;
+    }
+
+    .sets {
+      color: var(--accent2);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+
+    .exercise-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .exercise-thumb-wrap {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface2);
+      flex-shrink: 0;
+      cursor: zoom-in;
+      overflow: hidden;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .exercise-thumb-wrap:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 16px rgba(59,130,246,.25);
+    }
+
+    .exercise-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    img.exercise-thumb:not([src]) {
+      opacity: 0;
+    }
+
+    .thumb-badge {
+      position: absolute;
+      bottom: 3px;
+      left: 3px;
+      background: rgba(15,20,25,.75);
+      color: #fff;
+      font-size: .6rem;
+      font-weight: 700;
+      line-height: 1;
+      padding: 2px 5px;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .exercise-name { line-height: 1.4; }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.88);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      width: min(90vw, 520px);
+      cursor: default;
+    }
+
+    .lightbox-viewport {
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      direction: ltr;
+    }
+
+    .lightbox-track {
+      display: flex;
+      transition: transform .3s ease;
+      will-change: transform;
+    }
+
+    .lightbox-track img {
+      width: 100%;
+      flex-shrink: 0;
+      max-height: 75vh;
+      object-fit: contain;
+      background: #111;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+      backdrop-filter: blur(4px);
+    }
+
+    .lightbox-nav:hover { background: rgba(255,255,255,.3); }
+
+    .lightbox-prev { right: calc(100% + 12px); }
+    .lightbox-next { left: calc(100% + 12px); }
+
+    .lightbox-caption {
+      margin-top: 14px;
+      color: #fff;
+      font-size: .9rem;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .lightbox-phase {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: .78rem;
+      color: var(--accent2);
+      background: rgba(6,182,212,.15);
+      padding: 3px 12px;
+      border-radius: 20px;
+    }
+
+    .lightbox-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .lightbox-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.3);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    .lightbox-dot.active {
+      background: var(--accent2);
+      transform: scale(1.2);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.7);
+      font-size: .85rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .lightbox-close:hover { color: #fff; }
+
+    .rest-time {
+      color: var(--muted);
+      font-size: .78rem;
+      white-space: nowrap;
+    }
+
+    /* Set checklist */
+    .set-check-col {
+      padding: 10px 16px 12px;
+      vertical-align: middle;
+    }
+
+    .set-checklist {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .set-checklist-label {
+      font-size: .72rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .set-check {
+      min-width: 42px;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, color .15s, transform .1s;
+    }
+
+    .set-check:hover { border-color: var(--accent); color: var(--text); }
+    .set-check:active { transform: scale(.96); }
+
+    .set-check.done {
+      background: rgba(16,185,129,.18);
+      border-color: rgba(16,185,129,.45);
+      color: #34d399;
+    }
+
+    .set-check.next-up {
+      box-shadow: 0 0 0 2px rgba(6,182,212,.45);
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    tr.exercise-done {
+      opacity: .72;
+    }
+
+    tr.exercise-done .exercise-name {
+      text-decoration: line-through;
+      text-decoration-color: rgba(143,163,188,.5);
+    }
+
+    /* Rest timer bar */
+    .rest-timer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 5000;
+      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(to top, rgba(10,14,20,.98) 80%, transparent);
+      border-top: 1px solid var(--border);
+      transform: translateY(110%);
+      transition: transform .3s ease;
+      pointer-events: none;
+    }
+
+    .rest-timer.visible {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .rest-timer-inner {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .rest-timer-info { flex: 1; min-width: 0; }
+
+    .rest-timer-label {
+      display: block;
+      font-size: .75rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rest-timer-count {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent2);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .rest-timer-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .rest-timer-btn {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .rest-timer-btn:hover { border-color: var(--accent); }
+    .rest-timer-btn.primary {
+      background: rgba(6,182,212,.15);
+      border-color: rgba(6,182,212,.4);
+      color: var(--accent2);
+    }
+
+    @keyframes timerPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .65; }
+    }
+
+    .rest-timer.urgent .rest-timer-count {
+      color: #fbbf24;
+      animation: timerPulse .8s ease infinite;
+    }
+
+    /* Sub-section inside card */
+    .sub-section {
+      padding: 14px 20px 4px;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Info collapse */
+    .info-collapse {
+      margin: 28px 0 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .info-collapse-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      transition: color .15s, background .15s;
+    }
+
+    .info-collapse-summary::-webkit-details-marker { display: none; }
+
+    .info-collapse-summary::marker { content: ''; }
+
+    .info-collapse-summary:hover {
+      color: var(--text);
+      background: rgba(59,130,246,.04);
+    }
+
+    .info-collapse-summary::after {
+      content: '▼';
+      font-size: .65rem;
+      color: var(--accent2);
+      transition: transform .2s ease;
+      flex-shrink: 0;
+    }
+
+    .info-collapse[open] .info-collapse-summary {
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .info-collapse[open] .info-collapse-summary::after {
+      transform: rotate(180deg);
+    }
+
+    .info-collapse-body {
+      padding: 14px;
+    }
+
+    /* Info boxes */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+
+    .info-box h3 {
+      font-size: .9rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--accent2);
+    }
+
+    .info-box ul {
+      list-style: none;
+      font-size: .83rem;
+      color: var(--muted);
+    }
+
+    .info-box ul li {
+      padding: 4px 0;
+      padding-right: 16px;
+      position: relative;
+    }
+
+    .info-box ul li::before {
+      content: '›';
+      position: absolute;
+      right: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Rest card special */
+    .rest-content {
+      padding: 20px;
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .rest-content strong { color: var(--text); }
+
+    /* Print */
+    @media print {
+      body { background: #fff; color: #111; }
+      body::before { display: none; }
+      .day-tabs-wrap { display: none; }
+      .day-panel { display: block !important; break-after: page; }
+      .info-collapse:not([open]) .info-collapse-body { display: block !important; }
+      .card, header, .info-box, .stat {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body { font-size: 17px; }
+      .wrap { padding: 12px 14px; }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .stat { padding: 12px 14px; }
+      .stat .val { font-size: 1.15rem; }
+      .stat .lbl { font-size: .88rem; }
+
+      .day-tabs-wrap {
+        margin: 0 -14px 16px;
+        padding: 8px 14px 10px;
+      }
+
+      .day-tab { min-width: 72px; padding: 10px 12px; }
+      .day-tab .day-name { font-size: .92rem; }
+      .day-tab .day-type { font-size: .78rem; }
+
+      .card { margin-bottom: 0; border-radius: 12px; }
+      .card-header { padding: 16px; gap: 12px; }
+      .card-header .icon { width: 42px; height: 42px; font-size: 1.2rem; }
+      .card-header h2 { font-size: 1.15rem; }
+      .card-header .sub { font-size: .92rem; }
+      .day-reset-btn { font-size: .8rem; padding: 8px 10px; }
+
+      .section-title { font-size: 1.05rem; margin: 24px 0 12px; }
+
+      /* Exercise cards on mobile */
+      table, thead, tbody { display: block; width: 100%; }
+      thead { display: none; }
+
+      tbody tr {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 10px;
+        padding: 14px;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 12px;
+      }
+
+      tbody tr:last-child { margin-bottom: 0; }
+      tbody tr:hover { background: var(--surface2); }
+
+      tbody td { padding: 0; border: none; width: auto; }
+      tbody td:nth-child(2) { width: 100%; flex: 1 1 100%; }
+      tbody td:first-child {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        left: auto;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(59,130,246,.15);
+        color: var(--accent2);
+        border-radius: 8px;
+        font-size: .85rem;
+        font-weight: 700;
+      }
+
+      .exercise-cell {
+        padding-right: 38px;
+        padding-left: 0;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .exercise-thumb-wrap { width: 60px; height: 60px; }
+      .exercise-name { font-size: 1rem; font-weight: 600; line-height: 1.5; }
+
+      tbody td.sets,
+      tbody td.rest-time {
+        display: block;
+        width: auto;
+        flex: 0 0 auto;
+        font-size: .92rem;
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      tbody td.sets::before {
+        content: 'ست: ';
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      tbody td.rest-time::before {
+        content: 'استراحت: ';
+        color: var(--muted);
+      }
+
+      tbody td.sets {
+        color: var(--accent2);
+        font-weight: 700;
+      }
+
+      tbody td.rest-time {
+        color: var(--muted);
+      }
+
+      .set-check-col {
+        width: 100%;
+        flex: 1 1 100%;
+        padding: 10px 0 0;
+        margin-top: 4px;
+        border-top: 1px solid rgba(45,63,86,.45);
+      }
+
+      .set-check { min-width: 46px; height: 42px; font-size: .88rem; }
+      .set-checklist-label { font-size: .8rem; }
+
+      .rest-timer-count { font-size: 1.5rem; }
+
+      .rest-content { padding: 16px; font-size: .95rem; }
+      .sub-section { padding: 12px 16px 4px; font-size: .92rem; }
+
+      .info-collapse { margin: 20px 0 12px; }
+      .info-collapse-summary { font-size: .95rem; padding: 12px 14px; }
+      .info-grid { grid-template-columns: 1fr; gap: 10px; }
+      .info-box { padding: 16px; }
+
+      .info-collapse .info-box { padding: 14px 16px; }
+      .info-box h3 { font-size: 1.05rem; }
+      .info-box ul { font-size: .95rem; line-height: 1.8; }
+      .info-box ul li { padding: 6px 0; }
+
+      .lightbox-prev, .lightbox-next { display: none; }
+      .lightbox-close { top: -36px; font-size: .9rem; }
+      .lightbox-caption { font-size: 1rem; }
+      .lightbox-phase { font-size: .88rem; }
+
+      .hide-mobile { display: inline-block !important; }
+    }
+
+    @media (min-width: 769px) {
+      .day-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow-x: visible;
+      }
+
+      .day-tab { flex: 1 1 100px; max-width: 120px; }
+    }
+
+    .app-footer {
+      margin-top: 28px;
+      padding: 18px 16px 8px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .app-update {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+    }
+
+    .app-update-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .85rem;
+      margin-bottom: 8px;
+    }
+
+    .app-update-label { color: var(--muted); }
+
+    .app-update-version {
+      color: var(--text);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .app-update-status {
+      min-height: 1.1rem;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .app-update-status.success { color: var(--pull); }
+    .app-update-status.error { color: #f87171; }
+
+    .app-update-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s, background .15s, border-color .15s;
+    }
+
+    .app-update-btn:hover:not(:disabled) {
+      background: var(--surface2);
+      border-color: var(--accent);
+    }
+
+    .app-update-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .app-footer-credit {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .app-footer-credit a {
+      color: var(--accent2);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 600;
+    }
+
+    .update-sheet-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      pointer-events: none;
+    }
+
+    .update-sheet-overlay:not(.hidden) { pointer-events: auto; }
+
+    .update-sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 20, 25, .55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+
+    .update-sheet-overlay.open .update-sheet-backdrop { opacity: 1; }
+
+    .update-sheet {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      min-height: 240px;
+      max-height: 340px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 24px 24px 0 0;
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, .35);
+      transform: translateY(100%);
+      transition: transform .35s cubic-bezier(0.32, 0.72, 0, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 8px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+      overflow: hidden;
+    }
+
+    .update-sheet::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: .85;
+    }
+
+    .update-sheet-overlay.open .update-sheet { transform: translateY(0); }
+
+    .update-sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 999px;
+      margin: 4px auto 12px;
+      flex-shrink: 0;
+    }
+
+    .update-sheet-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      min-height: 0;
+      padding-top: 4px;
+    }
+
+    .update-sheet-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, .1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .update-sheet-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, .18);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .update-sheet-icon svg { width: 24px; height: 24px; display: block; }
+
+    .update-sheet-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .update-sheet-message {
+      font-size: .9rem;
+      line-height: 1.75;
+      color: var(--muted);
+      flex: 1;
+      max-width: 28rem;
+      padding: 0 4px;
+    }
+
+    .update-sheet-actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .update-sheet-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+
+    .update-sheet-btn:active { opacity: .85; }
+
+    .update-sheet-btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .update-sheet-btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, .28);
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="day-tabs-wrap">
+    <div class="day-tabs" role="tablist" aria-label="روزهای هفته">
+      <button type="button" role="tab" class="day-tab pull" data-day="shanbe" aria-selected="false"><span class="day-name">شنبه</span><span class="day-type">Pull A</span></button>
+      <button type="button" role="tab" class="day-tab push" data-day="yekshanbe" aria-selected="false"><span class="day-name">یکشنبه</span><span class="day-type">Push A</span></button>
+      <button type="button" role="tab" class="day-tab rest" data-day="doshanbe" aria-selected="false"><span class="day-name">دوشنبه</span><span class="day-type">استراحت</span></button>
+      <button type="button" role="tab" class="day-tab leg" data-day="seshanbe" aria-selected="false"><span class="day-name">سه‌شنبه</span><span class="day-type">Leg A</span></button>
+      <button type="button" role="tab" class="day-tab push" data-day="chaharshanbe" aria-selected="false"><span class="day-name">چهارشنبه</span><span class="day-type">Push B</span></button>
+      <button type="button" role="tab" class="day-tab pull" data-day="panjshanbe" aria-selected="false"><span class="day-name">پنج‌شنبه</span><span class="day-type">Pull+Leg</span></button>
+      <button type="button" role="tab" class="day-tab rest" data-day="jome" aria-selected="false"><span class="day-name">جمعه</span><span class="day-type">کاردیو</span></button>
+    </div>
+  </div>
+
+  <div class="workout-panels">
+
+  <!-- شنبه Pull A -->
+  <div class="card day-panel" data-day="shanbe">
+    <div class="card-header pull">
+      <div class="icon">🏋️</div>
+      <div>
+        <h2>شنبه — Pull A</h2>
+        <div class="sub">ضخامت کمر + جزئیات + ساعد</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
+        <tbody>
+          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="barbell-row.jpg" data-end="barbell-row-end.jpg" data-name="ردیف هالتر خم / T-Bar" aria-label="نمایش ردیف هالتر خم / T-Bar"><img data-img="barbell-row.jpg" alt="ردیف هالتر خم / T-Bar" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ردیف هالتر خم / T-Bar</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
+          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="pull-up.jpg" data-end="pull-up-end.jpg" data-name="بارفیکس / لات پول‌داون" aria-label="نمایش بارفیکس / لات پول‌داون"><img data-img="pull-up.jpg" alt="بارفیکس / لات پول‌داون" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">بارفیکس / لات پول‌داون</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
+          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="seated-row.jpg" data-end="seated-row-end.jpg" data-name="کابل رو به رو (Seated Row)" aria-label="نمایش کابل رو به رو (Seated Row)"><img data-img="seated-row.jpg" alt="کابل رو به رو (Seated Row)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کابل رو به رو (Seated Row)</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="face-pull.jpg" data-end="face-pull-end.jpg" data-name="فیس پول" aria-label="نمایش فیس پول"><img data-img="face-pull.jpg" alt="فیس پول" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">فیس پول</span></div></td><td class="sets">4 × 15-20</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="pullover.jpg" data-end="pullover-end.jpg" data-name="پول‌اور دمبل / کابل" aria-label="نمایش پول‌اور دمبل / کابل"><img data-img="pullover.jpg" alt="پول‌اور دمبل / کابل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پول‌اور دمبل / کابل</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="shrug.jpg" data-end="shrug-end.jpg" data-name="شراگ دمبل" aria-label="نمایش شراگ دمبل"><img data-img="shrug.jpg" alt="شراگ دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">شراگ دمبل</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="hammer-curl.jpg" data-end="hammer-curl-end.jpg" data-name="جلو بازو چکشی" aria-label="نمایش جلو بازو چکشی"><img data-img="hammer-curl.jpg" alt="جلو بازو چکشی" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">جلو بازو چکشی</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="reverse-curl.jpg" data-end="reverse-curl-end.jpg" data-name="Reverse Curl (ساعد)" aria-label="نمایش Reverse Curl (ساعد)"><img data-img="reverse-curl.jpg" alt="Reverse Curl (ساعد)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Reverse Curl (ساعد)</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="wrist-curl.jpg" data-end="wrist-curl-end.jpg" data-name="Wrist Curl (ساعد)" aria-label="نمایش Wrist Curl (ساعد)"><img data-img="wrist-curl.jpg" alt="Wrist Curl (ساعد)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Wrist Curl (ساعد)</span></div></td><td class="sets">4 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- یکشنبه Push A -->
+  <div class="card day-panel" data-day="yekshanbe">
+    <div class="card-header push">
+      <div class="icon">💪</div>
+      <div>
+        <h2>یکشنبه — Push A</h2>
+        <div class="sub">سینه سنگین + بالای سینه + شکم</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
+        <tbody>
+          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="bench-press.jpg" data-end="bench-press-end.jpg" data-name="پرس سینه هالتر / دمبل" aria-label="نمایش پرس سینه هالتر / دمبل"><img data-img="bench-press.jpg" alt="پرس سینه هالتر / دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه هالتر / دمبل</span></div></td><td class="sets">4 × 6-8</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
+          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="incline-press.jpg" data-end="incline-press-end.jpg" data-name="پرس سینه شیب‌دار دمبل" aria-label="نمایش پرس سینه شیب‌دار دمبل"><img data-img="incline-press.jpg" alt="پرس سینه شیب‌دار دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه شیب‌دار دمبل</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="shoulder-press.jpg" data-end="shoulder-press-end.jpg" data-name="پرس سرشانه نشسته" aria-label="نمایش پرس سرشانه نشسته"><img data-img="shoulder-press.jpg" alt="پرس سرشانه نشسته" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سرشانه نشسته</span></div></td><td class="sets">3 × 8-10</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="chest-fly.jpg" data-end="chest-fly-end.jpg" data-name="فلای سینه (کابل / دمبل)" aria-label="نمایش فلای سینه (کابل / دمبل)"><img data-img="chest-fly.jpg" alt="فلای سینه (کابل / دمبل)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">فلای سینه (کابل / دمبل)</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="skull-crusher.jpg" data-end="skull-crusher-end.jpg" data-name="پشت بازو هالتر خوابیده" aria-label="نمایش پشت بازو هالتر خوابیده"><img data-img="skull-crusher.jpg" alt="پشت بازو هالتر خوابیده" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو هالتر خوابیده</span></div></td><td class="sets">3 × 8-10</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="triceps-pushdown.jpg" data-end="triceps-pushdown-end.jpg" data-name="پشت بازو کابل (طناب)" aria-label="نمایش پشت بازو کابل (طناب)"><img data-img="triceps-pushdown.jpg" alt="پشت بازو کابل (طناب)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو کابل (طناب)</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="lateral-raise.jpg" data-end="lateral-raise-end.jpg" data-name="نشر جانب دمبل" aria-label="نمایش نشر جانب دمبل"><img data-img="lateral-raise.jpg" alt="نشر جانب دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">نشر جانب دمبل</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="cable-crunch.jpg" data-end="cable-crunch-end.jpg" data-name="کرانچ کابل (شکم)" aria-label="نمایش کرانچ کابل (شکم)"><img data-img="cable-crunch.jpg" alt="کرانچ کابل (شکم)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ کابل (شکم)</span></div></td><td class="sets">3 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="plank.jpg" data-end="plank-end.jpg" data-name="پلانک" aria-label="نمایش پلانک"><img data-img="plank.jpg" alt="پلانک" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پلانک</span></div></td><td class="sets">3 × 40-60 ثانیه</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- دوشنبه استراحت -->
+  <div class="card day-panel" data-day="doshanbe">
+    <div class="card-header rest">
+      <div class="icon">😴</div>
+      <div>
+        <h2>دوشنبه — استراحت</h2>
+        <div class="sub">ریکاوری سینه و سرشانه</div>
+      </div>
+    </div>
+    <div class="rest-content">
+      <strong>استراحت کامل.</strong> کشش سبک ۱۰ دقیقه (اختیاری). آب کافی بنوش.
+    </div>
+  </div>
+
+  <!-- سه‌شنبه Leg A -->
+  <div class="card day-panel" data-day="seshanbe">
+    <div class="card-header leg">
+      <div class="icon">🦵</div>
+      <div>
+        <h2>سه‌شنبه — Leg A</h2>
+        <div class="sub">کوادر + شکم و پهلو</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
+        <tbody>
+          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="squat.jpg" data-end="squat-end.jpg" data-name="اسکوات / پرس پا" aria-label="نمایش اسکوات / پرس پا"><img data-img="squat.jpg" alt="اسکوات / پرس پا" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">اسکوات / پرس پا</span></div></td><td class="sets">4 × 6-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
+          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-press.jpg" data-end="leg-press-end.jpg" data-name="پرس پا (پا باز)" aria-label="نمایش پرس پا (پا باز)"><img data-img="leg-press.jpg" alt="پرس پا (پا باز)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس پا (پا باز)</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="bulgarian-lunge.jpg" data-end="bulgarian-lunge-end.jpg" data-name="لانج بلغاریایی" aria-label="نمایش لانج بلغاریایی"><img data-img="bulgarian-lunge.jpg" alt="لانج بلغاریایی" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">لانج بلغاریایی</span></div></td><td class="sets">3 × 10-12 هر پا</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-extension.jpg" data-end="leg-extension-end.jpg" data-name="اکستنشن پا" aria-label="نمایش اکستنشن پا"><img data-img="leg-extension.jpg" alt="اکستنشن پا" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">اکستنشن پا</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="calf-standing.jpg" data-end="calf-standing-end.jpg" data-name="ساق ایستاده" aria-label="نمایش ساق ایستاده"><img data-img="calf-standing.jpg" alt="ساق ایستاده" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ساق ایستاده</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="reverse-crunch.jpg" data-end="reverse-crunch-end.jpg" data-name="کرانچ پا بالا (شکم پایین)" aria-label="نمایش کرانچ پا بالا (شکم پایین)"><img data-img="reverse-crunch.jpg" alt="کرانچ پا بالا (شکم پایین)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ پا بالا (شکم پایین)</span></div></td><td class="sets">3 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="russian-twist.jpg" data-end="russian-twist-end.jpg" data-name="Russian Twist (پهلو)" aria-label="نمایش Russian Twist (پهلو)"><img data-img="russian-twist.jpg" alt="Russian Twist (پهلو)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Russian Twist (پهلو)</span></div></td><td class="sets">3 × 20 هر طرف</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="hanging-leg-raise.jpg" data-end="hanging-leg-raise-end.jpg" data-name="Hanging Leg Raise (شکم)" aria-label="نمایش Hanging Leg Raise (شکم)"><img data-img="hanging-leg-raise.jpg" alt="Hanging Leg Raise (شکم)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Hanging Leg Raise (شکم)</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- چهارشنبه Push B -->
+  <div class="card day-panel" data-day="chaharshanbe">
+    <div class="card-header push">
+      <div class="icon">🔥</div>
+      <div>
+        <h2>چهارشنبه — Push B</h2>
+        <div class="sub">بالای سینه + سرشانه + شکم (روز نقاط ضعف)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
+        <tbody>
+          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="incline-press.jpg" data-end="incline-press-end.jpg" data-name="پرس سینه شیب‌دار دمبل" aria-label="نمایش پرس سینه شیب‌دار دمبل"><img data-img="incline-press.jpg" alt="پرس سینه شیب‌دار دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه شیب‌دار دمبل</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="cable-crossover.jpg" data-end="cable-crossover-end.jpg" data-name="کراس‌اور کابل (پایین به بالا)" aria-label="نمایش کراس‌اور کابل (پایین به بالا)"><img data-img="cable-crossover.jpg" alt="کراس‌اور کابل (پایین به بالا)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کراس‌اور کابل (پایین به بالا)</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="machine-press.jpg" data-end="machine-press-end.jpg" data-name="پرس سینه دستگاه / دمبل تخت" aria-label="نمایش پرس سینه دستگاه / دمبل تخت"><img data-img="machine-press.jpg" alt="پرس سینه دستگاه / دمبل تخت" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه دستگاه / دمبل تخت</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="shoulder-press.jpg" data-end="shoulder-press-end.jpg" data-name="پرس سرشانه دمبل ایستاده" aria-label="نمایش پرس سرشانه دمبل ایستاده"><img data-img="shoulder-press.jpg" alt="پرس سرشانه دمبل ایستاده" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سرشانه دمبل ایستاده</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="front-raise.jpg" data-end="front-raise-end.jpg" data-name="نشر جلو دمبل" aria-label="نمایش نشر جلو دمبل"><img data-img="front-raise.jpg" alt="نشر جلو دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">نشر جلو دمبل</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="one-arm-triceps.jpg" data-end="one-arm-triceps-end.jpg" data-name="پشت بازو دمبل تک‌دست" aria-label="نمایش پشت بازو دمبل تک‌دست"><img data-img="one-arm-triceps.jpg" alt="پشت بازو دمبل تک‌دست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو دمبل تک‌دست</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="triceps-overhead.jpg" data-end="triceps-overhead-end.jpg" data-name="پشت بازو هالتر پشت‌سر (EZ)" aria-label="نمایش پشت بازو هالتر پشت‌سر (EZ)"><img data-img="triceps-overhead.jpg" alt="پشت بازو هالتر پشت‌سر (EZ)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو هالتر پشت‌سر (EZ)</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="side-plank.jpg" data-end="side-plank-end.jpg" data-name="کرانچ کابل + پلانک جانبی (سوپرست)" aria-label="نمایش کرانچ کابل + پلانک جانبی (سوپرست)"><img data-img="side-plank.jpg" alt="کرانچ کابل + پلانک جانبی (سوپرست)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ کابل + پلانک جانبی (سوپرست)</span></div></td><td class="sets">3 × 15 + 30ث</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="vacuum.jpg" data-end="vacuum-end.jpg" data-name="Vacuum (کشش نفس شکم)" aria-label="نمایش Vacuum (کشش نفس شکم)"><img data-img="vacuum.jpg" alt="Vacuum (کشش نفس شکم)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Vacuum (کشش نفس شکم)</span></div></td><td class="sets">3 × 20-30 ثانیه</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- پنج‌شنبه Pull B + Leg B -->
+  <div class="card day-panel" data-day="panjshanbe">
+    <div class="card-header pull">
+      <div class="icon">⚡</div>
+      <div>
+        <h2>پنج‌شنبه — Pull B + Leg B</h2>
+        <div class="sub">کمر + همسترینگ + ساعد (~۷۵–۹۰ دقیقه)</div>
+      </div>
+    </div>
+    <div class="sub-section">بخش پشت</div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
+        <tbody>
+          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="rdl.jpg" data-end="rdl-end.jpg" data-name="ددلیفت رومانیایی" aria-label="نمایش ددلیفت رومانیایی"><img data-img="rdl.jpg" alt="ددلیفت رومانیایی" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ددلیفت رومانیایی</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
+          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="lat-pulldown.jpg" data-end="lat-pulldown-end.jpg" data-name="پول‌داون عرضی (دست باز)" aria-label="نمایش پول‌داون عرضی (دست باز)"><img data-img="lat-pulldown.jpg" alt="پول‌داون عرضی (دست باز)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پول‌داون عرضی (دست باز)</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="one-arm-pulldown.jpg" data-end="one-arm-pulldown-end.jpg" data-name="پول‌داون تک‌دست" aria-label="نمایش پول‌داون تک‌دست"><img data-img="one-arm-pulldown.jpg" alt="پول‌داون تک‌دست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پول‌داون تک‌دست</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="one-arm-row.jpg" data-end="one-arm-row-end.jpg" data-name="ردیف نشسته تک‌دست" aria-label="نمایش ردیف نشسته تک‌دست"><img data-img="one-arm-row.jpg" alt="ردیف نشسته تک‌دست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ردیف نشسته تک‌دست</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="rear-delt.jpg" data-end="rear-delt-end.jpg" data-name="نشر خم (Rear Delt)" aria-label="نمایش نشر خم (Rear Delt)"><img data-img="rear-delt.jpg" alt="نشر خم (Rear Delt)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">نشر خم (Rear Delt)</span></div></td><td class="sets">4 × 15-20</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="reverse-crunch.jpg" data-end="reverse-crunch-end.jpg" data-name="کرانچ معکوس" aria-label="نمایش کرانچ معکوس"><img data-img="reverse-crunch.jpg" alt="کرانچ معکوس" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ معکوس</span></div></td><td class="sets">3 × 15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="drag-curl.jpg" data-end="drag-curl-end.jpg" data-name="جلو بازو لاری" aria-label="نمایش جلو بازو لاری"><img data-img="drag-curl.jpg" alt="جلو بازو لاری" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">جلو بازو لاری</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="farmers-walk.jpg" data-end="farmers-walk-end.jpg" data-name="Farmer's Walk" aria-label="نمایش Farmer's Walk"><img data-img="farmers-walk.jpg" alt="Farmer's Walk" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Farmer's Walk</span></div></td><td class="sets">3 × 30-40 متر</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="behind-back-wrist.jpg" data-end="behind-back-wrist-end.jpg" data-name="ساعد هالتر پشت‌سر (EZ)" aria-label="نمایش ساعد هالتر پشت‌سر (EZ)"><img data-img="behind-back-wrist.jpg" alt="ساعد هالتر پشت‌سر (EZ)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ساعد هالتر پشت‌سر (EZ)</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub-section">بخش پا (همسترینگ)</div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
+        <tbody>
+          <tr><td>۱۰</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-press-high.jpg" data-end="leg-press-high-end.jpg" data-name="پرس پا (پا بسته / بالای پا)" aria-label="نمایش پرس پا (پا بسته / بالای پا)"><img data-img="leg-press-high.jpg" alt="پرس پا (پا بسته / بالای پا)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس پا (پا بسته / بالای پا)</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
+          <tr><td>۱۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-curl.jpg" data-end="leg-curl-end.jpg" data-name="کرل همسترینگ" aria-label="نمایش کرل همسترینگ"><img data-img="leg-curl.jpg" alt="کرل همسترینگ" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرل همسترینگ</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۱۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="hip-thrust.jpg" data-end="hip-thrust-end.jpg" data-name="هیپ تراست" aria-label="نمایش هیپ تراست"><img data-img="hip-thrust.jpg" alt="هیپ تراست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">هیپ تراست</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
+          <tr><td>۱۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="calf-seated.jpg" data-end="calf-seated-end.jpg" data-name="ساق نشسته" aria-label="نمایش ساق نشسته"><img data-img="calf-seated.jpg" alt="ساق نشسته" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ساق نشسته</span></div></td><td class="sets">3 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- جمعه -->
+  <div class="card day-panel" data-day="jome">
+    <div class="card-header rest">
+      <div class="icon">🚶</div>
+      <div>
+        <h2>جمعه — استراحت + کاردیو</h2>
+        <div class="sub">LISS · کشش · آب</div>
+      </div>
+    </div>
+    <div class="rest-content">
+      <strong>کاردیو LISS:</strong> ۲۵–۳۰ دقیقه پیاده‌روی تند یا دوچرخه<br>
+      <strong>کشش:</strong> ۱۰–۱۵ دقیقه<br>
+      <strong>آب:</strong> ۳+ لیتر در کل روز
+    </div>
+  </div>
+
+  </div>
+
+  <details class="info-collapse">
+    <summary class="info-collapse-summary">تغذیه و نکات</summary>
+    <div class="info-collapse-body">
+      <div class="info-grid">
+        <div class="info-box">
+          <h3>تغذیه روزانه</h3>
+          <ul>
+            <li>کالری: ۲۲۰۰–۲۴۰۰</li>
+            <li>پروتئین: ۱۶۰–۱۷۰ گرم</li>
+            <li>کربوهیدرات: ۲۲۰–۲۶۰ گرم</li>
+            <li>چربی: ۵۵–۶۵ گرم</li>
+            <li>آب: ۳–۳.۵ لیتر</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h3>نکات مهم</h3>
+          <ul>
+            <li>پنج‌شنبه شلوغ‌ترین روز است</li>
+            <li>اگر خسته شدی، حرکات ۱۰–۱۳ را ۲ ست بزن</li>
+            <li>میله ضخیم‌تر برای ساعد</li>
+            <li>کاردیو جمعه برای رگ‌ها و چربی</li>
+            <li>وزنه را وقتی به سقف تکرار رسیدی زیاد کن</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <footer class="app-footer">
+    <div id="appUpdateSection" class="app-update">
+      <div class="app-update-row">
+        <span class="app-update-label">نسخه برنامه</span>
+        <span id="appContentVersion" class="app-update-version">—</span>
+      </div>
+      <p id="appUpdateStatus" class="app-update-status"></p>
+      <button id="appUpdateBtn" type="button" class="app-update-btn">دریافت آخرین نسخه برنامه</button>
+    </div>
+    <p class="app-footer-credit">
+      طراحی و توسعه توسط
+      <a href="https://t.me/m3hdi_v1" target="_blank" rel="noopener noreferrer" dir="ltr">m3hdi_v1</a>
+    </p>
+  </footer>
+
+</div>
+
+<div id="updateSheetOverlay" class="update-sheet-overlay hidden" aria-hidden="true">
+  <div id="updateSheetBackdrop" class="update-sheet-backdrop" aria-hidden="true"></div>
+  <div id="updateSheet" class="update-sheet" role="dialog" aria-modal="true" aria-labelledby="updateSheetTitle">
+    <div class="update-sheet-handle" aria-hidden="true"></div>
+    <div class="update-sheet-content">
+      <div class="update-sheet-icon-wrap" aria-hidden="true">
+        <div class="update-sheet-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        </div>
+      </div>
+      <h2 id="updateSheetTitle" class="update-sheet-title">نسخه جدید موجود است</h2>
+      <p id="updateSheetMessage" class="update-sheet-message"></p>
+      <div class="update-sheet-actions">
+        <button type="button" id="updateSheetDismissBtn" class="update-sheet-btn update-sheet-btn-secondary">بعداً</button>
+        <button type="button" id="updateSheetConfirmBtn" class="update-sheet-btn update-sheet-btn-primary">دریافت نسخه جدید</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rest-timer" id="rest-timer" aria-live="polite">
+  <div class="rest-timer-inner">
+    <div class="rest-timer-info">
+      <span class="rest-timer-label" id="rest-timer-label">استراحت بین ست‌ها</span>
+      <span class="rest-timer-count" id="rest-timer-count">0:00</span>
+    </div>
+    <div class="rest-timer-actions">
+      <button type="button" class="rest-timer-btn" id="rest-timer-add">+۱۵ث</button>
+      <button type="button" class="rest-timer-btn primary" id="rest-timer-skip">رد کردن</button>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner" id="lightbox-inner">
+    <button type="button" class="lightbox-close" id="lightbox-close">بستن ✕</button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="قبلی">›</button>
+    <div class="lightbox-viewport" id="lightbox-viewport">
+      <div class="lightbox-track" id="lightbox-track">
+        <img id="lightbox-img-start" src="" alt="">
+        <img id="lightbox-img-end" src="" alt="">
+      </div>
+    </div>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="بعدی">‹</button>
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+    <div class="lightbox-dots" id="lightbox-dots">
+      <button type="button" class="lightbox-dot active" data-index="0" aria-label="شروع"></button>
+      <button type="button" class="lightbox-dot" data-index="1" aria-label="پایان"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*__APP_UPDATE_CONFIG__*/
+const APP_UPDATE_CONFIG = {
+  "repoOwner": "M3hdi-Rostami",
+  "repoName": "chrome-extension-tools",
+  "branch": "main",
+  "contentPath": "barname",
+  "currentVersion": "1.0.0"
+};
+/*__END_APP_UPDATE_CONFIG__*/
+
+(() => {
+  function getImageBaseCandidates() {
+    const pageUrl = location.href.split('#')[0].split('?')[0];
+    const candidates = [];
+    try { candidates.push(new URL('barname-images/', pageUrl).href); } catch (_) {}
+    try { candidates.push(new URL('./barname-images/', pageUrl).href); } catch (_) {}
+    candidates.push('file:///android_asset/barname-images/');
+    candidates.push('barname-images/');
+    return [...new Set(candidates)];
+  }
+
+  const imageBaseCandidates = getImageBaseCandidates();
+
+  function setImageSrc(img, file) {
+    if (!file || !img) return;
+    const name = String(file).split('/').pop();
+    let idx = 0;
+    const load = () => {
+      if (idx >= imageBaseCandidates.length) return;
+      img.src = imageBaseCandidates[idx] + name;
+    };
+    img.onerror = () => {
+      idx += 1;
+      load();
+    };
+    load();
+  }
+
+  function initExerciseImages() {
+    document.querySelectorAll('img.exercise-thumb[data-img]').forEach(img => {
+      setImageSrc(img, img.dataset.img);
+    });
+  }
+
+  initExerciseImages();
+
+  // Keep screen awake during workout
+  let wakeLock = null;
+
+  async function requestWakeLock() {
+    if (!('wakeLock' in navigator)) return;
+    try {
+      if (wakeLock && !wakeLock.released) return;
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } catch (_) {}
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') requestWakeLock();
+  });
+
+  ['click', 'touchstart'].forEach(evt => {
+    document.addEventListener(evt, requestWakeLock, { passive: true });
+  });
+
+  requestWakeLock();
+
+  // Day tabs
+  const tabs = document.querySelectorAll('.day-tab');
+  const panels = document.querySelectorAll('.day-panel');
+  const jsToIran = { 6: 'shanbe', 0: 'yekshanbe', 1: 'doshanbe', 2: 'seshanbe', 3: 'chaharshanbe', 4: 'panjshanbe', 5: 'jome' };
+  const today = jsToIran[new Date().getDay()] || 'shanbe';
+
+  function selectDay(dayId) {
+    tabs.forEach(t => {
+      const active = t.dataset.day === dayId;
+      t.classList.toggle('active', active);
+      t.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    panels.forEach(p => p.classList.toggle('active', p.dataset.day === dayId));
+    const activeTab = document.querySelector(`.day-tab[data-day="${dayId}"]`);
+    if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    try { history.replaceState(null, '', `#${dayId}`); } catch (_) {}
+  }
+
+  tabs.forEach(tab => tab.addEventListener('click', () => selectDay(tab.dataset.day)));
+
+  const hashDay = location.hash.replace('#', '');
+  selectDay(tabs.length && [...tabs].some(t => t.dataset.day === hashDay) ? hashDay : today);
+
+  // Lightbox slider
+  const lightbox = document.getElementById('lightbox');
+  const track = document.getElementById('lightbox-track');
+  const viewport = document.getElementById('lightbox-viewport');
+  const imgStart = document.getElementById('lightbox-img-start');
+  const imgEnd = document.getElementById('lightbox-img-end');
+  const caption = document.getElementById('lightbox-caption');
+  const dots = document.querySelectorAll('.lightbox-dot');
+  const phases = ['شروع دامنه', 'پایان دامنه'];
+  let current = 0;
+  let exerciseName = '';
+  let touchStartX = 0;
+
+  function goTo(index) {
+    current = Math.max(0, Math.min(1, index));
+    track.style.transform = `translateX(${current * -100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    caption.innerHTML = `${exerciseName}<br><span class="lightbox-phase">${phases[current]}</span>`;
+  }
+
+  function openLightbox(btn) {
+    exerciseName = btn.dataset.name;
+    setImageSrc(imgStart, btn.dataset.start);
+    setImageSrc(imgEnd, btn.dataset.end);
+    imgStart.alt = exerciseName + ' — شروع';
+    imgEnd.alt = exerciseName + ' — پایان';
+    goTo(0);
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.exercise-thumb-wrap').forEach(btn => {
+    btn.addEventListener('click', () => openLightbox(btn));
+  });
+
+  document.getElementById('lightbox-prev').addEventListener('click', e => { e.stopPropagation(); goTo(current - 1); });
+  document.getElementById('lightbox-next').addEventListener('click', e => { e.stopPropagation(); goTo(current + 1); });
+  document.getElementById('lightbox-close').addEventListener('click', e => { e.stopPropagation(); closeLightbox(); });
+  dots.forEach(d => d.addEventListener('click', e => { e.stopPropagation(); goTo(+d.dataset.index); }));
+
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.getElementById('lightbox-inner').addEventListener('click', e => e.stopPropagation());
+
+  viewport.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  viewport.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(diff) < 40) return;
+    goTo(current + (diff > 0 ? -1 : 1));
+  }, { passive: true });
+
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') goTo(current + 1);
+    if (e.key === 'ArrowRight') goTo(current - 1);
+  });
+
+  // Set checklist + rest timer
+  const STORAGE_KEY = 'barname-workout-sets';
+  const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+
+  function toEnglishDigits(value) {
+    return String(value).replace(/[۰-۹]/g, d => persianDigits.indexOf(d));
+  }
+
+  function parseSetCount(text) {
+    const match = toEnglishDigits(text).match(/(\d+)/);
+    return match ? Math.max(1, parseInt(match[1], 10)) : 1;
+  }
+
+  function parseRestSeconds(text) {
+    const normalized = toEnglishDigits(text).trim();
+    const match = normalized.match(/(\d+)\s*:\s*(\d+)/);
+    if (match) return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+    const mins = normalized.match(/(\d+)\s*ث/);
+    if (mins) return parseInt(mins[1], 10);
+    return 90;
+  }
+
+  function formatTime(totalSeconds) {
+    const s = Math.max(0, totalSeconds);
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${String(r).padStart(2, '0')}`;
+  }
+
+  function toPersianNum(n) {
+    return String(n).replace(/\d/g, d => persianDigits[+d]);
+  }
+
+  function loadSavedSets() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+
+  function saveSetState(exerciseId, setIndex, done) {
+    const data = loadSavedSets();
+    if (!data[exerciseId]) data[exerciseId] = [];
+    data[exerciseId][setIndex] = done;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  const timerBar = document.getElementById('rest-timer');
+  const timerCount = document.getElementById('rest-timer-count');
+  const timerLabel = document.getElementById('rest-timer-label');
+  let timerInterval = null;
+  let timerRemaining = 0;
+  let audioCtx = null;
+
+  function playAlertSound() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      [0, 0.35, 0.7].forEach(offset => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = offset === 0.7 ? 988 : 880;
+        gain.gain.setValueAtTime(0.0001, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.35, now + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.28);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.3);
+      });
+    } catch (_) {}
+    if (navigator.vibrate) navigator.vibrate([180, 80, 180]);
+  }
+
+  function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    timerBar.classList.remove('visible', 'urgent');
+  }
+
+  function tickTimer() {
+    timerRemaining -= 1;
+    timerCount.textContent = formatTime(timerRemaining);
+    timerBar.classList.toggle('urgent', timerRemaining <= 5 && timerRemaining > 0);
+    if (timerRemaining <= 0) {
+      stopTimer();
+      playAlertSound();
+      timerLabel.textContent = 'استراحت تمام شد — ست بعدی!';
+      timerCount.textContent = '۰:۰۰';
+      timerBar.classList.add('visible');
+      setTimeout(() => timerBar.classList.remove('visible'), 2500);
+    }
+  }
+
+  function startRestTimer(seconds, exerciseName) {
+    stopTimer();
+    timerRemaining = seconds;
+    timerCount.textContent = formatTime(timerRemaining);
+    timerLabel.textContent = `استراحت — ${exerciseName}`;
+    timerBar.classList.add('visible');
+    timerBar.classList.remove('urgent');
+    timerInterval = setInterval(tickTimer, 1000);
+  }
+
+  document.getElementById('rest-timer-skip').addEventListener('click', stopTimer);
+  document.getElementById('rest-timer-add').addEventListener('click', () => {
+    timerRemaining += 15;
+    timerCount.textContent = formatTime(timerRemaining);
+  });
+
+  function updateRowState(row, buttons) {
+    const allDone = buttons.every(btn => btn.classList.contains('done'));
+    row.classList.toggle('exercise-done', allDone);
+    buttons.forEach((btn, i) => {
+      btn.classList.toggle('next-up', !allDone && !btn.classList.contains('done') &&
+        buttons.slice(0, i).every(b => b.classList.contains('done')));
+    });
+  }
+
+  function dayHasProgress(panel) {
+    return panel.querySelector('.set-check.done') !== null;
+  }
+
+  function updateResetButtonVisibility(panel) {
+    const btn = panel.querySelector('.day-reset-btn');
+    if (!btn) return;
+    btn.hidden = !dayHasProgress(panel);
+  }
+
+  function resetDay(panel, dayId) {
+    const dayName = panel.querySelector('.card-header h2')?.textContent?.trim() || dayId;
+    if (!confirm(`پیشرفت «${dayName}» پاک شود؟\nهمه ست‌های این روز برای دور بعدی آماده می‌شوند.`)) return;
+
+    const data = loadSavedSets();
+    Object.keys(data).forEach(key => {
+      if (key.startsWith(`${dayId}-`)) delete data[key];
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+    panel.querySelectorAll('tr.exercise-row').forEach(row => {
+      const buttons = [...row.querySelectorAll('.set-check')];
+      buttons.forEach(btn => {
+        btn.classList.remove('done');
+        btn.setAttribute('aria-pressed', 'false');
+      });
+      updateRowState(row, buttons);
+    });
+
+    stopTimer();
+    updateResetButtonVisibility(panel);
+  }
+
+  function initDayResetButtons() {
+    document.querySelectorAll('.day-panel').forEach(panel => {
+      const dayId = panel.dataset.day;
+      if (!panel.querySelector('tbody tr .sets')) return;
+
+      const header = panel.querySelector('.card-header');
+      if (!header || header.querySelector('.day-reset-btn')) return;
+
+      const textWrap = header.querySelector('div:not(.icon)');
+      if (textWrap) textWrap.classList.add('card-header-text');
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day-reset-btn';
+      btn.textContent = 'ریست';
+      btn.setAttribute('aria-label', `ریست روز ${dayId}`);
+      btn.addEventListener('click', () => resetDay(panel, dayId));
+      header.appendChild(btn);
+      updateResetButtonVisibility(panel);
+    });
+  }
+
+  function initSetChecklists() {
+    const saved = loadSavedSets();
+
+    document.querySelectorAll('.day-panel').forEach(panel => {
+      const dayId = panel.dataset.day;
+      if (panel.querySelector('.rest-content') && !panel.querySelector('tbody tr .sets')) return;
+
+      let exerciseIndex = 0;
+      panel.querySelectorAll('tbody tr').forEach(row => {
+        const setsCell = row.querySelector('.sets');
+        const restCell = row.querySelector('.rest-time');
+        if (!setsCell || !restCell) return;
+
+        const setCount = parseSetCount(setsCell.textContent);
+        const restSeconds = parseRestSeconds(restCell.textContent);
+        const exerciseName = row.querySelector('.exercise-name')?.textContent?.trim() || `حرکت ${exerciseIndex + 1}`;
+        const exerciseId = `${dayId}-${exerciseIndex++}`;
+
+        const col = document.createElement('td');
+        col.className = 'set-check-col';
+        col.colSpan = 1;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'set-checklist';
+
+        const label = document.createElement('span');
+        label.className = 'set-checklist-label';
+        label.textContent = 'ست‌ها:';
+        wrap.appendChild(label);
+
+        const buttons = [];
+
+        for (let i = 0; i < setCount; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'set-check';
+          btn.textContent = toPersianNum(i + 1);
+          btn.setAttribute('aria-label', `ست ${i + 1} از ${exerciseName}`);
+          btn.dataset.setIndex = String(i);
+
+          if (saved[exerciseId]?.[i]) {
+            btn.classList.add('done');
+            btn.setAttribute('aria-pressed', 'true');
+          }
+
+          btn.addEventListener('click', () => {
+            if (!audioCtx) {
+              try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+            }
+
+            const isDone = btn.classList.toggle('done');
+            btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
+            saveSetState(exerciseId, i, isDone);
+            updateRowState(row, buttons);
+            updateResetButtonVisibility(panel);
+
+            if (isDone) {
+              const remaining = buttons.filter(b => !b.classList.contains('done')).length;
+              if (remaining > 0) startRestTimer(restSeconds, exerciseName);
+              else stopTimer();
+            }
+          });
+
+          buttons.push(btn);
+          wrap.appendChild(btn);
+        }
+
+        col.appendChild(wrap);
+        row.appendChild(col);
+        row.classList.add('exercise-row');
+        updateRowState(row, buttons);
+      });
+    });
+  }
+
+  initSetChecklists();
+  initDayResetButtons();
+})();
+
+(function () {
+  const UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+  let snoozedLatestVersion = null;
+  let snoozeUntil = 0;
+  let audioCtx = null;
+  const UPDATE_SUCCESS_SOUND_KEY = 'barname-play-update-success';
+
+  function getAudioContext() {
+    try {
+      if (!audioCtx) {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
+        audioCtx = new Ctx();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(function () {});
+      return audioCtx;
+    } catch {
+      return null;
+    }
+  }
+
+  function playNotificationTone(sequence) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const master = ctx.createGain();
+    master.gain.value = 0.18;
+    master.connect(ctx.destination);
+    let t = ctx.currentTime + 0.02;
+    sequence.forEach(function (note) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = note.type || 'sine';
+      osc.frequency.value = note.freq;
+      osc.connect(gain);
+      gain.connect(master);
+      const dur = note.dur || 0.14;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.85, t + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      osc.start(t);
+      osc.stop(t + dur + 0.03);
+      t += note.gap != null ? note.gap : dur * 0.62;
+    });
+  }
+
+  function playUpdateAvailableSound() {
+    playNotificationTone([
+      { freq: 880, dur: 0.1, gap: 0.08, type: 'sine' },
+      { freq: 1174.66, dur: 0.14, gap: 0.06, type: 'sine' },
+      { freq: 1567.98, dur: 0.18, type: 'triangle' },
+    ]);
+  }
+
+  function playUpdateCompleteSound() {
+    playNotificationTone([
+      { freq: 523.25, dur: 0.08, gap: 0.06, type: 'sine' },
+      { freq: 659.25, dur: 0.08, gap: 0.06, type: 'sine' },
+      { freq: 783.99, dur: 0.1, gap: 0.06, type: 'triangle' },
+      { freq: 1046.5, dur: 0.2, type: 'sine' },
+    ]);
+  }
+
+  function markUpdateSuccessSound() {
+    try { sessionStorage.setItem(UPDATE_SUCCESS_SOUND_KEY, '1'); } catch {}
+  }
+
+  function playUpdateSuccessSoundIfPending() {
+    try {
+      if (sessionStorage.getItem(UPDATE_SUCCESS_SOUND_KEY) !== '1') return;
+      sessionStorage.removeItem(UPDATE_SUCCESS_SOUND_KEY);
+    } catch {
+      return;
+    }
+    window.setTimeout(playUpdateCompleteSound, 350);
+  }
+
+  function updateArgs() {
+    return [
+      APP_UPDATE_CONFIG.repoOwner,
+      APP_UPDATE_CONFIG.repoName,
+      APP_UPDATE_CONFIG.branch,
+      APP_UPDATE_CONFIG.contentPath || '',
+    ];
+  }
+
+  function initAppUpdater() {
+    if (typeof AndroidApp === 'undefined') {
+      const section = document.getElementById('appUpdateSection');
+      if (section) section.style.display = 'none';
+      return;
+    }
+    const versionEl = document.getElementById('appContentVersion');
+    const statusEl = document.getElementById('appUpdateStatus');
+    const btn = document.getElementById('appUpdateBtn');
+    if (!versionEl || !statusEl || !btn || typeof APP_UPDATE_CONFIG === 'undefined') return;
+    versionEl.textContent = AndroidApp.getContentVersion();
+    window.__onAppUpdateComplete = function (result) {
+      btn.disabled = false;
+      statusEl.className = 'app-update-status' + (result.success ? ' success' : ' error');
+      statusEl.textContent = result.message || '';
+      if (result.latestVersion) versionEl.textContent = result.latestVersion;
+      if (result.success && result.reloaded) {
+        markUpdateSuccessSound();
+        playUpdateCompleteSound();
+      }
+    };
+    btn.addEventListener('click', function () {
+      btn.disabled = true;
+      statusEl.className = 'app-update-status';
+      statusEl.textContent = 'در حال دریافت آخرین نسخه برنامه از گیت‌هاب...';
+      AndroidApp.startAppUpdate.apply(AndroidApp, updateArgs());
+    });
+  }
+
+  function initUpdatePrompt() {
+    if (typeof AndroidApp === 'undefined' || typeof APP_UPDATE_CONFIG === 'undefined') return;
+
+    const overlay = document.getElementById('updateSheetOverlay');
+    const backdrop = document.getElementById('updateSheetBackdrop');
+    const messageEl = document.getElementById('updateSheetMessage');
+    const dismissBtn = document.getElementById('updateSheetDismissBtn');
+    const confirmBtn = document.getElementById('updateSheetConfirmBtn');
+    const updateBtn = document.getElementById('appUpdateBtn');
+    if (!overlay || !messageEl || !dismissBtn || !confirmBtn) return;
+
+    let pendingLatestVersion = '';
+
+    function notifySheetOpen(open) {
+      try { AndroidApp.setUpdateSheetOpen(open); } catch {}
+    }
+
+    function hideUpdateSheet() {
+      overlay.classList.remove('open');
+      notifySheetOpen(false);
+      overlay.setAttribute('aria-hidden', 'true');
+      window.setTimeout(function () {
+        if (!overlay.classList.contains('open')) overlay.classList.add('hidden');
+      }, 350);
+    }
+
+    function showUpdateSheet(latestVersion, currentVersion) {
+      if (snoozedLatestVersion === latestVersion && Date.now() < snoozeUntil) return;
+      if (overlay.classList.contains('open')) return;
+
+      pendingLatestVersion = latestVersion;
+      overlay.dataset.latestVersion = latestVersion;
+      messageEl.textContent = 'نسخه ' + latestVersion + ' منتشر شده است. نسخه فعلی شما ' + currentVersion + ' است.';
+      overlay.classList.remove('hidden');
+      requestAnimationFrame(function () {
+        overlay.classList.add('open');
+        notifySheetOpen(true);
+        overlay.setAttribute('aria-hidden', 'false');
+        playUpdateAvailableSound();
+      });
+    }
+
+    window.__onAppUpdateCheckComplete = function (result) {
+      if (!result || !result.success || !result.hasUpdate) return;
+      showUpdateSheet(result.latestVersion, result.currentVersion);
+    };
+
+    dismissBtn.addEventListener('click', function () {
+      if (pendingLatestVersion) {
+        snoozedLatestVersion = pendingLatestVersion;
+        snoozeUntil = Date.now() + UPDATE_CHECK_INTERVAL_MS;
+      }
+      hideUpdateSheet();
+    });
+
+    if (backdrop) {
+      backdrop.addEventListener('click', function () { dismissBtn.click(); });
+    }
+
+    confirmBtn.addEventListener('click', function () {
+      hideUpdateSheet();
+      if (updateBtn && !updateBtn.disabled) updateBtn.click();
+      else {
+        try { AndroidApp.startAppUpdate.apply(AndroidApp, updateArgs()); } catch {}
+      }
+    });
+
+    function runUpdateCheck() {
+      try { AndroidApp.checkForAppUpdate.apply(AndroidApp, updateArgs()); } catch {}
+    }
+
+    window.setTimeout(runUpdateCheck, 12000);
+    window.setInterval(runUpdateCheck, UPDATE_CHECK_INTERVAL_MS);
+  }
+
+  playUpdateSuccessSoundIfPending();
+  initAppUpdater();
+  initUpdatePrompt();
+})();
+</script>
+
+</body>
+</html>
