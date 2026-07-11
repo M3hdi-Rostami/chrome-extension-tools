@@ -1393,11 +1393,11 @@
   <footer class="app-footer">
     <div id="appUpdateSection" class="app-update">
       <div class="app-update-row">
-        <span class="app-update-label">نسخه برنامه</span>
+        <span class="app-update-label">نسخه اپلیکیشن</span>
         <span id="appContentVersion" class="app-update-version">—</span>
       </div>
       <p id="appUpdateStatus" class="app-update-status"></p>
-      <button id="appUpdateBtn" type="button" class="app-update-btn">دریافت آخرین نسخه برنامه</button>
+      <button id="appUpdateBtn" type="button" class="app-update-btn">دریافت آخرین نسخه اپلیکیشن</button>
     </div>
     <p class="app-footer-credit">
       طراحی و توسعه توسط
@@ -1466,7 +1466,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.2"
+  "currentVersion": "1.0.3"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -1886,32 +1886,68 @@ const APP_UPDATE_CONFIG = {
     }
   }
 
-  function playNotificationTone(sequence) {
+  function unlockAudio() {
     const ctx = getAudioContext();
     if (!ctx) return;
-    const master = ctx.createGain();
-    master.gain.value = 0.18;
-    master.connect(ctx.destination);
-    let t = ctx.currentTime + 0.02;
-    sequence.forEach(function (note) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = note.type || 'sine';
-      osc.frequency.value = note.freq;
-      osc.connect(gain);
-      gain.connect(master);
-      const dur = note.dur || 0.14;
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.85, t + 0.006);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      osc.start(t);
-      osc.stop(t + dur + 0.03);
-      t += note.gap != null ? note.gap : dur * 0.62;
-    });
+    ctx.resume().catch(function () {});
+    try {
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.start(0);
+    } catch {}
+  }
+
+  ['touchstart', 'pointerdown', 'click', 'keydown'].forEach(function (evt) {
+    document.addEventListener(evt, unlockAudio, { passive: true });
+  });
+
+  function playWebNotificationTone(sequence) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    const start = function () {
+      const master = ctx.createGain();
+      master.gain.value = 0.18;
+      master.connect(ctx.destination);
+      let t = ctx.currentTime + 0.02;
+      sequence.forEach(function (note) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = note.type || 'sine';
+        osc.frequency.value = note.freq;
+        osc.connect(gain);
+        gain.connect(master);
+        const dur = note.dur || 0.14;
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.85, t + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.start(t);
+        osc.stop(t + dur + 0.03);
+        t += note.gap != null ? note.gap : dur * 0.62;
+      });
+    };
+
+    if (ctx.state === 'suspended') {
+      ctx.resume().then(start).catch(function () {});
+      return;
+    }
+    start();
+  }
+
+  function playNativeOrWeb(kind, webSequence) {
+    try {
+      if (typeof AndroidApp !== 'undefined' && typeof AndroidApp.playUpdateSound === 'function') {
+        AndroidApp.playUpdateSound(kind);
+        return;
+      }
+    } catch {}
+    playWebNotificationTone(webSequence);
   }
 
   function playUpdateAvailableSound() {
-    playNotificationTone([
+    playNativeOrWeb('available', [
       { freq: 880, dur: 0.1, gap: 0.08, type: 'sine' },
       { freq: 1174.66, dur: 0.14, gap: 0.06, type: 'sine' },
       { freq: 1567.98, dur: 0.18, type: 'triangle' },
@@ -1919,7 +1955,7 @@ const APP_UPDATE_CONFIG = {
   }
 
   function playUpdateCompleteSound() {
-    playNotificationTone([
+    playNativeOrWeb('complete', [
       { freq: 523.25, dur: 0.08, gap: 0.06, type: 'sine' },
       { freq: 659.25, dur: 0.08, gap: 0.06, type: 'sine' },
       { freq: 783.99, dur: 0.1, gap: 0.06, type: 'triangle' },
@@ -1972,9 +2008,10 @@ const APP_UPDATE_CONFIG = {
       }
     };
     btn.addEventListener('click', function () {
+      unlockAudio();
       btn.disabled = true;
       statusEl.className = 'app-update-status';
-      statusEl.textContent = 'در حال دریافت آخرین نسخه برنامه از گیت‌هاب...';
+      statusEl.textContent = 'در حال دریافت آخرین نسخه اپلیکیشن از گیت‌هاب...';
       AndroidApp.startAppUpdate.apply(AndroidApp, updateArgs());
     });
   }
@@ -2039,6 +2076,7 @@ const APP_UPDATE_CONFIG = {
     }
 
     confirmBtn.addEventListener('click', function () {
+      unlockAudio();
       hideUpdateSheet();
       if (updateBtn && !updateBtn.disabled) updateBtn.click();
       else {
