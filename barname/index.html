@@ -765,22 +765,26 @@
       text-decoration-color: rgba(143,163,188,.5);
     }
 
-    /* Rest timer bar */
+    /* Rest timer bar — hidden until .visible; sits above bottom nav */
     .rest-timer {
       position: fixed;
-      bottom: calc(82px + env(safe-area-inset-bottom, 0px));
-      left: 0;
-      right: 0;
-      z-index: 5000;
-      padding: 14px 16px;
-      background: linear-gradient(to top, rgba(10,14,20,.98) 80%, transparent);
-      border-top: none;
-      transform: translateY(110%);
-      transition: transform .3s ease;
+      left: 12px;
+      right: 12px;
+      bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+      z-index: 3500;
+      padding: 0;
+      background: transparent;
+      border: none;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(calc(100% + 140px));
+      transition: transform .3s ease, opacity .25s ease, visibility .25s;
       pointer-events: none;
     }
 
     .rest-timer.visible {
+      opacity: 1;
+      visibility: visible;
       transform: translateY(0);
       pointer-events: auto;
     }
@@ -1677,7 +1681,7 @@
   </div>
 </div>
 
-<div class="rest-timer" id="rest-timer" aria-live="polite">
+<div class="rest-timer" id="rest-timer" aria-live="polite" aria-hidden="true" hidden>
   <div class="rest-timer-inner">
     <div class="rest-timer-info">
       <span class="rest-timer-label" id="rest-timer-label">استراحت بین ست‌ها</span>
@@ -1716,7 +1720,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.4"
+  "currentVersion": "1.0.5"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -2009,6 +2013,8 @@ const APP_UPDATE_CONFIG = {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = null;
     timerBar.classList.remove('visible', 'urgent');
+    timerBar.setAttribute('aria-hidden', 'true');
+    timerBar.hidden = true;
   }
 
   function tickTimer() {
@@ -2020,8 +2026,14 @@ const APP_UPDATE_CONFIG = {
       playAlertSound();
       timerLabel.textContent = 'استراحت تمام شد — ست بعدی!';
       timerCount.textContent = '۰:۰۰';
+      timerBar.hidden = false;
+      timerBar.setAttribute('aria-hidden', 'false');
       timerBar.classList.add('visible');
-      setTimeout(() => timerBar.classList.remove('visible'), 2500);
+      setTimeout(() => {
+        timerBar.classList.remove('visible');
+        timerBar.setAttribute('aria-hidden', 'true');
+        timerBar.hidden = true;
+      }, 2500);
     }
   }
 
@@ -2030,6 +2042,8 @@ const APP_UPDATE_CONFIG = {
     timerRemaining = seconds;
     timerCount.textContent = formatTime(timerRemaining);
     timerLabel.textContent = `استراحت — ${exerciseName}`;
+    timerBar.hidden = false;
+    timerBar.setAttribute('aria-hidden', 'false');
     timerBar.classList.add('visible');
     timerBar.classList.remove('urgent');
     timerInterval = setInterval(tickTimer, 1000);
