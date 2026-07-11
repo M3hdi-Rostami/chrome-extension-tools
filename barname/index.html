@@ -50,7 +50,203 @@
       z-index: 1;
       max-width: 960px;
       margin: 0 auto;
-      padding: 24px 20px 60px;
+      padding: 24px 20px calc(110px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .app-view { display: none; animation: fadeIn .22s ease; }
+    .app-view.active { display: block; }
+
+    .view-page {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .view-page h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .view-page .view-lead {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-bottom: 18px;
+    }
+
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .progress-stat {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .progress-stat .val {
+      display: block;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-stat .lbl {
+      display: block;
+      margin-top: 4px;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .progress-day-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .progress-day-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+
+    .progress-day-row .name { font-weight: 600; font-size: .92rem; }
+    .progress-day-row .meta { font-size: .8rem; color: var(--muted); }
+    .progress-day-row .pct {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--surface2);
+      margin-top: 14px;
+      overflow: hidden;
+    }
+
+    .progress-bar > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .35s ease;
+    }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      width: min(420px, calc(100% - 20px));
+      z-index: 4000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2px;
+      padding: 10px 10px 8px;
+      background: rgba(26, 35, 50, .94);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: 0 10px 36px rgba(0, 0, 0, .45);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .bottom-nav-item {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 4px 4px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      cursor: pointer;
+      transition: color .15s, transform .15s;
+    }
+
+    .bottom-nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .bottom-nav-item span {
+      font-size: .68rem;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .bottom-nav-item.active {
+      color: var(--text);
+    }
+
+    .bottom-nav-item:active { transform: scale(.96); }
+
+    .bottom-nav-fab-wrap {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      min-width: 0;
+      padding-bottom: 2px;
+    }
+
+    .bottom-nav-fab {
+      width: 56px;
+      height: 56px;
+      margin-top: -28px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(145deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow:
+        0 8px 24px rgba(59, 130, 246, .42),
+        0 0 0 5px rgba(15, 20, 25, .55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .bottom-nav-fab:hover {
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    .bottom-nav-fab:active { transform: scale(.96); }
+
+    .bottom-nav-fab svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     /* Header */
@@ -572,13 +768,13 @@
     /* Rest timer bar */
     .rest-timer {
       position: fixed;
-      bottom: 0;
+      bottom: calc(82px + env(safe-area-inset-bottom, 0px));
       left: 0;
       right: 0;
       z-index: 5000;
-      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+      padding: 14px 16px;
       background: linear-gradient(to top, rgba(10,14,20,.98) 80%, transparent);
-      border-top: 1px solid var(--border);
+      border-top: none;
       transform: translateY(110%);
       transition: transform .3s ease;
       pointer-events: none;
@@ -778,6 +974,8 @@
       body { background: #fff; color: #111; }
       body::before { display: none; }
       .day-tabs-wrap { display: none; }
+      .bottom-nav { display: none !important; }
+      .app-view { display: block !important; }
       .day-panel { display: block !important; break-after: page; }
       .info-collapse:not([open]) .info-collapse-body { display: block !important; }
       .card, header, .info-box, .stat {
@@ -788,7 +986,7 @@
 
     @media (max-width: 768px) {
       body { font-size: 17px; }
-      .wrap { padding: 12px 14px; }
+      .wrap { padding: 12px 14px calc(110px + env(safe-area-inset-bottom, 0px)); }
 
       .stats {
         grid-template-columns: repeat(2, 1fr);
@@ -1169,6 +1367,7 @@
 </head>
 <body>
 <div class="wrap">
+  <section id="view-workout" class="app-view active" data-view="workout">
   <div class="day-tabs-wrap">
     <div class="day-tabs" role="tablist" aria-label="روزهای هفته">
       <button type="button" role="tab" class="day-tab pull" data-day="shanbe" aria-selected="false"><span class="day-name">شنبه</span><span class="day-type">Pull A</span></button>
@@ -1361,10 +1560,12 @@
   </div>
 
   </div>
+  </section>
 
-  <details class="info-collapse">
-    <summary class="info-collapse-summary">تغذیه و نکات</summary>
-    <div class="info-collapse-body">
+  <section id="view-nutrition" class="app-view" data-view="nutrition">
+    <div class="view-page">
+      <h2>تغذیه و نکات</h2>
+      <p class="view-lead">هدف‌های روزانه و نکات مهم برنامه</p>
       <div class="info-grid">
         <div class="info-box">
           <h3>تغذیه روزانه</h3>
@@ -1388,24 +1589,73 @@
         </div>
       </div>
     </div>
-  </details>
+  </section>
 
-  <footer class="app-footer">
-    <div id="appUpdateSection" class="app-update">
-      <div class="app-update-row">
-        <span class="app-update-label">نسخه اپلیکیشن</span>
-        <span id="appContentVersion" class="app-update-version">—</span>
+  <section id="view-progress" class="app-view" data-view="progress">
+    <div class="view-page">
+      <h2>پیشرفت هفته</h2>
+      <p class="view-lead">ست‌های ثبت‌شده در برنامه تمرینی</p>
+      <div class="progress-stats">
+        <div class="progress-stat">
+          <span class="val" id="progressDoneCount">۰</span>
+          <span class="lbl">ست انجام‌شده</span>
+        </div>
+        <div class="progress-stat">
+          <span class="val" id="progressTotalCount">۰</span>
+          <span class="lbl">کل ست‌ها</span>
+        </div>
       </div>
-      <p id="appUpdateStatus" class="app-update-status"></p>
-      <button id="appUpdateBtn" type="button" class="app-update-btn">دریافت آخرین نسخه اپلیکیشن</button>
+      <div class="progress-bar" aria-hidden="true"><span id="progressBarFill"></span></div>
+      <div class="progress-day-list" id="progressDayList" style="margin-top:16px"></div>
     </div>
-    <p class="app-footer-credit">
-      طراحی و توسعه توسط
-      <a href="https://t.me/m3hdi_v1" target="_blank" rel="noopener noreferrer" dir="ltr">m3hdi_v1</a>
-    </p>
-  </footer>
+  </section>
+
+  <section id="view-more" class="app-view" data-view="more">
+    <div class="view-page">
+      <h2>بیشتر</h2>
+      <p class="view-lead">بروزرسانی اپلیکیشن و اطلاعات</p>
+      <footer class="app-footer" style="margin-top:0;padding-top:0;border-top:none">
+        <div id="appUpdateSection" class="app-update">
+          <div class="app-update-row">
+            <span class="app-update-label">نسخه اپلیکیشن</span>
+            <span id="appContentVersion" class="app-update-version">—</span>
+          </div>
+          <p id="appUpdateStatus" class="app-update-status"></p>
+          <button id="appUpdateBtn" type="button" class="app-update-btn">دریافت آخرین نسخه اپلیکیشن</button>
+        </div>
+        <p class="app-footer-credit">
+          طراحی و توسعه توسط
+          <a href="https://t.me/m3hdi_v1" target="_blank" rel="noopener noreferrer" dir="ltr">m3hdi_v1</a>
+        </p>
+      </footer>
+    </div>
+  </section>
 
 </div>
+
+<nav class="bottom-nav" aria-label="منوی اصلی">
+  <button type="button" class="bottom-nav-item active" data-view="workout" aria-current="page">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg>
+    <span>تمرین</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-view="nutrition">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16"/><path d="M6 11V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/><path d="M9 15h6"/></svg>
+    <span>تغذیه</span>
+  </button>
+  <div class="bottom-nav-fab-wrap">
+    <button type="button" class="bottom-nav-fab" id="bottomNavToday" aria-label="رفتن به تمرین امروز">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12"/><path d="M6 16h12"/><path d="M9 4v4"/><path d="M15 4v4"/><path d="M9 16v4"/><path d="M15 16v4"/><circle cx="12" cy="12" r="2.2"/></svg>
+    </button>
+  </div>
+  <button type="button" class="bottom-nav-item" data-view="progress">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+    <span>پیشرفت</span>
+  </button>
+  <button type="button" class="bottom-nav-item" data-view="more">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 19.2a6.5 6.5 0 0 1 13 0"/></svg>
+    <span>بیشتر</span>
+  </button>
+</nav>
 
 <div id="updateSheetOverlay" class="update-sheet-overlay hidden" aria-hidden="true">
   <div id="updateSheetBackdrop" class="update-sheet-backdrop" aria-hidden="true"></div>
@@ -1466,7 +1716,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.3"
+  "currentVersion": "1.0.4"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -1550,6 +1800,75 @@ const APP_UPDATE_CONFIG = {
 
   const hashDay = location.hash.replace('#', '');
   selectDay(tabs.length && [...tabs].some(t => t.dataset.day === hashDay) ? hashDay : today);
+
+  // Bottom navigation
+  const appViews = document.querySelectorAll('.app-view');
+  const bottomNavItems = document.querySelectorAll('.bottom-nav-item[data-view]');
+  const persianDigitsMap = '۰۱۲۳۴۵۶۷۸۹';
+
+  function toPersianDigits(value) {
+    return String(value).replace(/\d/g, d => persianDigitsMap[+d]);
+  }
+
+  function selectAppView(viewId) {
+    appViews.forEach(view => view.classList.toggle('active', view.dataset.view === viewId));
+    bottomNavItems.forEach(item => {
+      const active = item.dataset.view === viewId;
+      item.classList.toggle('active', active);
+      if (active) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+    if (viewId === 'progress') refreshProgressView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function refreshProgressView() {
+    const dayList = document.getElementById('progressDayList');
+    const doneEl = document.getElementById('progressDoneCount');
+    const totalEl = document.getElementById('progressTotalCount');
+    const barFill = document.getElementById('progressBarFill');
+    if (!dayList || !doneEl || !totalEl || !barFill) return;
+
+    let totalDone = 0;
+    let totalSets = 0;
+    const rows = [];
+
+    document.querySelectorAll('.day-panel').forEach(panel => {
+      const dayId = panel.dataset.day;
+      const title = panel.querySelector('.card-header h2')?.textContent?.trim() || dayId;
+      const checks = [...panel.querySelectorAll('.set-check')];
+      if (!checks.length) return;
+      const done = checks.filter(btn => btn.classList.contains('done')).length;
+      const total = checks.length;
+      totalDone += done;
+      totalSets += total;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      rows.push({ title, done, total, pct });
+    });
+
+    doneEl.textContent = toPersianDigits(totalDone);
+    totalEl.textContent = toPersianDigits(totalSets);
+    barFill.style.width = `${totalSets ? Math.round((totalDone / totalSets) * 100) : 0}%`;
+
+    dayList.innerHTML = rows.map(row => `
+      <div class="progress-day-row">
+        <div>
+          <div class="name">${row.title}</div>
+          <div class="meta">${toPersianDigits(row.done)} از ${toPersianDigits(row.total)} ست</div>
+        </div>
+        <div class="pct">${toPersianDigits(row.pct)}٪</div>
+      </div>
+    `).join('') || '<p class="view-lead" style="margin:0">هنوز ستی ثبت نشده است.</p>';
+  }
+
+  bottomNavItems.forEach(item => {
+    item.addEventListener('click', () => selectAppView(item.dataset.view));
+  });
+
+  document.getElementById('bottomNavToday')?.addEventListener('click', () => {
+    selectAppView('workout');
+    selectDay(today);
+  });
 
   // Lightbox slider
   const lightbox = document.getElementById('lightbox');
@@ -1762,6 +2081,9 @@ const APP_UPDATE_CONFIG = {
 
     stopTimer();
     updateResetButtonVisibility(panel);
+    if (document.getElementById('view-progress')?.classList.contains('active')) {
+      refreshProgressView();
+    }
   }
 
   function initDayResetButtons() {
@@ -1841,6 +2163,9 @@ const APP_UPDATE_CONFIG = {
             saveSetState(exerciseId, i, isDone);
             updateRowState(row, buttons);
             updateResetButtonVisibility(panel);
+            if (document.getElementById('view-progress')?.classList.contains('active')) {
+              refreshProgressView();
+            }
 
             if (isDone) {
               const remaining = buttons.filter(b => !b.classList.contains('done')).length;
