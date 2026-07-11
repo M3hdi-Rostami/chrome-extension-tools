@@ -1452,6 +1452,52 @@
       padding: 0 4px;
     }
 
+    .update-sheet-progress {
+      width: 100%;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .update-sheet-progress.hidden { display: none !important; }
+
+    .update-sheet-progress-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .update-sheet-progress-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .2s ease;
+    }
+
+    .update-sheet-progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    #updateSheetProgressPercent {
+      font-weight: 700;
+      color: var(--accent2);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .update-sheet.downloading .update-sheet-actions { display: none; }
+    .update-sheet.downloading .update-sheet-handle { opacity: .35; }
+
     .update-sheet-actions {
       display: flex;
       gap: 10px;
@@ -1832,7 +1878,16 @@
       </div>
       <h2 id="updateSheetTitle" class="update-sheet-title">نسخه جدید موجود است</h2>
       <p id="updateSheetMessage" class="update-sheet-message"></p>
-      <div class="update-sheet-actions">
+      <div id="updateSheetProgress" class="update-sheet-progress hidden" aria-live="polite">
+        <div class="update-sheet-progress-track">
+          <span id="updateSheetProgressFill" class="update-sheet-progress-fill"></span>
+        </div>
+        <div class="update-sheet-progress-meta">
+          <span id="updateSheetProgressLabel">در حال دریافت بروزرسانی...</span>
+          <span id="updateSheetProgressPercent">۰٪</span>
+        </div>
+      </div>
+      <div class="update-sheet-actions" id="updateSheetActions">
         <button type="button" id="updateSheetDismissBtn" class="update-sheet-btn update-sheet-btn-secondary">بعداً</button>
         <button type="button" id="updateSheetConfirmBtn" class="update-sheet-btn update-sheet-btn-primary">دریافت نسخه جدید</button>
       </div>
@@ -1879,7 +1934,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.8"
+  "currentVersion": "1.0.9"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -2709,6 +2764,10 @@ const APP_UPDATE_CONFIG = {
     };
     btn.addEventListener('click', function () {
       unlockAudio();
+      if (typeof window.__startAppUpdateFromSheet === 'function') {
+        window.__startAppUpdateFromSheet();
+        return;
+      }
       btn.disabled = true;
       statusEl.className = 'app-update-status';
       statusEl.textContent = 'در حال دریافت آخرین نسخه اپلیکیشن از گیت‌هاب...';
@@ -2720,20 +2779,85 @@ const APP_UPDATE_CONFIG = {
     if (typeof AndroidApp === 'undefined' || typeof APP_UPDATE_CONFIG === 'undefined') return;
 
     const overlay = document.getElementById('updateSheetOverlay');
+    const sheet = document.getElementById('updateSheet');
     const backdrop = document.getElementById('updateSheetBackdrop');
+    const titleEl = document.getElementById('updateSheetTitle');
     const messageEl = document.getElementById('updateSheetMessage');
     const dismissBtn = document.getElementById('updateSheetDismissBtn');
     const confirmBtn = document.getElementById('updateSheetConfirmBtn');
+    const progressWrap = document.getElementById('updateSheetProgress');
+    const progressFill = document.getElementById('updateSheetProgressFill');
+    const progressLabel = document.getElementById('updateSheetProgressLabel');
+    const progressPercent = document.getElementById('updateSheetProgressPercent');
     const updateBtn = document.getElementById('appUpdateBtn');
-    if (!overlay || !messageEl || !dismissBtn || !confirmBtn) return;
+    const statusEl = document.getElementById('appUpdateStatus');
+    if (!overlay || !sheet || !messageEl || !dismissBtn || !confirmBtn) return;
 
     let pendingLatestVersion = '';
+    let isDownloading = false;
+    let fakeProgressTimer = null;
+    const persianDigitsMap = '۰۱۲۳۴۵۶۷۸۹';
+    const toFa = (n) => String(n).replace(/\d/g, d => persianDigitsMap[+d]);
 
     function notifySheetOpen(open) {
       try { AndroidApp.setUpdateSheetOpen(open); } catch {}
     }
 
+    function stopFakeProgress() {
+      if (fakeProgressTimer) {
+        window.clearInterval(fakeProgressTimer);
+        fakeProgressTimer = null;
+      }
+    }
+
+    function startFakeProgress() {
+      stopFakeProgress();
+      let value = 4;
+      fakeProgressTimer = window.setInterval(function () {
+        if (!isDownloading) {
+          stopFakeProgress();
+          return;
+        }
+        value = Math.min(90, value + Math.max(1, Math.round((90 - value) * 0.08)));
+        setProgress(value, 'در حال دریافت بروزرسانی...');
+      }, 450);
+    }
+
+    function setProgress(percent, label) {
+      const value = Math.max(0, Math.min(100, Math.round(percent || 0)));
+      if (progressFill) progressFill.style.width = value + '%';
+      if (progressPercent) progressPercent.textContent = toFa(value) + '٪';
+      if (progressLabel && label) progressLabel.textContent = label;
+    }
+
+    function enterDownloadingState() {
+      isDownloading = true;
+      sheet.classList.add('downloading');
+      if (progressWrap) progressWrap.classList.remove('hidden');
+      if (titleEl) titleEl.textContent = 'در حال بروزرسانی';
+      messageEl.textContent = 'لطفاً صبر کنید تا دریافت نسخه جدید کامل شود.';
+      setProgress(0, 'شروع دریافت فایل‌ها...');
+      startFakeProgress();
+      dismissBtn.disabled = true;
+      confirmBtn.disabled = true;
+      if (updateBtn) updateBtn.disabled = true;
+      if (statusEl) {
+        statusEl.className = 'app-update-status';
+        statusEl.textContent = 'در حال دریافت آخرین نسخه اپلیکیشن...';
+      }
+    }
+
+    function exitDownloadingState() {
+      isDownloading = false;
+      stopFakeProgress();
+      sheet.classList.remove('downloading');
+      dismissBtn.disabled = false;
+      confirmBtn.disabled = false;
+      if (updateBtn) updateBtn.disabled = false;
+    }
+
     function hideUpdateSheet() {
+      if (isDownloading) return;
       overlay.classList.remove('open');
       notifySheetOpen(false);
       overlay.setAttribute('aria-hidden', 'true');
@@ -2742,28 +2866,98 @@ const APP_UPDATE_CONFIG = {
       }, 350);
     }
 
-    function showUpdateSheet(latestVersion, currentVersion) {
-      if (snoozedLatestVersion === latestVersion && Date.now() < snoozeUntil) return;
-      if (overlay.classList.contains('open')) return;
-
-      pendingLatestVersion = latestVersion;
-      overlay.dataset.latestVersion = latestVersion;
-      messageEl.textContent = 'نسخه ' + latestVersion + ' منتشر شده است. نسخه فعلی شما ' + currentVersion + ' است.';
+    function ensureUpdateSheetVisible() {
       overlay.classList.remove('hidden');
       requestAnimationFrame(function () {
         overlay.classList.add('open');
         notifySheetOpen(true);
         overlay.setAttribute('aria-hidden', 'false');
-        playUpdateAvailableSound();
       });
     }
 
+    function showUpdateSheet(latestVersion, currentVersion) {
+      if (isDownloading) return;
+      if (snoozedLatestVersion === latestVersion && Date.now() < snoozeUntil) return;
+      if (overlay.classList.contains('open') && sheet.classList.contains('downloading')) return;
+
+      pendingLatestVersion = latestVersion;
+      overlay.dataset.latestVersion = latestVersion;
+      if (titleEl) titleEl.textContent = 'نسخه جدید موجود است';
+      messageEl.textContent = 'نسخه ' + latestVersion + ' منتشر شده است. نسخه فعلی شما ' + currentVersion + ' است.';
+      if (progressWrap) progressWrap.classList.add('hidden');
+      sheet.classList.remove('downloading');
+      ensureUpdateSheetVisible();
+      playUpdateAvailableSound();
+    }
+
+    function startUpdateDownload() {
+      if (isDownloading) return;
+      unlockAudio();
+      ensureUpdateSheetVisible();
+      enterDownloadingState();
+      try {
+        AndroidApp.startAppUpdate.apply(AndroidApp, updateArgs());
+      } catch (err) {
+        exitDownloadingState();
+        if (progressWrap) progressWrap.classList.add('hidden');
+        if (titleEl) titleEl.textContent = 'خطا در بروزرسانی';
+        messageEl.textContent = 'شروع دریافت ممکن نشد. دوباره تلاش کنید.';
+      }
+    }
+
+    window.__startAppUpdateFromSheet = startUpdateDownload;
+
+    window.__onAppUpdateProgress = function (progress) {
+      if (!progress) return;
+      stopFakeProgress();
+      const percent = Number(progress.percent) || 0;
+      const done = Number(progress.done) || 0;
+      const total = Number(progress.total) || 0;
+      const label = total > 0
+        ? ('دریافت فایل ' + toFa(Math.min(Math.max(done, 1), total)) + ' از ' + toFa(total))
+        : 'در حال دریافت بروزرسانی...';
+      if (!sheet.classList.contains('downloading')) enterDownloadingState();
+      setProgress(percent, label);
+    };
+
+    const previousOnComplete = window.__onAppUpdateComplete;
+    window.__onAppUpdateComplete = function (result) {
+      if (typeof previousOnComplete === 'function') previousOnComplete(result);
+      stopFakeProgress();
+
+      if (!result || !result.success) {
+        exitDownloadingState();
+        if (progressWrap) progressWrap.classList.remove('hidden');
+        if (titleEl) titleEl.textContent = 'خطا در بروزرسانی';
+        messageEl.textContent = (result && result.message) || 'دریافت نسخه جدید ناموفق بود.';
+        setProgress(0, 'لطفاً دوباره تلاش کنید');
+        confirmBtn.textContent = 'تلاش مجدد';
+        confirmBtn.disabled = false;
+        dismissBtn.disabled = false;
+        return;
+      }
+
+      setProgress(100, 'بروزرسانی کامل شد');
+      if (titleEl) titleEl.textContent = 'بروزرسانی موفق';
+      messageEl.textContent = result.message || 'نسخه جدید با موفقیت دریافت شد.';
+      if (result.reloaded) {
+        messageEl.textContent = 'نسخه جدید نصب شد. در حال بارگذاری مجدد...';
+        return;
+      }
+      window.setTimeout(function () {
+        exitDownloadingState();
+        hideUpdateSheet();
+      }, 700);
+    };
+
     window.__onAppUpdateCheckComplete = function (result) {
       if (!result || !result.success || !result.hasUpdate) return;
+      if (isDownloading) return;
       showUpdateSheet(result.latestVersion, result.currentVersion);
     };
 
     dismissBtn.addEventListener('click', function () {
+      if (isDownloading) return;
       if (pendingLatestVersion) {
         snoozedLatestVersion = pendingLatestVersion;
         snoozeUntil = Date.now() + UPDATE_CHECK_INTERVAL_MS;
@@ -2772,19 +2966,18 @@ const APP_UPDATE_CONFIG = {
     });
 
     if (backdrop) {
-      backdrop.addEventListener('click', function () { dismissBtn.click(); });
+      backdrop.addEventListener('click', function () {
+        if (isDownloading) return;
+        dismissBtn.click();
+      });
     }
 
     confirmBtn.addEventListener('click', function () {
-      unlockAudio();
-      hideUpdateSheet();
-      if (updateBtn && !updateBtn.disabled) updateBtn.click();
-      else {
-        try { AndroidApp.startAppUpdate.apply(AndroidApp, updateArgs()); } catch {}
-      }
+      startUpdateDownload();
     });
 
     function runUpdateCheck() {
+      if (isDownloading) return;
       try { AndroidApp.checkForAppUpdate.apply(AndroidApp, updateArgs()); } catch {}
     }
 
