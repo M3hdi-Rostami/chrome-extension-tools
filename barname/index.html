@@ -263,6 +263,7 @@
       box-shadow: 0 10px 36px rgba(0, 0, 0, .45);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
+      transition: opacity .25s ease, transform .3s ease;
     }
 
     .bottom-nav-item {
@@ -1048,17 +1049,23 @@
     }
 
     .info-box ul li {
-      padding: 4px 0;
-      padding-right: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
       position: relative;
+      line-height: 1.7;
     }
 
     .info-box ul li::before {
-      content: '›';
-      position: absolute;
-      right: 0;
-      color: var(--accent);
-      font-weight: 700;
+      content: '';
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      margin-top: 0.55em;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, .12);
     }
 
     /* Rest card special */
@@ -1326,7 +1333,7 @@
     .update-sheet-overlay {
       position: fixed;
       inset: 0;
-      z-index: 1200;
+      z-index: 8000;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -1335,10 +1342,17 @@
 
     .update-sheet-overlay:not(.hidden) { pointer-events: auto; }
 
+    body:has(.update-sheet-overlay.open) .bottom-nav {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(120%);
+      transition: opacity .25s ease, transform .3s ease;
+    }
+
     .update-sheet-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(15, 20, 25, .55);
+      background: rgba(15, 20, 25, .62);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       opacity: 0;
@@ -1349,21 +1363,22 @@
 
     .update-sheet {
       position: relative;
+      z-index: 1;
       width: 100%;
       max-width: 960px;
       margin: 0 auto;
       min-height: 240px;
-      max-height: 340px;
+      max-height: min(420px, 78vh);
       background: var(--surface);
       border: 1px solid var(--border);
       border-bottom: none;
       border-radius: 24px 24px 0 0;
-      box-shadow: 0 -12px 40px rgba(0, 0, 0, .35);
+      box-shadow: 0 -12px 40px rgba(0, 0, 0, .45);
       transform: translateY(100%);
       transition: transform .35s cubic-bezier(0.32, 0.72, 0, 1);
       display: flex;
       flex-direction: column;
-      padding: 8px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+      padding: 8px 22px calc(28px + env(safe-area-inset-bottom, 0px));
       overflow: hidden;
     }
 
@@ -1864,7 +1879,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.6"
+  "currentVersion": "1.0.7"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
