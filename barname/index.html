@@ -1417,8 +1417,39 @@
 
     .app-update-status.success { color: var(--success); }
     .app-update-status.error { color: var(--danger); }
+    .app-update-status.uptodate {
+      color: var(--accent2);
+      font-weight: 600;
+      margin-bottom: 0;
+    }
 
     .app-update-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      background: linear-gradient(145deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s, transform .15s, box-shadow .15s;
+      box-shadow: 0 6px 18px rgba(59, 130, 246, .28);
+    }
+
+    .app-update-btn.hidden {
+      display: none !important;
+    }
+
+    .app-update-btn:hover:not(:disabled) {
+      opacity: .95;
+      transform: translateY(-1px);
+    }
+
+    .app-update-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .program-create-btn {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -1429,15 +1460,12 @@
       font-size: .9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity .15s, background .15s, border-color .15s;
     }
 
-    .app-update-btn:hover:not(:disabled) {
+    .program-create-btn:hover {
       background: var(--surface2);
       border-color: var(--accent);
     }
-
-    .app-update-btn:disabled { opacity: .6; cursor: not-allowed; }
 
     .reminder-card {
       margin-bottom: 16px;
@@ -2192,7 +2220,7 @@
         <h3 class="reminder-card-title">برنامه‌های من</h3>
         <p class="reminder-card-desc">بین برنامه پایه و برنامه‌های ساخته‌شده جابه‌جا شو. پیشرفت هر برنامه جدا ذخیره می‌شود.</p>
         <div class="program-list" id="programList"></div>
-        <button type="button" class="app-update-btn" id="openProgramWizardFromMoreBtn">ساخت برنامه جدید با هوش مصنوعی</button>
+        <button type="button" class="program-create-btn" id="openProgramWizardFromMoreBtn">ساخت برنامه جدید با هوش مصنوعی</button>
       </div>
 
       <div class="reminder-card" id="reminderCard">
@@ -2225,8 +2253,8 @@
             <span class="app-update-label">نسخه اپلیکیشن</span>
             <span id="appContentVersion" class="app-update-version">—</span>
           </div>
-          <p id="appUpdateStatus" class="app-update-status"></p>
-          <button id="appUpdateBtn" type="button" class="app-update-btn">دریافت آخرین نسخه اپلیکیشن</button>
+          <p id="appUpdateStatus" class="app-update-status uptodate">در حال بررسی نسخه...</p>
+          <button id="appUpdateBtn" type="button" class="app-update-btn hidden">دریافت آخرین نسخه اپلیکیشن</button>
         </div>
         <p class="app-footer-credit">
           طراحی و توسعه توسط
@@ -2540,7 +2568,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.15"
+  "currentVersion": "1.0.18"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -3984,6 +4012,48 @@ const APP_UPDATE_CONFIG = {
     ];
   }
 
+  function setUpdateSectionState(state, detail) {
+    const statusEl = document.getElementById('appUpdateStatus');
+    const btn = document.getElementById('appUpdateBtn');
+    const versionEl = document.getElementById('appContentVersion');
+    if (!statusEl || !btn) return;
+
+    if (state === 'available') {
+      btn.classList.remove('hidden');
+      btn.disabled = false;
+      statusEl.className = 'app-update-status';
+      statusEl.textContent = detail || 'نسخه جدید آماده دریافت است.';
+      return;
+    }
+
+    btn.classList.add('hidden');
+    btn.disabled = false;
+
+    if (state === 'checking') {
+      statusEl.className = 'app-update-status';
+      statusEl.textContent = detail || 'در حال بررسی نسخه...';
+      return;
+    }
+
+    if (state === 'error') {
+      statusEl.className = 'app-update-status error';
+      statusEl.textContent = detail || 'بررسی نسخه ناموفق بود.';
+      return;
+    }
+
+    if (state === 'downloading') {
+      statusEl.className = 'app-update-status';
+      statusEl.textContent = detail || 'در حال دریافت آخرین نسخه اپلیکیشن...';
+      return;
+    }
+
+    statusEl.className = 'app-update-status uptodate';
+    statusEl.textContent = detail || 'اپلیکیشن بروز است';
+    if (versionEl && typeof AndroidApp !== 'undefined') {
+      try { versionEl.textContent = AndroidApp.getContentVersion(); } catch (_) {}
+    }
+  }
+
   function initAppUpdater() {
     if (typeof AndroidApp === 'undefined') {
       const section = document.getElementById('appUpdateSection');
@@ -3995,15 +4065,23 @@ const APP_UPDATE_CONFIG = {
     const btn = document.getElementById('appUpdateBtn');
     if (!versionEl || !statusEl || !btn || typeof APP_UPDATE_CONFIG === 'undefined') return;
     versionEl.textContent = AndroidApp.getContentVersion();
+    setUpdateSectionState('uptodate');
+
     window.__onAppUpdateComplete = function (result) {
       btn.disabled = false;
-      statusEl.className = 'app-update-status' + (result.success ? ' success' : ' error');
-      statusEl.textContent = result.message || '';
       if (result.latestVersion) versionEl.textContent = result.latestVersion;
       if (result.success && result.reloaded) {
         markUpdateSuccessSound();
         playUpdateCompleteSound();
+        setUpdateSectionState('uptodate', 'اپلیکیشن بروز است');
+        return;
       }
+      if (result.success) {
+        setUpdateSectionState('uptodate', result.message || 'اپلیکیشن بروز است');
+        return;
+      }
+      setUpdateSectionState('error', result.message || 'بروزرسانی ناموفق بود.');
+      btn.classList.remove('hidden');
     };
     btn.addEventListener('click', function () {
       unlockAudio();
@@ -4012,8 +4090,7 @@ const APP_UPDATE_CONFIG = {
         return;
       }
       btn.disabled = true;
-      statusEl.className = 'app-update-status';
-      statusEl.textContent = 'در حال دریافت آخرین نسخه اپلیکیشن از گیت‌هاب...';
+      setUpdateSectionState('downloading');
       AndroidApp.startAppUpdate.apply(AndroidApp, updateArgs());
     });
   }
@@ -4084,10 +4161,7 @@ const APP_UPDATE_CONFIG = {
       dismissBtn.disabled = true;
       confirmBtn.disabled = true;
       if (updateBtn) updateBtn.disabled = true;
-      if (statusEl) {
-        statusEl.className = 'app-update-status';
-        statusEl.textContent = 'در حال دریافت آخرین نسخه اپلیکیشن...';
-      }
+      setUpdateSectionState('downloading', 'در حال دریافت آخرین نسخه اپلیکیشن...');
     }
 
     function exitDownloadingState() {
@@ -4194,8 +4268,19 @@ const APP_UPDATE_CONFIG = {
     };
 
     window.__onAppUpdateCheckComplete = function (result) {
-      if (!result || !result.success || !result.hasUpdate) return;
       if (isDownloading) return;
+      if (!result || !result.success) {
+        setUpdateSectionState('uptodate', 'اپلیکیشن بروز است');
+        return;
+      }
+      if (!result.hasUpdate) {
+        setUpdateSectionState('uptodate', 'اپلیکیشن بروز است');
+        return;
+      }
+      setUpdateSectionState(
+        'available',
+        'نسخه ' + (result.latestVersion || 'جدید') + ' آماده دریافت است.',
+      );
       showUpdateSheet(result.latestVersion, result.currentVersion);
     };
 
@@ -4221,7 +4306,10 @@ const APP_UPDATE_CONFIG = {
 
     function runUpdateCheck() {
       if (isDownloading) return;
-      try { AndroidApp.checkForAppUpdate.apply(AndroidApp, updateArgs()); } catch {}
+      setUpdateSectionState('checking');
+      try { AndroidApp.checkForAppUpdate.apply(AndroidApp, updateArgs()); } catch {
+        setUpdateSectionState('uptodate', 'اپلیکیشن بروز است');
+      }
     }
 
     window.setTimeout(runUpdateCheck, 12000);
