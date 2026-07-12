@@ -2253,8 +2253,8 @@
             <span class="app-update-label">نسخه اپلیکیشن</span>
             <span id="appContentVersion" class="app-update-version">—</span>
           </div>
-          <p id="appUpdateStatus" class="app-update-status uptodate">در حال بررسی نسخه...</p>
-          <button id="appUpdateBtn" type="button" class="app-update-btn hidden">دریافت آخرین نسخه اپلیکیشن</button>
+          <p id="appUpdateStatus" class="app-update-status uptodate">اپلیکیشن بروز است</p>
+          <button id="appUpdateBtn" type="button" class="app-update-btn" hidden style="display:none">دریافت آخرین نسخه اپلیکیشن</button>
         </div>
         <p class="app-footer-credit">
           طراحی و توسعه توسط
@@ -2568,7 +2568,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.18"
+  "currentVersion": "1.0.19"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -4012,6 +4012,18 @@ const APP_UPDATE_CONFIG = {
     ];
   }
 
+  let updateAvailable = false;
+
+  function setUpdateButtonVisible(visible) {
+    const btn = document.getElementById('appUpdateBtn');
+    if (!btn) return;
+    updateAvailable = !!visible;
+    btn.hidden = !visible;
+    btn.classList.toggle('hidden', !visible);
+    btn.style.display = visible ? '' : 'none';
+    if (!visible) btn.disabled = false;
+  }
+
   function setUpdateSectionState(state, detail) {
     const statusEl = document.getElementById('appUpdateStatus');
     const btn = document.getElementById('appUpdateBtn');
@@ -4019,15 +4031,17 @@ const APP_UPDATE_CONFIG = {
     if (!statusEl || !btn) return;
 
     if (state === 'available') {
-      btn.classList.remove('hidden');
+      setUpdateButtonVisible(true);
       btn.disabled = false;
       statusEl.className = 'app-update-status';
       statusEl.textContent = detail || 'نسخه جدید آماده دریافت است.';
       return;
     }
 
-    btn.classList.add('hidden');
-    btn.disabled = false;
+    // Never keep the download button visible unless an update is available.
+    if (state !== 'downloading' || !updateAvailable) {
+      setUpdateButtonVisible(false);
+    }
 
     if (state === 'checking') {
       statusEl.className = 'app-update-status';
@@ -4047,6 +4061,7 @@ const APP_UPDATE_CONFIG = {
       return;
     }
 
+    setUpdateButtonVisible(false);
     statusEl.className = 'app-update-status uptodate';
     statusEl.textContent = detail || 'اپلیکیشن بروز است';
     if (versionEl && typeof AndroidApp !== 'undefined') {
@@ -4065,7 +4080,7 @@ const APP_UPDATE_CONFIG = {
     const btn = document.getElementById('appUpdateBtn');
     if (!versionEl || !statusEl || !btn || typeof APP_UPDATE_CONFIG === 'undefined') return;
     versionEl.textContent = AndroidApp.getContentVersion();
-    setUpdateSectionState('uptodate');
+    setUpdateSectionState('uptodate', 'اپلیکیشن بروز است');
 
     window.__onAppUpdateComplete = function (result) {
       btn.disabled = false;
@@ -4077,11 +4092,11 @@ const APP_UPDATE_CONFIG = {
         return;
       }
       if (result.success) {
-        setUpdateSectionState('uptodate', result.message || 'اپلیکیشن بروز است');
+        setUpdateSectionState('uptodate', 'اپلیکیشن بروز است');
         return;
       }
-      setUpdateSectionState('error', result.message || 'بروزرسانی ناموفق بود.');
-      btn.classList.remove('hidden');
+      // Keep button only if we still know an update is pending.
+      setUpdateSectionState(updateAvailable ? 'available' : 'error', result.message || 'بروزرسانی ناموفق بود.');
     };
     btn.addEventListener('click', function () {
       unlockAudio();
