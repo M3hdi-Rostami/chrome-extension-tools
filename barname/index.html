@@ -1667,7 +1667,8 @@
 
     .update-sheet-overlay:not(.hidden) { pointer-events: auto; }
 
-    body:has(.update-sheet-overlay.open) .bottom-nav {
+    body:has(.update-sheet-overlay.open) .bottom-nav,
+    body:has(#programWizardOverlay:not(.hidden)) .bottom-nav {
       opacity: 0;
       pointer-events: none;
       transform: translateX(-50%) translateY(120%);
@@ -1856,6 +1857,214 @@
       box-shadow: 0 4px 14px rgba(59, 130, 246, .28);
     }
 
+
+    /* Program library + wizard */
+    .program-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface2);
+    }
+    .program-bar-main {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: right;
+    }
+    .program-bar-label {
+      font-size: .72rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .program-bar-name {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .program-bar-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .program-bar-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .program-bar-btn.primary {
+      background: rgba(59,130,246,.16);
+      border-color: rgba(59,130,246,.45);
+      color: var(--accent);
+    }
+    .program-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .program-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+    .program-list-item.active {
+      border-color: rgba(6,182,212,.45);
+      background: rgba(6,182,212,.08);
+    }
+    .program-list-meta { min-width: 0; flex: 1; text-align: right; }
+    .program-list-meta strong {
+      display: block;
+      font-size: .9rem;
+      margin-bottom: 2px;
+    }
+    .program-list-meta span {
+      font-size: .72rem;
+      color: var(--muted);
+    }
+    .program-list-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .program-mini-btn {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .program-mini-btn.danger { color: var(--danger); }
+    .program-wizard-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5200;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(15,20,25,.62);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .program-wizard-overlay.hidden { display: none !important; }
+    .program-wizard {
+      width: 100%;
+      max-width: 560px;
+      max-height: min(88vh, 720px);
+      overflow: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 22px 22px 0 0;
+      padding: 16px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+    }
+    .program-wizard h3 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+    }
+    .program-wizard-desc {
+      margin: 0 0 14px;
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .program-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .program-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      text-align: right;
+    }
+    .program-field.full { grid-column: 1 / -1; }
+    .program-field label {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .program-field input,
+    .program-field select,
+    .program-field textarea {
+      font-family: inherit;
+      font-size: .9rem;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .program-field textarea { min-height: 72px; resize: vertical; }
+    .program-wizard-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .program-wizard-actions button {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 700;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .program-wizard-actions button.primary {
+      background: linear-gradient(145deg, var(--accent), var(--accent2));
+      border: none;
+      color: #fff;
+    }
+    .program-wizard-actions button:disabled { opacity: .6; cursor: not-allowed; }
+    .program-wizard-status {
+      min-height: 1.2rem;
+      margin-top: 10px;
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .program-wizard-status.error { color: var(--danger); }
+    .program-wizard-status.ok { color: var(--success); }
+    .exercise-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(59,130,246,.12);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -1866,198 +2075,23 @@
     <p id="todayReminderText"></p>
     <button type="button" id="todayReminderDismiss" aria-label="بستن">بستن</button>
   </div>
+
+  <div class="program-bar" id="programBar">
+    <div class="program-bar-main">
+      <span class="program-bar-label">برنامه فعال</span>
+      <span class="program-bar-name" id="activeProgramName">برنامه پایه</span>
+    </div>
+    <div class="program-bar-actions">
+      <button type="button" class="program-bar-btn" id="openProgramListBtn">برنامه‌ها</button>
+      <button type="button" class="program-bar-btn primary" id="openProgramWizardBtn">ساخت</button>
+    </div>
+  </div>
+
   <div class="day-tabs-wrap">
-    <div class="day-tabs" role="tablist" aria-label="روزهای هفته">
-      <button type="button" role="tab" class="day-tab pull" data-day="shanbe" aria-selected="false"><span class="day-name">شنبه</span><span class="day-type">Pull A</span></button>
-      <button type="button" role="tab" class="day-tab push" data-day="yekshanbe" aria-selected="false"><span class="day-name">یکشنبه</span><span class="day-type">Push A</span></button>
-      <button type="button" role="tab" class="day-tab rest" data-day="doshanbe" aria-selected="false"><span class="day-name">دوشنبه</span><span class="day-type">استراحت</span></button>
-      <button type="button" role="tab" class="day-tab leg" data-day="seshanbe" aria-selected="false"><span class="day-name">سه‌شنبه</span><span class="day-type">Leg A</span></button>
-      <button type="button" role="tab" class="day-tab push" data-day="chaharshanbe" aria-selected="false"><span class="day-name">چهارشنبه</span><span class="day-type">Push B</span></button>
-      <button type="button" role="tab" class="day-tab pull" data-day="panjshanbe" aria-selected="false"><span class="day-name">پنج‌شنبه</span><span class="day-type">Pull+Leg</span></button>
-      <button type="button" role="tab" class="day-tab rest" data-day="jome" aria-selected="false"><span class="day-name">جمعه</span><span class="day-type">کاردیو</span></button>
-    </div>
+    <div class="day-tabs" id="dayTabs" role="tablist" aria-label="روزهای هفته"></div>
   </div>
 
-  <div class="workout-panels">
-
-  <!-- شنبه Pull A -->
-  <div class="card day-panel" data-day="shanbe">
-    <div class="card-header pull">
-      <div class="icon">🏋️</div>
-      <div>
-        <h2>شنبه — Pull A</h2>
-        <div class="sub">ضخامت کمر + جزئیات + ساعد</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <table>
-        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
-        <tbody>
-          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="barbell-row.jpg" data-end="barbell-row-end.jpg" data-name="ردیف هالتر خم / T-Bar" aria-label="نمایش ردیف هالتر خم / T-Bar"><img data-img="barbell-row.jpg" alt="ردیف هالتر خم / T-Bar" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ردیف هالتر خم / T-Bar</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
-          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="pull-up.jpg" data-end="pull-up-end.jpg" data-name="بارفیکس / لات پول‌داون" aria-label="نمایش بارفیکس / لات پول‌داون"><img data-img="pull-up.jpg" alt="بارفیکس / لات پول‌داون" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">بارفیکس / لات پول‌داون</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
-          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="seated-row.jpg" data-end="seated-row-end.jpg" data-name="کابل رو به رو (Seated Row)" aria-label="نمایش کابل رو به رو (Seated Row)"><img data-img="seated-row.jpg" alt="کابل رو به رو (Seated Row)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کابل رو به رو (Seated Row)</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="face-pull.jpg" data-end="face-pull-end.jpg" data-name="فیس پول" aria-label="نمایش فیس پول"><img data-img="face-pull.jpg" alt="فیس پول" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">فیس پول</span></div></td><td class="sets">4 × 15-20</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="pullover.jpg" data-end="pullover-end.jpg" data-name="پول‌اور دمبل / کابل" aria-label="نمایش پول‌اور دمبل / کابل"><img data-img="pullover.jpg" alt="پول‌اور دمبل / کابل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پول‌اور دمبل / کابل</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="shrug.jpg" data-end="shrug-end.jpg" data-name="شراگ دمبل" aria-label="نمایش شراگ دمبل"><img data-img="shrug.jpg" alt="شراگ دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">شراگ دمبل</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="hammer-curl.jpg" data-end="hammer-curl-end.jpg" data-name="جلو بازو چکشی" aria-label="نمایش جلو بازو چکشی"><img data-img="hammer-curl.jpg" alt="جلو بازو چکشی" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">جلو بازو چکشی</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="reverse-curl.jpg" data-end="reverse-curl-end.jpg" data-name="Reverse Curl (ساعد)" aria-label="نمایش Reverse Curl (ساعد)"><img data-img="reverse-curl.jpg" alt="Reverse Curl (ساعد)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Reverse Curl (ساعد)</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="wrist-curl.jpg" data-end="wrist-curl-end.jpg" data-name="Wrist Curl (ساعد)" aria-label="نمایش Wrist Curl (ساعد)"><img data-img="wrist-curl.jpg" alt="Wrist Curl (ساعد)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Wrist Curl (ساعد)</span></div></td><td class="sets">4 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- یکشنبه Push A -->
-  <div class="card day-panel" data-day="yekshanbe">
-    <div class="card-header push">
-      <div class="icon">💪</div>
-      <div>
-        <h2>یکشنبه — Push A</h2>
-        <div class="sub">سینه سنگین + بالای سینه + شکم</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <table>
-        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
-        <tbody>
-          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="bench-press.jpg" data-end="bench-press-end.jpg" data-name="پرس سینه هالتر / دمبل" aria-label="نمایش پرس سینه هالتر / دمبل"><img data-img="bench-press.jpg" alt="پرس سینه هالتر / دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه هالتر / دمبل</span></div></td><td class="sets">4 × 6-8</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
-          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="incline-press.jpg" data-end="incline-press-end.jpg" data-name="پرس سینه شیب‌دار دمبل" aria-label="نمایش پرس سینه شیب‌دار دمبل"><img data-img="incline-press.jpg" alt="پرس سینه شیب‌دار دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه شیب‌دار دمبل</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="shoulder-press.jpg" data-end="shoulder-press-end.jpg" data-name="پرس سرشانه نشسته" aria-label="نمایش پرس سرشانه نشسته"><img data-img="shoulder-press.jpg" alt="پرس سرشانه نشسته" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سرشانه نشسته</span></div></td><td class="sets">3 × 8-10</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="chest-fly.jpg" data-end="chest-fly-end.jpg" data-name="فلای سینه (کابل / دمبل)" aria-label="نمایش فلای سینه (کابل / دمبل)"><img data-img="chest-fly.jpg" alt="فلای سینه (کابل / دمبل)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">فلای سینه (کابل / دمبل)</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="skull-crusher.jpg" data-end="skull-crusher-end.jpg" data-name="پشت بازو هالتر خوابیده" aria-label="نمایش پشت بازو هالتر خوابیده"><img data-img="skull-crusher.jpg" alt="پشت بازو هالتر خوابیده" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو هالتر خوابیده</span></div></td><td class="sets">3 × 8-10</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="triceps-pushdown.jpg" data-end="triceps-pushdown-end.jpg" data-name="پشت بازو کابل (طناب)" aria-label="نمایش پشت بازو کابل (طناب)"><img data-img="triceps-pushdown.jpg" alt="پشت بازو کابل (طناب)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو کابل (طناب)</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="lateral-raise.jpg" data-end="lateral-raise-end.jpg" data-name="نشر جانب دمبل" aria-label="نمایش نشر جانب دمبل"><img data-img="lateral-raise.jpg" alt="نشر جانب دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">نشر جانب دمبل</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="cable-crunch.jpg" data-end="cable-crunch-end.jpg" data-name="کرانچ کابل (شکم)" aria-label="نمایش کرانچ کابل (شکم)"><img data-img="cable-crunch.jpg" alt="کرانچ کابل (شکم)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ کابل (شکم)</span></div></td><td class="sets">3 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="plank.jpg" data-end="plank-end.jpg" data-name="پلانک" aria-label="نمایش پلانک"><img data-img="plank.jpg" alt="پلانک" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پلانک</span></div></td><td class="sets">3 × 40-60 ثانیه</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- دوشنبه استراحت -->
-  <div class="card day-panel" data-day="doshanbe">
-    <div class="card-header rest">
-      <div class="icon">😴</div>
-      <div>
-        <h2>دوشنبه — استراحت</h2>
-        <div class="sub">ریکاوری سینه و سرشانه</div>
-      </div>
-    </div>
-    <div class="rest-content">
-      <strong>استراحت کامل.</strong> کشش سبک ۱۰ دقیقه (اختیاری). آب کافی بنوش.
-    </div>
-  </div>
-
-  <!-- سه‌شنبه Leg A -->
-  <div class="card day-panel" data-day="seshanbe">
-    <div class="card-header leg">
-      <div class="icon">🦵</div>
-      <div>
-        <h2>سه‌شنبه — Leg A</h2>
-        <div class="sub">کوادر + شکم و پهلو</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <table>
-        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
-        <tbody>
-          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="squat.jpg" data-end="squat-end.jpg" data-name="اسکوات / پرس پا" aria-label="نمایش اسکوات / پرس پا"><img data-img="squat.jpg" alt="اسکوات / پرس پا" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">اسکوات / پرس پا</span></div></td><td class="sets">4 × 6-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
-          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-press.jpg" data-end="leg-press-end.jpg" data-name="پرس پا (پا باز)" aria-label="نمایش پرس پا (پا باز)"><img data-img="leg-press.jpg" alt="پرس پا (پا باز)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس پا (پا باز)</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="bulgarian-lunge.jpg" data-end="bulgarian-lunge-end.jpg" data-name="لانج بلغاریایی" aria-label="نمایش لانج بلغاریایی"><img data-img="bulgarian-lunge.jpg" alt="لانج بلغاریایی" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">لانج بلغاریایی</span></div></td><td class="sets">3 × 10-12 هر پا</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-extension.jpg" data-end="leg-extension-end.jpg" data-name="اکستنشن پا" aria-label="نمایش اکستنشن پا"><img data-img="leg-extension.jpg" alt="اکستنشن پا" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">اکستنشن پا</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="calf-standing.jpg" data-end="calf-standing-end.jpg" data-name="ساق ایستاده" aria-label="نمایش ساق ایستاده"><img data-img="calf-standing.jpg" alt="ساق ایستاده" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ساق ایستاده</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="reverse-crunch.jpg" data-end="reverse-crunch-end.jpg" data-name="کرانچ پا بالا (شکم پایین)" aria-label="نمایش کرانچ پا بالا (شکم پایین)"><img data-img="reverse-crunch.jpg" alt="کرانچ پا بالا (شکم پایین)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ پا بالا (شکم پایین)</span></div></td><td class="sets">3 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="russian-twist.jpg" data-end="russian-twist-end.jpg" data-name="Russian Twist (پهلو)" aria-label="نمایش Russian Twist (پهلو)"><img data-img="russian-twist.jpg" alt="Russian Twist (پهلو)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Russian Twist (پهلو)</span></div></td><td class="sets">3 × 20 هر طرف</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="hanging-leg-raise.jpg" data-end="hanging-leg-raise-end.jpg" data-name="Hanging Leg Raise (شکم)" aria-label="نمایش Hanging Leg Raise (شکم)"><img data-img="hanging-leg-raise.jpg" alt="Hanging Leg Raise (شکم)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Hanging Leg Raise (شکم)</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- چهارشنبه Push B -->
-  <div class="card day-panel" data-day="chaharshanbe">
-    <div class="card-header push">
-      <div class="icon">🔥</div>
-      <div>
-        <h2>چهارشنبه — Push B</h2>
-        <div class="sub">بالای سینه + سرشانه + شکم (روز نقاط ضعف)</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <table>
-        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
-        <tbody>
-          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="incline-press.jpg" data-end="incline-press-end.jpg" data-name="پرس سینه شیب‌دار دمبل" aria-label="نمایش پرس سینه شیب‌دار دمبل"><img data-img="incline-press.jpg" alt="پرس سینه شیب‌دار دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه شیب‌دار دمبل</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="cable-crossover.jpg" data-end="cable-crossover-end.jpg" data-name="کراس‌اور کابل (پایین به بالا)" aria-label="نمایش کراس‌اور کابل (پایین به بالا)"><img data-img="cable-crossover.jpg" alt="کراس‌اور کابل (پایین به بالا)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کراس‌اور کابل (پایین به بالا)</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="machine-press.jpg" data-end="machine-press-end.jpg" data-name="پرس سینه دستگاه / دمبل تخت" aria-label="نمایش پرس سینه دستگاه / دمبل تخت"><img data-img="machine-press.jpg" alt="پرس سینه دستگاه / دمبل تخت" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سینه دستگاه / دمبل تخت</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="shoulder-press.jpg" data-end="shoulder-press-end.jpg" data-name="پرس سرشانه دمبل ایستاده" aria-label="نمایش پرس سرشانه دمبل ایستاده"><img data-img="shoulder-press.jpg" alt="پرس سرشانه دمبل ایستاده" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس سرشانه دمبل ایستاده</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="front-raise.jpg" data-end="front-raise-end.jpg" data-name="نشر جلو دمبل" aria-label="نمایش نشر جلو دمبل"><img data-img="front-raise.jpg" alt="نشر جلو دمبل" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">نشر جلو دمبل</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="one-arm-triceps.jpg" data-end="one-arm-triceps-end.jpg" data-name="پشت بازو دمبل تک‌دست" aria-label="نمایش پشت بازو دمبل تک‌دست"><img data-img="one-arm-triceps.jpg" alt="پشت بازو دمبل تک‌دست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو دمبل تک‌دست</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="triceps-overhead.jpg" data-end="triceps-overhead-end.jpg" data-name="پشت بازو هالتر پشت‌سر (EZ)" aria-label="نمایش پشت بازو هالتر پشت‌سر (EZ)"><img data-img="triceps-overhead.jpg" alt="پشت بازو هالتر پشت‌سر (EZ)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پشت بازو هالتر پشت‌سر (EZ)</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="side-plank.jpg" data-end="side-plank-end.jpg" data-name="کرانچ کابل + پلانک جانبی (سوپرست)" aria-label="نمایش کرانچ کابل + پلانک جانبی (سوپرست)"><img data-img="side-plank.jpg" alt="کرانچ کابل + پلانک جانبی (سوپرست)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ کابل + پلانک جانبی (سوپرست)</span></div></td><td class="sets">3 × 15 + 30ث</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="vacuum.jpg" data-end="vacuum-end.jpg" data-name="Vacuum (کشش نفس شکم)" aria-label="نمایش Vacuum (کشش نفس شکم)"><img data-img="vacuum.jpg" alt="Vacuum (کشش نفس شکم)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Vacuum (کشش نفس شکم)</span></div></td><td class="sets">3 × 20-30 ثانیه</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- پنج‌شنبه Pull B + Leg B -->
-  <div class="card day-panel" data-day="panjshanbe">
-    <div class="card-header pull">
-      <div class="icon">⚡</div>
-      <div>
-        <h2>پنج‌شنبه — Pull B + Leg B</h2>
-        <div class="sub">کمر + همسترینگ + ساعد (~۷۵–۹۰ دقیقه)</div>
-      </div>
-    </div>
-    <div class="sub-section">بخش پشت</div>
-    <div class="card-body">
-      <table>
-        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
-        <tbody>
-          <tr><td>۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="rdl.jpg" data-end="rdl-end.jpg" data-name="ددلیفت رومانیایی" aria-label="نمایش ددلیفت رومانیایی"><img data-img="rdl.jpg" alt="ددلیفت رومانیایی" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ددلیفت رومانیایی</span></div></td><td class="sets">4 × 8-10</td><td class="rest-time hide-mobile">۲:۳۰</td></tr>
-          <tr><td>۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="lat-pulldown.jpg" data-end="lat-pulldown-end.jpg" data-name="پول‌داون عرضی (دست باز)" aria-label="نمایش پول‌داون عرضی (دست باز)"><img data-img="lat-pulldown.jpg" alt="پول‌داون عرضی (دست باز)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پول‌داون عرضی (دست باز)</span></div></td><td class="sets">4 × 10-12</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="one-arm-pulldown.jpg" data-end="one-arm-pulldown-end.jpg" data-name="پول‌داون تک‌دست" aria-label="نمایش پول‌داون تک‌دست"><img data-img="one-arm-pulldown.jpg" alt="پول‌داون تک‌دست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پول‌داون تک‌دست</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۴</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="one-arm-row.jpg" data-end="one-arm-row-end.jpg" data-name="ردیف نشسته تک‌دست" aria-label="نمایش ردیف نشسته تک‌دست"><img data-img="one-arm-row.jpg" alt="ردیف نشسته تک‌دست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ردیف نشسته تک‌دست</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۵</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="rear-delt.jpg" data-end="rear-delt-end.jpg" data-name="نشر خم (Rear Delt)" aria-label="نمایش نشر خم (Rear Delt)"><img data-img="rear-delt.jpg" alt="نشر خم (Rear Delt)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">نشر خم (Rear Delt)</span></div></td><td class="sets">4 × 15-20</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۶</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="reverse-crunch.jpg" data-end="reverse-crunch-end.jpg" data-name="کرانچ معکوس" aria-label="نمایش کرانچ معکوس"><img data-img="reverse-crunch.jpg" alt="کرانچ معکوس" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرانچ معکوس</span></div></td><td class="sets">3 × 15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-          <tr><td>۷</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="drag-curl.jpg" data-end="drag-curl-end.jpg" data-name="جلو بازو لاری" aria-label="نمایش جلو بازو لاری"><img data-img="drag-curl.jpg" alt="جلو بازو لاری" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">جلو بازو لاری</span></div></td><td class="sets">3 × 10-12</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۸</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="farmers-walk.jpg" data-end="farmers-walk-end.jpg" data-name="Farmer's Walk" aria-label="نمایش Farmer's Walk"><img data-img="farmers-walk.jpg" alt="Farmer's Walk" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">Farmer's Walk</span></div></td><td class="sets">3 × 30-40 متر</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۹</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="behind-back-wrist.jpg" data-end="behind-back-wrist-end.jpg" data-name="ساعد هالتر پشت‌سر (EZ)" aria-label="نمایش ساعد هالتر پشت‌سر (EZ)"><img data-img="behind-back-wrist.jpg" alt="ساعد هالتر پشت‌سر (EZ)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ساعد هالتر پشت‌سر (EZ)</span></div></td><td class="sets">4 × 12-15</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="sub-section">بخش پا (همسترینگ)</div>
-    <div class="card-body">
-      <table>
-        <thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead>
-        <tbody>
-          <tr><td>۱۰</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-press-high.jpg" data-end="leg-press-high-end.jpg" data-name="پرس پا (پا بسته / بالای پا)" aria-label="نمایش پرس پا (پا بسته / بالای پا)"><img data-img="leg-press-high.jpg" alt="پرس پا (پا بسته / بالای پا)" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">پرس پا (پا بسته / بالای پا)</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۲:۰۰</td></tr>
-          <tr><td>۱۱</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="leg-curl.jpg" data-end="leg-curl-end.jpg" data-name="کرل همسترینگ" aria-label="نمایش کرل همسترینگ"><img data-img="leg-curl.jpg" alt="کرل همسترینگ" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">کرل همسترینگ</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۱۲</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="hip-thrust.jpg" data-end="hip-thrust-end.jpg" data-name="هیپ تراست" aria-label="نمایش هیپ تراست"><img data-img="hip-thrust.jpg" alt="هیپ تراست" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">هیپ تراست</span></div></td><td class="sets">3 × 12-15</td><td class="rest-time hide-mobile">۱:۳۰</td></tr>
-          <tr><td>۱۳</td><td><div class="exercise-cell"><button type="button" class="exercise-thumb-wrap" data-start="calf-seated.jpg" data-end="calf-seated-end.jpg" data-name="ساق نشسته" aria-label="نمایش ساق نشسته"><img data-img="calf-seated.jpg" alt="ساق نشسته" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button><span class="exercise-name">ساق نشسته</span></div></td><td class="sets">3 × 15-20</td><td class="rest-time hide-mobile">۱:۰۰</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- جمعه -->
-  <div class="card day-panel" data-day="jome">
-    <div class="card-header rest">
-      <div class="icon">🚶</div>
-      <div>
-        <h2>جمعه — استراحت + کاردیو</h2>
-        <div class="sub">LISS · کشش · آب</div>
-      </div>
-    </div>
-    <div class="rest-content">
-      <strong>کاردیو LISS:</strong> ۲۵–۳۰ دقیقه پیاده‌روی تند یا دوچرخه<br>
-      <strong>کشش:</strong> ۱۰–۱۵ دقیقه<br>
-      <strong>آب:</strong> ۳+ لیتر در کل روز
-    </div>
-  </div>
-
-  </div>
+  <div class="workout-panels" id="workoutPanels"></div>
   </section>
 
   <section id="view-nutrition" class="app-view" data-view="nutrition">
@@ -2151,7 +2185,15 @@
   <section id="view-more" class="app-view" data-view="more">
     <div class="view-page">
       <h2>بیشتر</h2>
-      <p class="view-lead">یادآور تمرین، بروزرسانی و اطلاعات</p>
+      <p class="view-lead">برنامه‌ها، یادآور، بروزرسانی و اطلاعات</p>
+
+
+      <div class="reminder-card" id="programsCard">
+        <h3 class="reminder-card-title">برنامه‌های من</h3>
+        <p class="reminder-card-desc">بین برنامه پایه و برنامه‌های ساخته‌شده جابه‌جا شو. پیشرفت هر برنامه جدا ذخیره می‌شود.</p>
+        <div class="program-list" id="programList"></div>
+        <button type="button" class="app-update-btn" id="openProgramWizardFromMoreBtn">ساخت برنامه جدید با هوش مصنوعی</button>
+      </div>
 
       <div class="reminder-card" id="reminderCard">
         <h3 class="reminder-card-title">یادآور روز تمرین</h3>
@@ -2220,6 +2262,77 @@
   </button>
 </nav>
 
+
+<div id="programWizardOverlay" class="program-wizard-overlay hidden" aria-hidden="true">
+  <div class="program-wizard" role="dialog" aria-modal="true" aria-labelledby="programWizardTitle">
+    <h3 id="programWizardTitle">ساخت برنامه شخصی</h3>
+    <p class="program-wizard-desc">وزن، قد، سابقه و هدفت را بگو تا یک برنامه هفتگی برایت ساخته شود.</p>
+    <form id="programWizardForm" class="program-form-grid">
+      <div class="program-field">
+        <label for="pwGender">جنسیت</label>
+        <select id="pwGender" required>
+          <option value="male">مرد</option>
+          <option value="female">زن</option>
+        </select>
+      </div>
+      <div class="program-field">
+        <label for="pwAge">سن</label>
+        <input id="pwAge" type="number" min="14" max="80" value="25" required />
+      </div>
+      <div class="program-field">
+        <label for="pwWeight">وزن (کیلو)</label>
+        <input id="pwWeight" type="number" min="30" max="250" step="0.1" value="75" required />
+      </div>
+      <div class="program-field">
+        <label for="pwHeight">قد (سانتی‌متر)</label>
+        <input id="pwHeight" type="number" min="120" max="230" value="175" required />
+      </div>
+      <div class="program-field">
+        <label for="pwExperience">سابقه ورزشی</label>
+        <select id="pwExperience" required>
+          <option value="beginner">مبتدی</option>
+          <option value="intermediate" selected>متوسط</option>
+          <option value="advanced">پیشرفته</option>
+        </select>
+      </div>
+      <div class="program-field">
+        <label for="pwGoal">هدف</label>
+        <select id="pwGoal" required>
+          <option value="hypertrophy" selected>حجم عضلانی</option>
+          <option value="strength">قدرت</option>
+          <option value="fatloss">چربی‌سوزی</option>
+          <option value="general">عمومی / تناسب</option>
+        </select>
+      </div>
+      <div class="program-field">
+        <label for="pwDays">روز تمرین در هفته</label>
+        <select id="pwDays" required>
+          <option value="3">۳ روز</option>
+          <option value="4">۴ روز</option>
+          <option value="5" selected>۵ روز</option>
+          <option value="6">۶ روز</option>
+        </select>
+      </div>
+      <div class="program-field">
+        <label for="pwEquipment">تجهیزات</label>
+        <select id="pwEquipment" required>
+          <option value="full_gym" selected>باشگاه کامل</option>
+          <option value="limited">محدود (دمبل/کابل)</option>
+        </select>
+      </div>
+      <div class="program-field full">
+        <label for="pwNotes">محدودیت یا آسیب (اختیاری)</label>
+        <textarea id="pwNotes" placeholder="مثلاً زانو درد خفیف"></textarea>
+      </div>
+      <div class="program-wizard-actions full" style="grid-column:1/-1">
+        <button type="button" id="programWizardCancelBtn">انصراف</button>
+        <button type="submit" class="primary" id="programWizardSubmitBtn">تولید برنامه</button>
+      </div>
+    </form>
+    <p class="program-wizard-status" id="programWizardStatus"></p>
+  </div>
+</div>
+
 <div id="updateSheetOverlay" class="update-sheet-overlay hidden" aria-hidden="true">
   <div id="updateSheetBackdrop" class="update-sheet-backdrop" aria-hidden="true"></div>
   <div id="updateSheet" class="update-sheet" role="dialog" aria-modal="true" aria-labelledby="updateSheetTitle">
@@ -2281,6 +2394,145 @@
   </div>
 </div>
 
+
+<script>
+window.BUILTIN_PROGRAM = {"id":"builtin","name":"برنامه پایه","source":"builtin","createdAt":"2025-01-01T00:00:00.000Z","days":[{"id":"shanbe","name":"شنبه","type":"pull","typeLabel":"Pull A","subtitle":"ضخامت کمر + جزئیات + ساعد","icon":"🏋️","sections":[{"title":null,"exercises":[{"name":"ردیف هالتر خم / T-Bar","sets":"4 × 8-10","rest":"۲:۳۰","imageKey":"barbell-row"},{"name":"بارفیکس / لات پول‌داون","sets":"4 × 8-10","rest":"۲:۳۰","imageKey":"pull-up"},{"name":"کابل رو به رو (Seated Row)","sets":"3 × 10-12","rest":"۲:۰۰","imageKey":"seated-row"},{"name":"فیس پول","sets":"4 × 15-20","rest":"۱:۳۰","imageKey":"face-pull"},{"name":"پول‌اور دمبل / کابل","sets":"3 × 12-15","rest":"۱:۳۰","imageKey":"pullover"},{"name":"شراگ دمبل","sets":"3 × 12-15","rest":"۱:۳۰","imageKey":"shrug"},{"name":"جلو بازو چکشی","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"hammer-curl"},{"name":"Reverse Curl (ساعد)","sets":"4 × 12-15","rest":"۱:۰۰","imageKey":"reverse-curl"},{"name":"Wrist Curl (ساعد)","sets":"4 × 15-20","rest":"۱:۰۰","imageKey":"wrist-curl"}]}]},{"id":"yekshanbe","name":"یکشنبه","type":"push","typeLabel":"Push A","subtitle":"سینه سنگین + بالای سینه + شکم","icon":"💪","sections":[{"title":null,"exercises":[{"name":"پرس سینه هالتر / دمبل","sets":"4 × 6-8","rest":"۲:۳۰","imageKey":"bench-press"},{"name":"پرس سینه شیب‌دار دمبل","sets":"4 × 8-10","rest":"۲:۰۰","imageKey":"incline-press"},{"name":"پرس سرشانه نشسته","sets":"3 × 8-10","rest":"۲:۰۰","imageKey":"shoulder-press"},{"name":"فلای سینه (کابل / دمبل)","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"chest-fly"},{"name":"پشت بازو هالتر خوابیده","sets":"3 × 8-10","rest":"۱:۳۰","imageKey":"skull-crusher"},{"name":"پشت بازو کابل (طناب)","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"triceps-pushdown"},{"name":"نشر جانب دمبل","sets":"3 × 12-15","rest":"۱:۰۰","imageKey":"lateral-raise"},{"name":"کرانچ کابل (شکم)","sets":"3 × 15-20","rest":"۱:۰۰","imageKey":"cable-crunch"},{"name":"پلانک","sets":"3 × 40-60 ثانیه","rest":"۱:۰۰","imageKey":"plank"}]}]},{"id":"doshanbe","name":"دوشنبه","type":"rest","typeLabel":"استراحت","subtitle":"ریکاوری سینه و سرشانه","icon":"😴","note":"استراحت کامل. کشش سبک ۱۰ دقیقه (اختیاری). آب کافی بنوش.","sections":[]},{"id":"seshanbe","name":"سه‌شنبه","type":"leg","typeLabel":"Leg A","subtitle":"کوادر + شکم و پهلو","icon":"🦵","sections":[{"title":null,"exercises":[{"name":"اسکوات / پرس پا","sets":"4 × 6-10","rest":"۲:۳۰","imageKey":"squat"},{"name":"پرس پا (پا باز)","sets":"4 × 10-12","rest":"۲:۰۰","imageKey":"leg-press"},{"name":"لانج بلغاریایی","sets":"3 × 10-12 هر پا","rest":"۲:۰۰","imageKey":"bulgarian-lunge"},{"name":"اکستنشن پا","sets":"3 × 12-15","rest":"۱:۳۰","imageKey":"leg-extension"},{"name":"ساق ایستاده","sets":"4 × 12-15","rest":"۱:۰۰","imageKey":"calf-standing"},{"name":"کرانچ پا بالا (شکم پایین)","sets":"3 × 15-20","rest":"۱:۰۰","imageKey":"reverse-crunch"},{"name":"Russian Twist (پهلو)","sets":"3 × 20 هر طرف","rest":"۱:۰۰","imageKey":"russian-twist"},{"name":"Hanging Leg Raise (شکم)","sets":"3 × 12-15","rest":"۱:۰۰","imageKey":"hanging-leg-raise"}]}]},{"id":"chaharshanbe","name":"چهارشنبه","type":"push","typeLabel":"Push B","subtitle":"بالای سینه + سرشانه + شکم (روز نقاط ضعف)","icon":"💪","sections":[{"title":null,"exercises":[{"name":"پرس سینه شیب‌دار دمبل","sets":"4 × 10-12","rest":"۲:۰۰","imageKey":"incline-press"},{"name":"کراس‌اور کابل (پایین به بالا)","sets":"4 × 12-15","rest":"۱:۳۰","imageKey":"cable-crossover"},{"name":"پرس سینه دستگاه / دمبل تخت","sets":"3 × 10-12","rest":"۲:۰۰","imageKey":"machine-press"},{"name":"پرس سرشانه دمبل ایستاده","sets":"4 × 10-12","rest":"۱:۳۰","imageKey":"shoulder-press"},{"name":"نشر جلو دمبل","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"front-raise"},{"name":"پشت بازو دمبل تک‌دست","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"one-arm-triceps"},{"name":"پشت بازو هالتر پشت‌سر (EZ)","sets":"3 × 12-15","rest":"۱:۰۰","imageKey":"triceps-overhead"},{"name":"کرانچ کابل + پلانک جانبی (سوپرست)","sets":"3 × 15 + 30ث","rest":"۱:۰۰","imageKey":"side-plank"},{"name":"Vacuum (کشش نفس شکم)","sets":"3 × 20-30 ثانیه","rest":"۱:۰۰","imageKey":"vacuum"}]}]},{"id":"panjshanbe","name":"پنج‌شنبه","type":"pull","typeLabel":"Pull B + Leg B","subtitle":"کمر + همسترینگ + ساعد (~۷۵–۹۰ دقیقه)","icon":"🏋️","sections":[{"title":"بخش پشت","exercises":[{"name":"ددلیفت رومانیایی","sets":"4 × 8-10","rest":"۲:۳۰","imageKey":"rdl"},{"name":"پول‌داون عرضی (دست باز)","sets":"4 × 10-12","rest":"۲:۰۰","imageKey":"lat-pulldown"},{"name":"پول‌داون تک‌دست","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"one-arm-pulldown"},{"name":"ردیف نشسته تک‌دست","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"one-arm-row"},{"name":"نشر خم (Rear Delt)","sets":"4 × 15-20","rest":"۱:۳۰","imageKey":"rear-delt"},{"name":"کرانچ معکوس","sets":"3 × 15","rest":"۱:۰۰","imageKey":"reverse-crunch"},{"name":"جلو بازو لاری","sets":"3 × 10-12","rest":"۱:۳۰","imageKey":"drag-curl"},{"name":"Farmer's Walk","sets":"3 × 30-40 متر","rest":"۱:۳۰","imageKey":"farmers-walk"},{"name":"ساعد هالتر پشت‌سر (EZ)","sets":"4 × 12-15","rest":"۱:۰۰","imageKey":"behind-back-wrist"}]},{"title":"بخش پا (همسترینگ)","exercises":[{"name":"پرس پا (پا بسته / بالای پا)","sets":"3 × 12-15","rest":"۲:۰۰","imageKey":"leg-press-high"},{"name":"کرل همسترینگ","sets":"3 × 12-15","rest":"۱:۳۰","imageKey":"leg-curl"},{"name":"هیپ تراست","sets":"3 × 12-15","rest":"۱:۳۰","imageKey":"hip-thrust"},{"name":"ساق نشسته","sets":"3 × 15-20","rest":"۱:۰۰","imageKey":"calf-seated"}]}]},{"id":"jome","name":"جمعه","type":"rest","typeLabel":"استراحت + کاردیو","subtitle":"LISS · کشش · آب","icon":"🚶","note":"کاردیو LISS: ۲۵–۳۰ دقیقه پیاده‌روی تند یا دوچرخه\n\n      کشش: ۱۰–۱۵ دقیقه\n\n      آب: ۳+ لیتر در کل روز","sections":[]}]};
+window.EXERCISE_IMAGE_MAP = {"barbell-row":{"start":"barbell-row.jpg","end":"barbell-row-end.jpg","source":"Bent Over Barbell Row"},"pull-up":{"start":"pull-up.jpg","end":"pull-up-end.jpg","source":"Pullups"},"seated-row":{"start":"seated-row.jpg","end":"seated-row-end.jpg","source":"Seated Cable Rows"},"face-pull":{"start":"face-pull.jpg","end":"face-pull-end.jpg","source":"Face Pull"},"pullover":{"start":"pullover.jpg","end":"pullover-end.jpg","source":"Straight-Arm Pulldown"},"shrug":{"start":"shrug.jpg","end":"shrug-end.jpg","source":"Barbell Shrug"},"hammer-curl":{"start":"hammer-curl.jpg","end":"hammer-curl-end.jpg","source":"Hammer Curls"},"reverse-curl":{"start":"reverse-curl.jpg","end":"reverse-curl-end.jpg","source":"Reverse Barbell Curl"},"wrist-curl":{"start":"wrist-curl.jpg","end":"wrist-curl-end.jpg","source":"Palms-Up Barbell Wrist Curl Over A Bench"},"bench-press":{"start":"bench-press.jpg","end":"bench-press-end.jpg","source":"Barbell Bench Press - Medium Grip"},"incline-press":{"start":"incline-press.jpg","end":"incline-press-end.jpg","source":"Incline Dumbbell Press"},"shoulder-press":{"start":"shoulder-press.jpg","end":"shoulder-press-end.jpg","source":"Dumbbell Shoulder Press"},"chest-fly":{"start":"chest-fly.jpg","end":"chest-fly-end.jpg","source":"Dumbbell Flyes"},"skull-crusher":{"start":"skull-crusher.jpg","end":"skull-crusher-end.jpg","source":"Lying Triceps Press"},"triceps-pushdown":{"start":"triceps-pushdown.jpg","end":"triceps-pushdown-end.jpg","source":"Triceps Pushdown"},"lateral-raise":{"start":"lateral-raise.jpg","end":"lateral-raise-end.jpg","source":"Side Lateral Raise"},"cable-crunch":{"start":"cable-crunch.jpg","end":"cable-crunch-end.jpg","source":"Cable Crunch"},"plank":{"start":"plank.jpg","end":"plank-end.jpg","source":"Plank"},"squat":{"start":"squat.jpg","end":"squat-end.jpg","source":"Barbell Squat"},"leg-press":{"start":"leg-press.jpg","end":"leg-press-end.jpg","source":"Leg Press"},"bulgarian-lunge":{"start":"bulgarian-lunge.jpg","end":"bulgarian-lunge-end.jpg","source":"Barbell Lunge"},"leg-extension":{"start":"leg-extension.jpg","end":"leg-extension-end.jpg","source":"Leg Extensions"},"calf-standing":{"start":"calf-standing.jpg","end":"calf-standing-end.jpg","source":"Standing Calf Raises"},"reverse-crunch":{"start":"reverse-crunch.jpg","end":"reverse-crunch-end.jpg","source":"Reverse Crunch"},"russian-twist":{"start":"russian-twist.jpg","end":"russian-twist-end.jpg","source":"Russian Twist"},"hanging-leg-raise":{"start":"hanging-leg-raise.jpg","end":"hanging-leg-raise-end.jpg","source":"Hanging Leg Raise"},"cable-crossover":{"start":"cable-crossover.jpg","end":"cable-crossover-end.jpg","source":"Cable Crossover"},"front-raise":{"start":"front-raise.jpg","end":"front-raise-end.jpg","source":"Front Dumbbell Raise"},"one-arm-triceps":{"start":"one-arm-triceps.jpg","end":"one-arm-triceps-end.jpg","source":"Tricep Dumbbell Kickback"},"triceps-overhead":{"start":"triceps-overhead.jpg","end":"triceps-overhead-end.jpg","source":"Standing Overhead Barbell Triceps Extension"},"side-plank":{"start":"side-plank.jpg","end":"side-plank-end.jpg","source":"Side Bridge"},"vacuum":{"start":"vacuum.jpg","end":"vacuum-end.jpg","source":"Stomach Vacuum"},"rdl":{"start":"rdl.jpg","end":"rdl-end.jpg","source":"Romanian Deadlift"},"lat-pulldown":{"start":"lat-pulldown.jpg","end":"lat-pulldown-end.jpg","source":"Wide-Grip Lat Pulldown"},"one-arm-pulldown":{"start":"one-arm-pulldown.jpg","end":"one-arm-pulldown-end.jpg","source":"One Arm Lat Pulldown"},"one-arm-row":{"start":"one-arm-row.jpg","end":"one-arm-row-end.jpg","source":"One-Arm Dumbbell Row"},"rear-delt":{"start":"rear-delt.jpg","end":"rear-delt-end.jpg","source":"Bent Over Dumbbell Rear Delt Raise With Head On Bench"},"drag-curl":{"start":"drag-curl.jpg","end":"drag-curl-end.jpg","source":"Drag Curl"},"farmers-walk":{"start":"farmers-walk.jpg","end":"farmers-walk-end.jpg","source":"Farmer's Walk"},"behind-back-wrist":{"start":"behind-back-wrist.jpg","end":"behind-back-wrist-end.jpg","source":"Standing Palms-Up Barbell Behind The Back Wrist Curl"},"leg-press-high":{"start":"leg-press-high.jpg","end":"leg-press-high-end.jpg","source":"Leg Press"},"leg-curl":{"start":"leg-curl.jpg","end":"leg-curl-end.jpg","source":"Lying Leg Curls"},"hip-thrust":{"start":"hip-thrust.jpg","end":"hip-thrust-end.jpg","source":"Barbell Hip Thrust"},"calf-seated":{"start":"calf-seated.jpg","end":"calf-seated-end.jpg","source":"Seated Calf Raise"},"machine-press":{"start":"machine-press.jpg","end":"machine-press-end.jpg","source":"Machine Bench Press"}};
+window.EXERCISE_IMAGE_KEYS = ["barbell-row","pull-up","seated-row","face-pull","pullover","shrug","hammer-curl","reverse-curl","wrist-curl","bench-press","incline-press","shoulder-press","chest-fly","skull-crusher","triceps-pushdown","lateral-raise","cable-crunch","plank","squat","leg-press","bulgarian-lunge","leg-extension","calf-standing","reverse-crunch","russian-twist","hanging-leg-raise","cable-crossover","front-raise","one-arm-triceps","triceps-overhead","side-plank","vacuum","rdl","lat-pulldown","one-arm-pulldown","one-arm-row","rear-delt","drag-curl","farmers-walk","behind-back-wrist","leg-press-high","leg-curl","hip-thrust","calf-seated","machine-press"];
+
+window.ProgramStore = (function () {
+  const LIBRARY_KEY = 'barname-programs-v1';
+  const OLD = {
+    sets: 'barname-workout-sets',
+    weights: 'barname-workout-weights',
+    dates: 'barname-workout-set-dates',
+    history: 'barname-workout-history',
+  };
+
+  function safeParse(raw, fallback) {
+    try { return JSON.parse(raw); } catch { return fallback; }
+  }
+
+  function progressKey(programId, kind) {
+    return 'barname-p:' + programId + ':' + kind;
+  }
+
+  function ensureLibrary() {
+    let lib = safeParse(localStorage.getItem(LIBRARY_KEY) || 'null', null);
+    if (!lib || !Array.isArray(lib.programs) || !lib.programs.length) {
+      const builtinCopy = JSON.parse(JSON.stringify(window.BUILTIN_PROGRAM));
+      lib = { activeProgramId: 'builtin', programs: [builtinCopy] };
+      localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib));
+      migrateLegacyToBuiltin();
+    } else {
+      const hasBuiltin = lib.programs.some((p) => p.id === 'builtin');
+      if (!hasBuiltin) {
+        lib.programs.unshift(JSON.parse(JSON.stringify(window.BUILTIN_PROGRAM)));
+        localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib));
+      } else {
+        // keep builtin days fresh from code while preserving id/name
+        const idx = lib.programs.findIndex((p) => p.id === 'builtin');
+        const fresh = JSON.parse(JSON.stringify(window.BUILTIN_PROGRAM));
+        fresh.name = lib.programs[idx].name || fresh.name;
+        lib.programs[idx] = fresh;
+        localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib));
+      }
+    }
+    return lib;
+  }
+
+  function migrateLegacyToBuiltin() {
+    const flag = 'barname-programs-migrated-v1';
+    if (localStorage.getItem(flag)) return;
+    ['sets', 'weights', 'dates', 'history'].forEach((kind) => {
+      const oldVal = localStorage.getItem(OLD[kind]);
+      if (!oldVal) return;
+      const target = progressKey('builtin', kind);
+      if (!localStorage.getItem(target)) localStorage.setItem(target, oldVal);
+    });
+    localStorage.setItem(flag, '1');
+  }
+
+  function saveLibrary(lib) {
+    localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib));
+  }
+
+  function getLibrary() {
+    return ensureLibrary();
+  }
+
+  function getActiveProgramId() {
+    return getLibrary().activeProgramId || 'builtin';
+  }
+
+  function getActiveProgram() {
+    const lib = getLibrary();
+    return lib.programs.find((p) => p.id === lib.activeProgramId) || lib.programs[0];
+  }
+
+  function setActiveProgram(programId) {
+    const lib = getLibrary();
+    if (!lib.programs.some((p) => p.id === programId)) return false;
+    lib.activeProgramId = programId;
+    saveLibrary(lib);
+    return true;
+  }
+
+  function upsertProgram(program) {
+    const lib = getLibrary();
+    const idx = lib.programs.findIndex((p) => p.id === program.id);
+    if (idx >= 0) lib.programs[idx] = program;
+    else lib.programs.push(program);
+    lib.activeProgramId = program.id;
+    saveLibrary(lib);
+  }
+
+  function renameProgram(programId, name) {
+    const lib = getLibrary();
+    const p = lib.programs.find((x) => x.id === programId);
+    if (!p || p.id === 'builtin') return false;
+    p.name = String(name || '').trim() || p.name;
+    saveLibrary(lib);
+    return true;
+  }
+
+  function deleteProgram(programId) {
+    if (programId === 'builtin') return false;
+    const lib = getLibrary();
+    lib.programs = lib.programs.filter((p) => p.id !== programId);
+    if (lib.activeProgramId === programId) lib.activeProgramId = 'builtin';
+    saveLibrary(lib);
+    ['sets', 'weights', 'dates', 'history'].forEach((kind) => {
+      localStorage.removeItem(progressKey(programId, kind));
+    });
+    return true;
+  }
+
+  function loadProgress(kind) {
+    const key = progressKey(getActiveProgramId(), kind);
+    return safeParse(localStorage.getItem(key) || '{}', {});
+  }
+
+  function saveProgress(kind, data) {
+    localStorage.setItem(progressKey(getActiveProgramId(), kind), JSON.stringify(data));
+  }
+
+  return {
+    getLibrary,
+    getActiveProgramId,
+    getActiveProgram,
+    setActiveProgram,
+    upsertProgram,
+    renameProgram,
+    deleteProgram,
+    loadProgress,
+    saveProgress,
+    progressKey,
+    migrateLegacyToBuiltin,
+  };
+})();
+</script>
+
 <script>
 /*__APP_UPDATE_CONFIG__*/
 const APP_UPDATE_CONFIG = {
@@ -2288,7 +2540,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.13"
+  "currentVersion": "1.0.14"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -2350,28 +2602,24 @@ const APP_UPDATE_CONFIG = {
 
   requestWakeLock();
 
-  // Day tabs
-  const tabs = document.querySelectorAll('.day-tab');
-  const panels = document.querySelectorAll('.day-panel');
+  // Day tabs (re-bound after program mount)
   const jsToIran = { 6: 'shanbe', 0: 'yekshanbe', 1: 'doshanbe', 2: 'seshanbe', 3: 'chaharshanbe', 4: 'panjshanbe', 5: 'jome' };
   const today = jsToIran[new Date().getDay()] || 'shanbe';
 
   function selectDay(dayId) {
-    tabs.forEach(t => {
+    document.querySelectorAll('.day-tab').forEach(t => {
       const active = t.dataset.day === dayId;
       t.classList.toggle('active', active);
       t.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    panels.forEach(p => p.classList.toggle('active', p.dataset.day === dayId));
+    document.querySelectorAll('.day-panel').forEach(p => p.classList.toggle('active', p.dataset.day === dayId));
     const activeTab = document.querySelector(`.day-tab[data-day="${dayId}"]`);
     if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     try { history.replaceState(null, '', `#${dayId}`); } catch (_) {}
   }
 
-  tabs.forEach(tab => tab.addEventListener('click', () => selectDay(tab.dataset.day)));
-
-  const hashDay = location.hash.replace('#', '');
-  selectDay(tabs.length && [...tabs].some(t => t.dataset.day === hashDay) ? hashDay : today);
+  window.selectDay = selectDay;
+  window.getWorkoutTodayId = () => today;
 
   // Bottom navigation
   const appViews = document.querySelectorAll('.app-view');
@@ -2394,8 +2642,8 @@ const APP_UPDATE_CONFIG = {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const HISTORY_KEY = 'barname-workout-history';
-  const DATES_KEY = 'barname-workout-set-dates';
+  function HISTORY_KEY() { return window.ProgramStore.progressKey(window.ProgramStore.getActiveProgramId(), 'history'); }
+  function DATES_KEY() { return window.ProgramStore.progressKey(window.ProgramStore.getActiveProgramId(), 'dates'); }
   const dayIdToJsWeekday = {
     shanbe: 6,
     yekshanbe: 0,
@@ -2414,19 +2662,19 @@ const APP_UPDATE_CONFIG = {
   }
 
   function loadHistory() {
-    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}'); } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY()) || '{}'); } catch { return {}; }
   }
 
   function saveHistory(data) {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(data));
+    localStorage.setItem(HISTORY_KEY(), JSON.stringify(data));
   }
 
   function loadSetDates() {
-    try { return JSON.parse(localStorage.getItem(DATES_KEY) || '{}'); } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem(DATES_KEY()) || '{}'); } catch { return {}; }
   }
 
   function saveSetDates(data) {
-    localStorage.setItem(DATES_KEY, JSON.stringify(data));
+    localStorage.setItem(DATES_KEY(), JSON.stringify(data));
   }
 
   function latestDateForWeekday(jsWeekday, ref = new Date()) {
@@ -2557,6 +2805,8 @@ const APP_UPDATE_CONFIG = {
     refreshMonthlyProgress(totalSets);
   }
 
+  window.refreshProgressView = refreshProgressView;
+
   function refreshMonthlyProgress(weekCapacity) {
     const monthDoneEl = document.getElementById('progressMonthDone');
     const monthDaysEl = document.getElementById('progressMonthDays');
@@ -2677,8 +2927,10 @@ const APP_UPDATE_CONFIG = {
     document.body.style.overflow = '';
   }
 
-  document.querySelectorAll('.exercise-thumb-wrap').forEach(btn => {
-    btn.addEventListener('click', () => openLightbox(btn));
+  document.getElementById('workoutPanels')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.exercise-thumb-wrap');
+    if (!btn) return;
+    openLightbox(btn);
   });
 
   document.getElementById('lightbox-prev').addEventListener('click', e => { e.stopPropagation(); goTo(current - 1); });
@@ -2704,8 +2956,8 @@ const APP_UPDATE_CONFIG = {
   });
 
   // Set checklist + rest timer
-  const STORAGE_KEY = 'barname-workout-sets';
-  const WEIGHTS_KEY = 'barname-workout-weights';
+  function STORAGE_KEY() { return window.ProgramStore.progressKey(window.ProgramStore.getActiveProgramId(), 'sets'); }
+  function WEIGHTS_KEY() { return window.ProgramStore.progressKey(window.ProgramStore.getActiveProgramId(), 'weights'); }
   const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
 
   function toEnglishDigits(value) {
@@ -2738,18 +2990,18 @@ const APP_UPDATE_CONFIG = {
   }
 
   function loadSavedSets() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY()) || '{}'); } catch { return {}; }
   }
 
   function loadSavedWeights() {
-    try { return JSON.parse(localStorage.getItem(WEIGHTS_KEY) || '{}'); } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem(WEIGHTS_KEY()) || '{}'); } catch { return {}; }
   }
 
   function saveSetState(exerciseId, setIndex, done) {
     const data = loadSavedSets();
     if (!data[exerciseId]) data[exerciseId] = [];
     data[exerciseId][setIndex] = done;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY(), JSON.stringify(data));
     recordSetCompletion(exerciseId, setIndex, done);
   }
 
@@ -2763,7 +3015,7 @@ const APP_UPDATE_CONFIG = {
       const num = Number(cleaned);
       data[exerciseId][setIndex] = Number.isFinite(num) ? String(num) : cleaned;
     }
-    localStorage.setItem(WEIGHTS_KEY, JSON.stringify(data));
+    localStorage.setItem(WEIGHTS_KEY(), JSON.stringify(data));
   }
 
   function formatWeightDisplay(value) {
@@ -2893,7 +3145,7 @@ const APP_UPDATE_CONFIG = {
     Object.keys(data).forEach(key => {
       if (key.startsWith(`${dayId}-`)) delete data[key];
     });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(STORAGE_KEY(), JSON.stringify(data));
     clearSetDatesForDay(dayId);
 
     panel.querySelectorAll('tr.exercise-row').forEach(row => {
@@ -2918,7 +3170,8 @@ const APP_UPDATE_CONFIG = {
       if (!panel.querySelector('tbody tr .sets')) return;
 
       const header = panel.querySelector('.card-header');
-      if (!header || header.querySelector('.day-reset-btn')) return;
+      if (!header) return;
+      header.querySelectorAll('.day-reset-btn').forEach(b => b.remove());
 
       const textWrap = header.querySelector('div:not(.icon)');
       if (textWrap) textWrap.classList.add('card-header-text');
@@ -2941,6 +3194,14 @@ const APP_UPDATE_CONFIG = {
     document.querySelectorAll('.day-panel').forEach(panel => {
       const dayId = panel.dataset.day;
       if (panel.querySelector('.rest-content') && !panel.querySelector('tbody tr .sets')) return;
+
+      panel.querySelectorAll('.set-check-col').forEach(col => col.remove());
+      panel.querySelectorAll('tr.exercise-row').forEach(row => row.classList.remove('exercise-row', 'exercise-done', 'exercise-current'));
+      panel.querySelectorAll('.exercise-current-badge').forEach(b => b.remove());
+      panel.querySelectorAll('.exercise-info').forEach(info => {
+        const name = info.querySelector('.exercise-name');
+        if (name) info.replaceWith(name);
+      });
 
       let exerciseIndex = 0;
       panel.querySelectorAll('tbody tr').forEach(row => {
@@ -3065,9 +3326,286 @@ const APP_UPDATE_CONFIG = {
     });
   }
 
-  initSetChecklists();
-  initDayResetButtons();
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function imageFilesForKey(imageKey) {
+    const map = window.EXERCISE_IMAGE_MAP || {};
+    const item = map[imageKey];
+    if (item) return { start: item.start, end: item.end };
+    if (imageKey) return { start: imageKey + '.jpg', end: imageKey + '-end.jpg' };
+    return null;
+  }
+
+  function renderExerciseRow(ex, index) {
+    const files = imageFilesForKey(ex.imageKey);
+    const name = escapeHtml(ex.name);
+    let thumb = '';
+    if (files) {
+      thumb = `<button type="button" class="exercise-thumb-wrap" data-start="${files.start}" data-end="${files.end}" data-name="${name}" aria-label="نمایش ${name}"><img data-img="${files.start}" alt="${name}" class="exercise-thumb"><span class="thumb-badge" aria-hidden="true">۲</span></button>`;
+    } else {
+      const letter = (ex.name || '?').trim().charAt(0);
+      thumb = `<div class="exercise-thumb-wrap" aria-hidden="true"><div class="exercise-thumb-placeholder">${escapeHtml(letter)}</div></div>`;
+    }
+    return `<tr><td>${toPersianNum(index + 1)}</td><td><div class="exercise-cell">${thumb}<span class="exercise-name">${name}</span></div></td><td class="sets">${escapeHtml(ex.sets)}</td><td class="rest-time hide-mobile">${escapeHtml(ex.rest)}</td></tr>`;
+  }
+
+  function renderDayPanel(day) {
+    const noteHtml = day.note
+      ? `<div class="rest-content">${escapeHtml(day.note).replace(/\n/g, '<br>')}</div>`
+      : '';
+    const sections = Array.isArray(day.sections) ? day.sections : [];
+    let body = '';
+    let globalIndex = 0;
+    sections.forEach((section) => {
+      if (section.title) body += `<div class="sub-section">${escapeHtml(section.title)}</div>`;
+      const rows = (section.exercises || []).map((ex) => {
+        const row = renderExerciseRow(ex, globalIndex);
+        globalIndex += 1;
+        return row;
+      }).join('');
+      if (rows) {
+        body += `<div class="card-body"><table><thead><tr><th>#</th><th>حرکت</th><th>ست × تکرار</th><th class="hide-mobile">استراحت</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      }
+    });
+    return `
+      <div class="card day-panel" data-day="${escapeHtml(day.id)}">
+        <div class="card-header ${escapeHtml(day.type || 'rest')}">
+          <div class="icon">${escapeHtml(day.icon || '🏋️')}</div>
+          <div>
+            <h2>${escapeHtml(day.name)} — ${escapeHtml(day.typeLabel || '')}</h2>
+            <div class="sub">${escapeHtml(day.subtitle || '')}</div>
+          </div>
+        </div>
+        ${body || noteHtml}
+      </div>`;
+  }
+
+  function renderProgramTabs(program) {
+    const tabsEl = document.getElementById('dayTabs');
+    const panelsEl = document.getElementById('workoutPanels');
+    if (!tabsEl || !panelsEl) return;
+    tabsEl.innerHTML = (program.days || []).map((day) => `
+      <button type="button" role="tab" class="day-tab ${escapeHtml(day.type || 'rest')}" data-day="${escapeHtml(day.id)}" aria-selected="false">
+        <span class="day-name">${escapeHtml(day.name)}</span>
+        <span class="day-type">${escapeHtml(day.typeLabel || '')}</span>
+      </button>
+    `).join('');
+    panelsEl.innerHTML = (program.days || []).map(renderDayPanel).join('');
+    tabsEl.querySelectorAll('.day-tab').forEach((tab) => {
+      tab.addEventListener('click', () => selectDay(tab.dataset.day));
+    });
+  }
+
+  function refreshProgramChrome() {
+    const program = window.ProgramStore.getActiveProgram();
+    const nameEl = document.getElementById('activeProgramName');
+    if (nameEl) nameEl.textContent = program?.name || 'برنامه';
+    const list = document.getElementById('programList');
+    if (!list) return;
+    const lib = window.ProgramStore.getLibrary();
+    list.innerHTML = lib.programs.map((p) => {
+      const active = p.id === lib.activeProgramId;
+      const source = p.source === 'builtin' ? 'پایه' : 'هوش مصنوعی';
+      const delBtn = p.id === 'builtin' ? '' : `<button type="button" class="program-mini-btn danger" data-action="delete" data-id="${escapeHtml(p.id)}">حذف</button>`;
+      const renameBtn = p.id === 'builtin' ? '' : `<button type="button" class="program-mini-btn" data-action="rename" data-id="${escapeHtml(p.id)}">نام</button>`;
+      return `
+        <div class="program-list-item ${active ? 'active' : ''}">
+          <div class="program-list-meta">
+            <strong>${escapeHtml(p.name)}</strong>
+            <span>${source}${active ? ' · فعال' : ''}</span>
+          </div>
+          <div class="program-list-actions">
+            <button type="button" class="program-mini-btn" data-action="activate" data-id="${escapeHtml(p.id)}">${active ? 'فعال' : 'انتخاب'}</button>
+            ${renameBtn}
+            ${delBtn}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function mountActiveProgram(preferredDayId) {
+    const program = window.ProgramStore.getActiveProgram();
+    renderProgramTabs(program);
+    initExerciseImages();
+    initSetChecklists();
+    initDayResetButtons();
+    refreshProgramChrome();
+    const hashDay = preferredDayId || location.hash.replace('#', '');
+    const days = (program.days || []).map((d) => d.id);
+    const target = days.includes(hashDay) ? hashDay : (days.includes(today) ? today : days[0]);
+    if (target) selectDay(target);
+  }
+
+  window.mountActiveProgram = mountActiveProgram;
+  window.refreshProgramChrome = refreshProgramChrome;
+
+  window.ProgramStore.migrateLegacyToBuiltin();
+  mountActiveProgram();
   migrateSetDatesFromSaved();
+})();
+
+
+(function () {
+  const overlay = document.getElementById('programWizardOverlay');
+  const form = document.getElementById('programWizardForm');
+  const statusEl = document.getElementById('programWizardStatus');
+  const submitBtn = document.getElementById('programWizardSubmitBtn');
+  if (!overlay || !form) return;
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg || '';
+    statusEl.className = 'program-wizard-status' + (kind ? ' ' + kind : '');
+  }
+
+  function openWizard() {
+    overlay.classList.remove('hidden');
+    overlay.setAttribute('aria-hidden', 'false');
+    setStatus('');
+  }
+
+  function closeWizard() {
+    overlay.classList.add('hidden');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function openProgramsMore() {
+    document.querySelector('.bottom-nav-item[data-view="more"]')?.click();
+    setTimeout(() => document.getElementById('programsCard')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+
+  document.getElementById('openProgramWizardBtn')?.addEventListener('click', openWizard);
+  document.getElementById('openProgramWizardFromMoreBtn')?.addEventListener('click', openWizard);
+  document.getElementById('openProgramListBtn')?.addEventListener('click', openProgramsMore);
+  document.getElementById('programWizardCancelBtn')?.addEventListener('click', closeWizard);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeWizard();
+  });
+
+  document.getElementById('programList')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    if (action === 'activate') {
+      window.ProgramStore.setActiveProgram(id);
+      window.mountActiveProgram();
+      window.refreshProgressView?.();
+    } else if (action === 'rename') {
+      const current = window.ProgramStore.getLibrary().programs.find((p) => p.id === id);
+      const next = prompt('نام جدید برنامه:', current?.name || '');
+      if (next != null) {
+        window.ProgramStore.renameProgram(id, next);
+        window.refreshProgramChrome();
+        if (window.ProgramStore.getActiveProgramId() === id) {
+          document.getElementById('activeProgramName').textContent = next.trim() || current.name;
+        }
+      }
+    } else if (action === 'delete') {
+      if (!confirm('این برنامه و پیشرفت مربوط به آن حذف شود؟')) return;
+      window.ProgramStore.deleteProgram(id);
+      window.mountActiveProgram();
+    }
+  });
+
+  function normalizeAiProgram(raw, profile) {
+    const program = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    const allowed = new Set(window.EXERCISE_IMAGE_KEYS || []);
+    const dayIds = ['shanbe','yekshanbe','doshanbe','seshanbe','chaharshanbe','panjshanbe','jome'];
+    const nameMap = {shanbe:'شنبه',yekshanbe:'یکشنبه',doshanbe:'دوشنبه',seshanbe:'سه‌شنبه',chaharshanbe:'چهارشنبه',panjshanbe:'پنج‌شنبه',jome:'جمعه'};
+    const byId = {};
+    (program.days || []).forEach((d) => { if (d && d.id) byId[d.id] = d; });
+    const days = dayIds.map((id) => {
+      const src = byId[id] || {};
+      const sections = Array.isArray(src.sections) ? src.sections.map((section) => ({
+        title: section?.title || null,
+        exercises: Array.isArray(section?.exercises) ? section.exercises.map((ex) => ({
+          name: String(ex?.name || 'حرکت').trim(),
+          sets: String(ex?.sets || '3 × 10-12').trim(),
+          rest: String(ex?.rest || '۱:۳۰').trim(),
+          imageKey: allowed.has(ex?.imageKey) ? ex.imageKey : undefined,
+        })) : [],
+      })) : [];
+      const type = ['pull','push','leg','rest'].includes(src.type) ? src.type : (sections.some(s => s.exercises.length) ? 'pull' : 'rest');
+      return {
+        id,
+        name: src.name || nameMap[id],
+        type,
+        typeLabel: src.typeLabel || (type === 'rest' ? 'استراحت' : 'تمرین'),
+        subtitle: src.subtitle || '',
+        icon: src.icon || (type === 'rest' ? '😴' : '🏋️'),
+        note: type === 'rest' ? (src.note || 'استراحت و ریکاوری') : undefined,
+        sections: type === 'rest' ? [] : sections,
+      };
+    });
+    return {
+      id: 'ai-' + Date.now(),
+      name: String(program.name || 'برنامه شخصی').trim(),
+      source: 'ai',
+      createdAt: new Date().toISOString(),
+      profile,
+      days,
+    };
+  }
+
+  window.__onWorkoutProgramGenerated = function (payload) {
+    submitBtn.disabled = false;
+    if (!payload?.success) {
+      setStatus(payload?.message || 'ساخت برنامه ناموفق بود', 'error');
+      return;
+    }
+    try {
+      const profile = form._lastProfile || {};
+      const program = normalizeAiProgram(payload.programJson || payload.program, profile);
+      window.ProgramStore.upsertProgram(program);
+      window.mountActiveProgram();
+      setStatus('برنامه ذخیره و فعال شد.', 'ok');
+      setTimeout(() => {
+        closeWizard();
+        document.querySelector('.bottom-nav-item[data-view="workout"]')?.click();
+      }, 500);
+    } catch (err) {
+      setStatus(err?.message || 'خطا در ذخیره برنامه', 'error');
+    }
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const profile = {
+      gender: document.getElementById('pwGender').value,
+      age: Number(document.getElementById('pwAge').value),
+      weightKg: Number(document.getElementById('pwWeight').value),
+      heightCm: Number(document.getElementById('pwHeight').value),
+      experience: document.getElementById('pwExperience').value,
+      goal: document.getElementById('pwGoal').value,
+      daysPerWeek: Number(document.getElementById('pwDays').value),
+      equipment: document.getElementById('pwEquipment').value,
+      notes: document.getElementById('pwNotes').value.trim(),
+    };
+    form._lastProfile = profile;
+
+    if (typeof AndroidApp === 'undefined' || typeof AndroidApp.generateWorkoutProgram !== 'function') {
+      setStatus('ساخت با هوش مصنوعی فقط در اپ اندروید فعال است. APK جدید نصب کن.', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    setStatus('در حال ساخت برنامه... ممکن است تا یک دقیقه طول بکشد.');
+    try {
+      AndroidApp.generateWorkoutProgram(JSON.stringify(profile));
+    } catch (err) {
+      submitBtn.disabled = false;
+      setStatus(err?.message || 'خطا در شروع ساخت برنامه', 'error');
+    }
+  });
+
+  window.refreshProgramChrome?.();
 })();
 
 (function () {
