@@ -605,12 +605,27 @@ body[data-panel-breakpoint="wide"] {
 
 /* ── Bale news ── */
 .bale-actions {
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: stretch;
 }
 
-.bale-actions > button {
-  min-width: 0;
+.bale-actions > #bale-save-channels-btn {
+  flex: 0 0 auto;
+}
+
+.bale-actions > #bale-fetch-btn {
   flex: 1 1 auto;
+  min-width: 0;
+}
+
+.bale-status-msg {
+  min-height: 1.25rem;
+  margin: 0;
+  line-height: 1.25rem;
+}
+
+.bale-status-msg.is-empty {
+  visibility: hidden;
 }
 
 /* ── Tech detector ── */

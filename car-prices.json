@@ -105,9 +105,9 @@
       "trimFa": "تیپ S",
       "modelYear": 1405,
       "className": null,
-      "factoryPrice": 803000000,
+      "factoryPrice": null,
       "marketPrice": 1310000000,
-      "factoryPriceDiff": 0,
+      "factoryPriceDiff": null,
       "marketPriceDiff": 0
     },
     {
@@ -116,9 +116,9 @@
       "trimFa": "1.5 لیتر",
       "modelYear": 1405,
       "className": null,
-      "factoryPrice": 2476000000,
+      "factoryPrice": null,
       "marketPrice": 3100000000,
-      "factoryPriceDiff": 0,
+      "factoryPriceDiff": null,
       "marketPriceDiff": 0
     },
     {
@@ -545,9 +545,9 @@
       "trimFa": "بنزینی",
       "modelYear": 1404,
       "className": null,
-      "factoryPrice": 1444000000,
+      "factoryPrice": null,
       "marketPrice": 1875000000,
-      "factoryPriceDiff": 0,
+      "factoryPriceDiff": null,
       "marketPriceDiff": 0
     },
     {
@@ -567,9 +567,9 @@
       "trimFa": "دوگانه سوز",
       "modelYear": 1404,
       "className": null,
-      "factoryPrice": 1900000000,
+      "factoryPrice": null,
       "marketPrice": 1800000000,
-      "factoryPriceDiff": 0,
+      "factoryPriceDiff": null,
       "marketPriceDiff": 0
     },
     {
@@ -985,9 +985,9 @@
       "trimFa": "L دنده ای",
       "modelYear": 1405,
       "className": "ESC",
-      "factoryPrice": 829000000,
+      "factoryPrice": null,
       "marketPrice": 1250000000,
-      "factoryPriceDiff": 0,
+      "factoryPriceDiff": null,
       "marketPriceDiff": 0
     },
     {
@@ -1079,6 +1079,6 @@
       "marketPriceDiff": 0
     }
   ],
-  "lastUpdate": "18 ساعت پیش",
-  "fetchedAt": "2026-07-13T08:59:21.045Z"
+  "lastUpdate": "33 دقیقه پیش",
+  "fetchedAt": "2026-07-13T12:13:27.076Z"
 }
