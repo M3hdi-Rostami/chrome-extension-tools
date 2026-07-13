@@ -13,19 +13,29 @@ const ExtensionUpdater = {
     return chrome.runtime.getManifest().version || "0.0.0";
   },
 
-  getManifestUrl() {
-    const { repoOwner, repoName, branch } = this.config;
-    return `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${branch}/manifest.json`;
+  getRepoApiBase() {
+    const { repoOwner, repoName } = this.config;
+    return `https://api.github.com/repos/${repoOwner}/${repoName}`;
   },
 
-  getZipUrl() {
+  getManifestUrl(ref) {
     const { repoOwner, repoName, branch } = this.config;
-    return `https://github.com/${repoOwner}/${repoName}/archive/refs/heads/${branch}.zip`;
+    return `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${ref || branch}/manifest.json`;
+  },
+
+  getZipUrl(ref) {
+    const { repoOwner, repoName, branch } = this.config;
+    return `https://codeload.github.com/${repoOwner}/${repoName}/zip/${ref || branch}`;
   },
 
   getRepoUrl() {
     const { repoOwner, repoName } = this.config;
     return `https://github.com/${repoOwner}/${repoName}`;
+  },
+
+  bust(url) {
+    const separator = url.includes("?") ? "&" : "?";
+    return `${url}${separator}_=${Date.now()}`;
   },
 
   compareVersions(current, latest) {
@@ -43,28 +53,66 @@ const ExtensionUpdater = {
     return 0;
   },
 
+  async fetchLatestCommitSha() {
+    if (!this.config) {
+      throw new Error("تنظیمات به‌روزرسانی یافت نشد.");
+    }
+
+    const { branch } = this.config;
+    const response = await fetch(
+      this.bust(`${this.getRepoApiBase()}/commits/${encodeURIComponent(branch)}`),
+      {
+        cache: "no-store",
+        headers: {
+          Accept: "application/vnd.github+json",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("خطا در دریافت اطلاعات نسخه جدید");
+    }
+
+    const payload = await response.json();
+    const sha = payload?.sha;
+    if (!sha) {
+      throw new Error("خطا در دریافت اطلاعات نسخه جدید");
+    }
+
+    return sha;
+  },
+
   async fetchLatestVersion() {
     if (!this.config) {
       throw new Error("تنظیمات به‌روزرسانی یافت نشد.");
     }
 
-    const response = await fetch(this.getManifestUrl(), { cache: "no-store" });
+    // Branch URLs on raw.githubusercontent.com are CDN-cached (~5 min).
+    // Resolve the tip commit via API, then fetch that immutable SHA.
+    const commitSha = await this.fetchLatestCommitSha();
+    const response = await fetch(this.bust(this.getManifestUrl(commitSha)), {
+      cache: "no-store",
+    });
     if (!response.ok) {
       throw new Error("خطا در دریافت اطلاعات نسخه جدید");
     }
 
     const manifest = await response.json();
-    return manifest.version || "0.0.0";
+    return {
+      version: manifest.version || "0.0.0",
+      commitSha,
+    };
   },
 
   async checkForUpdate() {
     const currentVersion = this.getCurrentVersion();
-    const latestVersion = await this.fetchLatestVersion();
+    const { version: latestVersion, commitSha } = await this.fetchLatestVersion();
     const comparison = this.compareVersions(currentVersion, latestVersion);
 
     return {
       currentVersion,
       latestVersion,
+      commitSha,
       hasUpdate: comparison > 0,
       isDowngrade: comparison < 0,
     };
@@ -175,8 +223,10 @@ const ExtensionUpdater = {
     return handle;
   },
 
-  async downloadZipWithProgress(onProgress) {
-    const response = await fetch(this.getZipUrl(), { cache: "no-store" });
+  async downloadZipWithProgress(onProgress, commitSha) {
+    const response = await fetch(this.bust(this.getZipUrl(commitSha)), {
+      cache: "no-store",
+    });
     if (!response.ok) {
       throw new Error("دریافت نسخه جدید ناموفق بود.");
     }
@@ -364,7 +414,7 @@ const ExtensionUpdater = {
 
     const zipBuffer = await this.downloadZipWithProgress((ratio) => {
       report(this.mapProgress("download", ratio), "در حال دریافت نسخه جدید...");
-    });
+    }, result.commitSha);
 
     report(this.mapProgress("extract", 0), "در حال اعمال فایل‌های جدید...");
 
