@@ -1,0 +1,100 @@
+<template id="tpl-bale-quick-reply">
+    <div class="h-full flex flex-col gap-3 text-sm">
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-3 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+                <div id="bqr-tab-status"
+                    class="flex items-center gap-1.5 text-[11px] text-gray-500 min-w-0">
+                    <span id="bqr-tab-dot" class="w-2 h-2 rounded-full bg-gray-300 shrink-0"></span>
+                    <span id="bqr-tab-label" class="truncate">در حال بررسی تب بله...</span>
+                </div>
+                <button type="button" id="bqr-refresh-tab-btn"
+                    class="shrink-0 text-[11px] text-indigo-600 hover:text-indigo-500 font-medium px-1.5 py-0.5 rounded">
+                    بررسی
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-gray-50">
+                <label for="bqr-auto-send" class="flex items-center gap-2 cursor-pointer select-none min-w-0">
+                    <input id="bqr-auto-send" type="checkbox" checked
+                        class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-400" />
+                    <span class="text-xs text-gray-700">ارسال خودکار</span>
+                </label>
+                <span class="text-[10px] text-gray-400 shrink-0">بدون تأیید اضافه</span>
+            </div>
+
+            <div class="space-y-1 pt-1 border-t border-gray-50">
+                <label for="bqr-chat-url" class="text-[11px] text-gray-500 block">لینک گروه بله</label>
+                <input id="bqr-chat-url" type="url" dir="ltr"
+                    placeholder="https://web.bale.ai/chat?uid=..."
+                    class="w-full text-[11px] border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+            </div>
+        </div>
+
+        <div class="relative">
+            <input id="bqr-search" type="search" placeholder="جستجو در میانبرها..."
+                class="w-full text-xs border border-gray-200 rounded-xl py-2.5 pr-9 pl-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                autocomplete="off" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+
+        <div id="bqr-list" class="flex-1 overflow-y-auto no-scrollbar space-y-3 pb-1"></div>
+
+        <div class="flex gap-2 shrink-0">
+            <button type="button" id="bqr-add-btn"
+                class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium py-2.5 rounded-xl transition-colors">
+                + افزودن میانبر
+            </button>
+            <button type="button" id="bqr-edit-mode-btn"
+                class="px-3 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">
+                ویرایش
+            </button>
+        </div>
+
+        <div id="bqr-editor" style="display:none"
+            class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 p-3">
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 space-y-3 border border-gray-100"
+                role="dialog" aria-modal="true" aria-labelledby="bqr-editor-title">
+                <h3 id="bqr-editor-title" class="text-sm font-bold text-gray-800">میانبر جدید</h3>
+                <div class="space-y-2">
+                    <label for="bqr-editor-label" class="text-[11px] text-gray-500 block">عنوان دکمه</label>
+                    <input id="bqr-editor-label" type="text" maxlength="40" placeholder="مثلاً wc"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                </div>
+                <div class="space-y-2">
+                    <label for="bqr-editor-text" class="text-[11px] text-gray-500 block">متن ارسالی</label>
+                    <textarea id="bqr-editor-text" rows="2" maxlength="500" placeholder="متنی که در گروه ارسال می‌شود"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2.5 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-300"></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label for="bqr-editor-category" class="text-[11px] text-gray-500 block">دسته</label>
+                    <select id="bqr-editor-category"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                        <option value="greeting">سلام / خداحافظی</option>
+                        <option value="time">زمان / مرخصی</option>
+                        <option value="status">وضعیت</option>
+                        <option value="other">سایر</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-1">
+                    <button type="button" id="bqr-editor-cancel"
+                        class="flex-1 text-xs py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50">
+                        انصراف
+                    </button>
+                    <button type="button" id="bqr-editor-save"
+                        class="flex-1 text-xs py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium">
+                        ذخیره
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="bqr-toast"
+            class="fixed bottom-16 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-medium px-4 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50 max-w-[90%] text-center">
+        </div>
+    </div>
+</template>

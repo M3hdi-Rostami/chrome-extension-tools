@@ -131,26 +131,31 @@ body[data-panel-breakpoint="wide"] {
   --tool-title-size: 0.75rem;
 }
 
-/* ── Settings list ── */
+/* ── Settings list (always single-column; rows need full width for toggle) ── */
 #config-view {
   container-type: inline-size;
   container-name: config;
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .config-tools-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   width: 100%;
+  min-width: 0;
 }
 
 .config-section-split {
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   gap: 0.625rem;
   margin: 0.5rem 0 0.125rem;
   padding: 0 0.125rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .config-section-split::before,
@@ -168,22 +173,27 @@ body[data-panel-breakpoint="wide"] {
   white-space: nowrap;
 }
 
-@container config (min-width: 520px) {
-  .config-tools-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@container config (min-width: 700px) {
-  .config-tools-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 .config-tool-row {
-  height: 100%;
+  display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.config-tool-row > .min-w-0,
+.config-tool-row .config-tool-title,
+.config-tool-row .config-tool-desc {
+  min-width: 0;
+}
+
+.update-panel {
+  min-width: 0;
+}
+
+.update-panel .update-secondary-btn {
+  flex: 1 1 auto;
+  min-width: min(100%, 7.5rem);
 }
 
 /* ── Open tool views ── */

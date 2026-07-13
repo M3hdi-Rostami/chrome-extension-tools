@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Developer Widgets",
-    "version": "1.21",
+    "version": "1.26",
     "description": "some widgets for developers",
     "permissions": [
         "downloads",
@@ -19,6 +19,18 @@
     },
     "host_permissions": [
         "<all_urls>"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://web.bale.ai/*",
+                "https://*.bale.ai/*"
+            ],
+            "js": [
+                "tools/bale-quick-reply/js/content-send.js"
+            ],
+            "run_at": "document_idle"
+        }
     ],
     "content_security_policy": {
         "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' https://cdn.simpleicons.org data: blob:"
