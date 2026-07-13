@@ -191,10 +191,6 @@ body[data-panel-breakpoint="wide"] {
   min-width: 0;
 }
 
-.update-panel .update-secondary-btn {
-  flex: 1 1 auto;
-  min-width: min(100%, 7.5rem);
-}
 
 /* ── Open tool views ── */
 #tools-container {

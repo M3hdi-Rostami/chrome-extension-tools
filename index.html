@@ -96,24 +96,15 @@
                     بررسی و دریافت آخرین نسخه
                 </button>
 
-                <div id="update-instructions" class="update-instructions-panel hidden rounded-lg border p-3 space-y-2">
-                    <p class="text-[10px] font-bold">مراحل تکمیل به‌روزرسانی:</p>
-                    <ol class="update-steps text-[10px] leading-relaxed space-y-1 list-decimal list-inside">
-                        <li>فایل ZIP در پوشه Downloads ذخیره شد.</li>
-                        <li>فایل را Extract کنید.</li>
-                        <li>محتوای پوشه داخل ZIP را جایگزین پوشه فعلی اکستنشن کنید.</li>
-                        <li>اگر با git نصب کرده‌اید: در همان پوشه <span dir="ltr" class="font-mono">git pull</span> بزنید.</li>
-                        <li>در صفحه افزونه‌های Chrome روی Reload کلیک کنید.</li>
-                    </ol>
-                    <div class="flex flex-wrap gap-2 pt-1">
-                        <button id="update-open-extensions-btn" type="button"
-                            class="update-secondary-btn text-[10px] font-medium py-2 px-2 rounded-lg transition-colors">
-                            باز کردن chrome://extensions
-                        </button>
-                        <button id="update-open-repo-btn" type="button"
-                            class="update-secondary-btn text-[10px] font-medium py-2 px-2 rounded-lg transition-colors">
-                            مشاهده در GitHub
-                        </button>
+                <div id="update-progress" class="update-progress hidden space-y-1.5" aria-live="polite">
+                    <div class="update-progress-track">
+                        <div id="update-progress-bar" class="update-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <p id="update-progress-text" class="update-progress-text text-[10px] min-w-0 truncate">
+                            در حال به‌روزرسانی...
+                        </p>
+                        <span id="update-progress-percent" class="update-progress-percent text-[10px] font-bold shrink-0" dir="ltr">0%</span>
                     </div>
                 </div>
             </div>

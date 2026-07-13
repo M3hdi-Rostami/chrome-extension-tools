@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Developer Widgets",
-    "version": "1.26",
+    "version": "1.27",
     "description": "some widgets for developers",
     "permissions": [
         "downloads",

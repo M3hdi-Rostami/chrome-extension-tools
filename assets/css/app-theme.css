@@ -242,3 +242,27 @@
 .update-status--success { color: var(--theme-accent); }
 .update-status--error { color: var(--theme-badge); }
 .update-status--info { color: var(--theme-text-muted); }
+
+.update-progress-track {
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--theme-surface-hover);
+  border: 1px solid var(--theme-border);
+}
+
+.update-progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background-color: var(--theme-accent);
+  transition: width 0.2s ease;
+}
+
+.update-progress-text {
+  color: var(--theme-text-muted);
+}
+
+.update-progress-percent {
+  color: var(--theme-accent);
+}
