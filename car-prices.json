@@ -7,9 +7,9 @@
       "modelYear": 1404,
       "className": "ارتقا یافته - ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 1500000000,
+      "marketPrice": 1540000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 1.99
     },
     {
       "brandFa": "آریسان",
@@ -18,9 +18,9 @@
       "modelYear": 1405,
       "className": "ایران خودرو",
       "factoryPrice": 1571000000,
-      "marketPrice": 1580000000,
+      "marketPrice": 1620000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 1.89
     },
     {
       "brandFa": "آریسان",
@@ -40,9 +40,20 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1720000000,
+      "marketPrice": 1820000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 5.81
+    },
+    {
+      "brandFa": "اطلس",
+      "modelFa": "اتوماتیک",
+      "trimFa": "E پلاس",
+      "modelYear": 1405,
+      "className": null,
+      "factoryPrice": 1442000000,
+      "marketPrice": 1920000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": -6.34
     },
     {
       "brandFa": "اطلس",
@@ -51,9 +62,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1420000000,
+      "marketPrice": 1480000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 7.25
     },
     {
       "brandFa": "اطلس",
@@ -61,10 +72,10 @@
       "trimFa": "تیپ G",
       "modelYear": 1405,
       "className": null,
-      "factoryPrice": null,
-      "marketPrice": 1460000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "factoryPrice": 1137000000,
+      "marketPrice": 1500000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 7.14
     },
     {
       "brandFa": "اطلس",
@@ -73,9 +84,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1300000000,
+      "marketPrice": 1410000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 7.63
     },
     {
       "brandFa": "اطلس",
@@ -83,10 +94,10 @@
       "trimFa": "تیپ GL",
       "modelYear": 1405,
       "className": null,
-      "factoryPrice": null,
-      "marketPrice": 1330000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "factoryPrice": 1103000000,
+      "marketPrice": 1440000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 7.46
     },
     {
       "brandFa": "اطلس",
@@ -95,9 +106,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1280000000,
+      "marketPrice": 1380000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 7.81
     },
     {
       "brandFa": "اطلس",
@@ -105,10 +116,10 @@
       "trimFa": "تیپ S",
       "modelYear": 1405,
       "className": null,
-      "factoryPrice": null,
-      "marketPrice": 1310000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "factoryPrice": 1022000000,
+      "marketPrice": 1410000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 7.63
     },
     {
       "brandFa": "اینوی",
@@ -117,9 +128,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 3100000000,
+      "marketPrice": 3400000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 3.03
     },
     {
       "brandFa": "پارس نوآ",
@@ -139,9 +150,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1050000000,
+      "marketPrice": 1160000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 6.42
     },
     {
       "brandFa": "پراید",
@@ -150,9 +161,9 @@
       "modelYear": 1404,
       "className": "لاینر ",
       "factoryPrice": null,
-      "marketPrice": 1070000000,
+      "marketPrice": 1170000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 6.36
     },
     {
       "brandFa": "پراید",
@@ -161,9 +172,9 @@
       "modelYear": 1405,
       "className": "لاینر ",
       "factoryPrice": 868000000,
-      "marketPrice": 1100000000,
+      "marketPrice": 1190000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 6.25
     },
     {
       "brandFa": "پراید",
@@ -172,9 +183,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1080000000,
+      "marketPrice": 1180000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 6.31
     },
     {
       "brandFa": "پژو",
@@ -183,9 +194,9 @@
       "modelYear": 1404,
       "className": "ارتقایافته - ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 2400000000,
+      "marketPrice": 2500000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -2.04
+      "marketPriceDiff": 4.17
     },
     {
       "brandFa": "پژو",
@@ -194,9 +205,9 @@
       "modelYear": 1405,
       "className": "ایران خودرو",
       "factoryPrice": 2134000000,
-      "marketPrice": 2500000000,
+      "marketPrice": 2600000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.96
+      "marketPriceDiff": 4
     },
     {
       "brandFa": "پژو",
@@ -205,9 +216,9 @@
       "modelYear": 1404,
       "className": "ارتقا یافته  - ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 2680000000,
+      "marketPrice": 2730000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -0.74
+      "marketPriceDiff": 1.87
     },
     {
       "brandFa": "پژو",
@@ -216,9 +227,9 @@
       "modelYear": 1405,
       "className": "ارتقا یافته  - ایران خودرو",
       "factoryPrice": 2183000000,
-      "marketPrice": 2780000000,
+      "marketPrice": 2830000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -0.71
+      "marketPriceDiff": 1.8
     },
     {
       "brandFa": "پژو",
@@ -227,9 +238,9 @@
       "modelYear": 1404,
       "className": "رینگ فولادی ",
       "factoryPrice": null,
-      "marketPrice": 1940000000,
+      "marketPrice": 2050000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -0.51
+      "marketPriceDiff": 5.13
     },
     {
       "brandFa": "پژو",
@@ -238,9 +249,9 @@
       "modelYear": 1404,
       "className": "رینگ آلومینیومی ",
       "factoryPrice": null,
-      "marketPrice": 1980000000,
+      "marketPrice": 2090000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1
+      "marketPriceDiff": 5.03
     },
     {
       "brandFa": "پژو",
@@ -249,9 +260,9 @@
       "modelYear": 1405,
       "className": "رینگ فولادی",
       "factoryPrice": 1878000000,
-      "marketPrice": 2020000000,
+      "marketPrice": 2130000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.46
+      "marketPriceDiff": 4.93
     },
     {
       "brandFa": "پژو",
@@ -260,9 +271,9 @@
       "modelYear": 1405,
       "className": "رینگ آلومینیومی ",
       "factoryPrice": 1923000000,
-      "marketPrice": 2060000000,
+      "marketPrice": 2170000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.9
+      "marketPriceDiff": 4.83
     },
     {
       "brandFa": "پژو",
@@ -271,9 +282,9 @@
       "modelYear": 1404,
       "className": "فرمان هیدرولیک",
       "factoryPrice": null,
-      "marketPrice": 1650000000,
+      "marketPrice": 1810000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -2.37
+      "marketPriceDiff": 8.38
     },
     {
       "brandFa": "پژو",
@@ -282,9 +293,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1800000000,
+      "marketPrice": 1910000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -2.17
+      "marketPriceDiff": 5.52
     },
     {
       "brandFa": "پژو",
@@ -293,9 +304,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1662000000,
-      "marketPrice": 1750000000,
+      "marketPrice": 1870000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -2.23
+      "marketPriceDiff": 5.65
     },
     {
       "brandFa": "پژو",
@@ -304,9 +315,9 @@
       "modelYear": 1405,
       "className": "فرمان برقی",
       "factoryPrice": 1804000000,
-      "marketPrice": 1900000000,
+      "marketPrice": 1960000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -2.56
+      "marketPriceDiff": 2.62
     },
     {
       "brandFa": "پژو",
@@ -315,9 +326,9 @@
       "modelYear": 1404,
       "className": "ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 1570000000,
+      "marketPrice": 1680000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.88
+      "marketPriceDiff": 6.33
     },
     {
       "brandFa": "پژو",
@@ -326,9 +337,9 @@
       "modelYear": 1405,
       "className": "ایران خودرو",
       "factoryPrice": 1502000000,
-      "marketPrice": 1630000000,
+      "marketPrice": 1740000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.21
+      "marketPriceDiff": 6.1
     },
     {
       "brandFa": "تارا",
@@ -337,9 +348,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 2716000000,
-      "marketPrice": 2920000000,
+      "marketPrice": 2950000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.02
+      "marketPriceDiff": 1.72
     },
     {
       "brandFa": "تارا",
@@ -348,9 +359,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 2550000000,
+      "marketPrice": 2630000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 3.95
     },
     {
       "brandFa": "تارا",
@@ -359,9 +370,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 2470000000,
-      "marketPrice": 2650000000,
+      "marketPrice": 2730000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 3.8
     },
     {
       "brandFa": "تارا",
@@ -370,9 +381,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1950000000,
+      "marketPrice": 2090000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.52
+      "marketPriceDiff": 5.03
     },
     {
       "brandFa": "تارا",
@@ -381,9 +392,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1888000000,
-      "marketPrice": 2000000000,
+      "marketPrice": 2140000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.48
+      "marketPriceDiff": 4.9
     },
     {
       "brandFa": "دنا",
@@ -392,9 +403,9 @@
       "modelYear": 1404,
       "className": "ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 2580000000,
+      "marketPrice": 2680000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -0.77
+      "marketPriceDiff": 3.88
     },
     {
       "brandFa": "دنا",
@@ -403,9 +414,9 @@
       "modelYear": 1405,
       "className": "ایران خودرو",
       "factoryPrice": 2530000000,
-      "marketPrice": 2680000000,
+      "marketPrice": 2780000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -0.74
+      "marketPriceDiff": 3.73
     },
     {
       "brandFa": "دنا",
@@ -414,9 +425,9 @@
       "modelYear": 1404,
       "className": "رینگ فولادی",
       "factoryPrice": null,
-      "marketPrice": 2020000000,
+      "marketPrice": 2130000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -4.72
+      "marketPriceDiff": 4.93
     },
     {
       "brandFa": "دنا",
@@ -425,9 +436,9 @@
       "modelYear": 1404,
       "className": "رینگ آلومینیومی",
       "factoryPrice": null,
-      "marketPrice": 2070000000,
+      "marketPrice": 2180000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.81
     },
     {
       "brandFa": "دنا",
@@ -436,9 +447,9 @@
       "modelYear": 1405,
       "className": "رینگ فولادی",
       "factoryPrice": 1990000000,
-      "marketPrice": 2100000000,
+      "marketPrice": 2210000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -4.11
+      "marketPriceDiff": 4.74
     },
     {
       "brandFa": "دنا",
@@ -447,9 +458,9 @@
       "modelYear": 1405,
       "className": "رینگ آلومینیومی",
       "factoryPrice": 2025000000,
-      "marketPrice": 2150000000,
+      "marketPrice": 2260000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.63
     },
     {
       "brandFa": "رانا",
@@ -458,9 +469,9 @@
       "modelYear": 1404,
       "className": "ارتقا یافته - ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 1550000000,
+      "marketPrice": 1600000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.27
+      "marketPriceDiff": 2.56
     },
     {
       "brandFa": "رانا",
@@ -469,9 +480,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1600000000,
+      "marketPrice": 1650000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.23
+      "marketPriceDiff": 2.48
     },
     {
       "brandFa": "رانا",
@@ -480,9 +491,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1535000000,
-      "marketPrice": 1650000000,
+      "marketPrice": 1700000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": -1.2
+      "marketPriceDiff": 2.41
     },
     {
       "brandFa": "رانا",
@@ -502,9 +513,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 3450000000,
+      "marketPrice": 3600000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.35
     },
     {
       "brandFa": "ری را",
@@ -513,9 +524,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 3230000000,
-      "marketPrice": 3550000000,
+      "marketPrice": 3700000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.23
     },
     {
       "brandFa": "زامیاد",
@@ -524,9 +535,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1875000000,
+      "marketPrice": 1880000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.73
     },
     {
       "brandFa": "زامیاد",
@@ -535,9 +546,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1800000000,
-      "marketPrice": 1925000000,
+      "marketPrice": 1930000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.66
     },
     {
       "brandFa": "زامیاد",
@@ -546,9 +557,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1800000000,
+      "marketPrice": 1830000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.81
     },
     {
       "brandFa": "زامیاد",
@@ -557,9 +568,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1900000000,
-      "marketPrice": 1850000000,
+      "marketPrice": 1880000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.73
     },
     {
       "brandFa": "زامیاد",
@@ -601,9 +612,9 @@
       "modelYear": 1404,
       "className": "دوگانه سوز",
       "factoryPrice": null,
-      "marketPrice": 1310000000,
+      "marketPrice": 1410000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.5
+      "marketPriceDiff": 7.63
     },
     {
       "brandFa": "ساینا",
@@ -611,10 +622,10 @@
       "trimFa": "دوگانه سوز",
       "modelYear": 1405,
       "className": "دوگانه سوز",
-      "factoryPrice": null,
-      "marketPrice": 1360000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -1.45
+      "factoryPrice": 1072000000,
+      "marketPrice": 1460000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 7.35
     },
     {
       "brandFa": "ساینا",
@@ -623,9 +634,9 @@
       "modelYear": 1404,
       "className": "استاندارد 85 گانه - سایپا",
       "factoryPrice": null,
-      "marketPrice": 1200000000,
+      "marketPrice": 1300000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 8.33
     },
     {
       "brandFa": "ساینا",
@@ -633,10 +644,10 @@
       "trimFa": "دنده ای بنزینی",
       "modelYear": 1405,
       "className": null,
-      "factoryPrice": null,
-      "marketPrice": 1260000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "factoryPrice": 993000000,
+      "marketPrice": 1360000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 7.94
     },
     {
       "brandFa": "سمند",
@@ -645,9 +656,9 @@
       "modelYear": 1404,
       "className": "ایران خودرو ",
       "factoryPrice": null,
-      "marketPrice": 1860000000,
+      "marketPrice": 1910000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.14
     },
     {
       "brandFa": "سمند",
@@ -656,9 +667,9 @@
       "modelYear": 1404,
       "className": "100 لیتری",
       "factoryPrice": null,
-      "marketPrice": 1900000000,
+      "marketPrice": 1950000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.09
     },
     {
       "brandFa": "سمند",
@@ -667,20 +678,9 @@
       "modelYear": 1405,
       "className": "75 لیتری",
       "factoryPrice": 1800000000,
-      "marketPrice": 1900000000,
+      "marketPrice": 1950000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
-    },
-    {
-      "brandFa": "سمند",
-      "modelFa": "سورن",
-      "trimFa": "پلاس EF7 دوگانه سوز",
-      "modelYear": 1405,
-      "className": "75لیتری",
-      "factoryPrice": 1800000000,
-      "marketPrice": null,
-      "factoryPriceDiff": 0,
-      "marketPriceDiff": null
+      "marketPriceDiff": 2.09
     },
     {
       "brandFa": "سمند",
@@ -689,20 +689,9 @@
       "modelYear": 1405,
       "className": "100 لیتری",
       "factoryPrice": 1816000000,
-      "marketPrice": 1930000000,
+      "marketPrice": 1980000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
-    },
-    {
-      "brandFa": "سمند",
-      "modelFa": "سورن",
-      "trimFa": "پلاس EF7 دوگانه سوز",
-      "modelYear": 1405,
-      "className": "100لیتری",
-      "factoryPrice": 1816000000,
-      "marketPrice": null,
-      "factoryPriceDiff": 0,
-      "marketPriceDiff": null
+      "marketPriceDiff": 2.06
     },
     {
       "brandFa": "سمند",
@@ -722,9 +711,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1870000000,
-      "marketPrice": 2150000000,
+      "marketPrice": 2230000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.69
     },
     {
       "brandFa": "سمند",
@@ -744,9 +733,9 @@
       "modelYear": 1404,
       "className": "ایران خودرو",
       "factoryPrice": null,
-      "marketPrice": 1600000000,
+      "marketPrice": 1650000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 3.12
     },
     {
       "brandFa": "سمند",
@@ -755,9 +744,9 @@
       "modelYear": 1405,
       "className": "ایران خودرو",
       "factoryPrice": 1530000000,
-      "marketPrice": 1660000000,
+      "marketPrice": 1700000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 3.03
     },
     {
       "brandFa": "سمند",
@@ -777,9 +766,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1700000000,
+      "marketPrice": 1850000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 8.82
     },
     {
       "brandFa": "سهند",
@@ -788,9 +777,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1310000000,
+      "marketPrice": 1380000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.5
+      "marketPriceDiff": 3.76
     },
     {
       "brandFa": "سهند",
@@ -799,9 +788,9 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 1360000000,
+      "marketPrice": 1430000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.45
+      "marketPriceDiff": 3.62
     },
     {
       "brandFa": "شاهین",
@@ -810,86 +799,108 @@
       "modelYear": 1404,
       "className": "سایپا ",
       "factoryPrice": null,
+      "marketPrice": 2240000000,
+      "factoryPriceDiff": null,
+      "marketPriceDiff": 4.67
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "اتوماتیک CVT",
+      "trimFa": "تیپ G",
+      "modelYear": 1405,
+      "className": "سایپا ",
+      "factoryPrice": 1561000000,
+      "marketPrice": 2340000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 4.46
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "اتوماتیک CVT",
+      "trimFa": "تیپ GL",
+      "modelYear": 1405,
+      "className": null,
+      "factoryPrice": 1522000000,
+      "marketPrice": null,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": null
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "پلاس اتوماتیک AT",
+      "trimFa": "تیپ G",
+      "modelYear": 1404,
+      "className": null,
+      "factoryPrice": null,
+      "marketPrice": 2660000000,
+      "factoryPriceDiff": null,
+      "marketPriceDiff": 3.91
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "پلاس اتوماتیک AT",
+      "trimFa": "تیپ G",
+      "modelYear": 1405,
+      "className": null,
+      "factoryPrice": 1834000000,
+      "marketPrice": 2760000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 3.76
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "پلاس اتوماتیک AT",
+      "trimFa": "تیپ GL",
+      "modelYear": 1405,
+      "className": null,
+      "factoryPrice": 1805000000,
+      "marketPrice": null,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": null
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "G دنده ای",
+      "trimFa": "",
+      "modelYear": 1404,
+      "className": "ESC - سایپا",
+      "factoryPrice": null,
+      "marketPrice": 2070000000,
+      "factoryPriceDiff": null,
+      "marketPriceDiff": 5.08
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "G دنده ای",
+      "trimFa": "",
+      "modelYear": 1405,
+      "className": "ESC - سایپا",
+      "factoryPrice": 1452000000,
       "marketPrice": 2130000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -0.93
-    },
-    {
-      "brandFa": "شاهین",
-      "modelFa": "اتوماتیک CVT",
-      "trimFa": "تیپ G",
-      "modelYear": 1405,
-      "className": "سایپا ",
-      "factoryPrice": null,
-      "marketPrice": 2230000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -0.89
-    },
-    {
-      "brandFa": "شاهین",
-      "modelFa": "پلاس اتوماتیک AT",
-      "trimFa": "تیپ G",
-      "modelYear": 1404,
-      "className": null,
-      "factoryPrice": null,
-      "marketPrice": 2530000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -0.78
-    },
-    {
-      "brandFa": "شاهین",
-      "modelFa": "پلاس اتوماتیک AT",
-      "trimFa": "تیپ G",
-      "modelYear": 1405,
-      "className": null,
-      "factoryPrice": null,
-      "marketPrice": 2620000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -1.13
-    },
-    {
-      "brandFa": "شاهین",
-      "modelFa": "G دنده ای",
-      "trimFa": "",
-      "modelYear": 1404,
-      "className": "ESC - سایپا",
-      "factoryPrice": null,
-      "marketPrice": 1970000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -1.5
-    },
-    {
-      "brandFa": "شاهین",
-      "modelFa": "G دنده ای",
-      "trimFa": "",
-      "modelYear": 1405,
-      "className": "ESC - سایپا",
-      "factoryPrice": null,
-      "marketPrice": 2030000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -0.98
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 4.93
     },
     {
       "brandFa": "شاهین",
       "modelFa": "GL دنده ای",
       "trimFa": "",
       "modelYear": 1404,
-      "className": "ESC",
-      "factoryPrice": null,
-      "marketPrice": 1880000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": 0
-    },
-    {
-      "brandFa": "شاهین",
-      "modelFa": "GL دنده ای",
-      "trimFa": "",
-      "modelYear": 1405,
       "className": "ESC",
       "factoryPrice": null,
       "marketPrice": 1930000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.66
+    },
+    {
+      "brandFa": "شاهین",
+      "modelFa": "GL دنده ای",
+      "trimFa": "",
+      "modelYear": 1405,
+      "className": "ESC",
+      "factoryPrice": 1418000000,
+      "marketPrice": 1980000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 2.59
     },
     {
       "brandFa": "کاپرا",
@@ -898,9 +909,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 2600000000,
+      "marketPrice": 2700000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 3.85
     },
     {
       "brandFa": "کاپرا",
@@ -909,9 +920,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 3400000000,
+      "marketPrice": 3500000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 2.94
     },
     {
       "brandFa": "کاپرا",
@@ -920,9 +931,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": null,
-      "marketPrice": 4000000000,
+      "marketPrice": 4200000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 5
     },
     {
       "brandFa": "کوییک",
@@ -931,9 +942,9 @@
       "modelYear": 1404,
       "className": "استاندارد 85 گانه - سایپا",
       "factoryPrice": null,
-      "marketPrice": 1180000000,
+      "marketPrice": 1240000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.67
+      "marketPriceDiff": 4.2
     },
     {
       "brandFa": "کوییک",
@@ -941,10 +952,10 @@
       "trimFa": "",
       "modelYear": 1405,
       "className": "سایپا",
-      "factoryPrice": null,
-      "marketPrice": 1200000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -1.64
+      "factoryPrice": 1000000000,
+      "marketPrice": 1260000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 4.13
     },
     {
       "brandFa": "کوییک",
@@ -953,9 +964,9 @@
       "modelYear": 1404,
       "className": "ESC - سایپا",
       "factoryPrice": null,
-      "marketPrice": 1200000000,
+      "marketPrice": 1260000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.64
+      "marketPriceDiff": 4.13
     },
     {
       "brandFa": "کوییک",
@@ -963,10 +974,10 @@
       "trimFa": "L دنده ای",
       "modelYear": 1405,
       "className": "ESC",
-      "factoryPrice": null,
-      "marketPrice": 1230000000,
-      "factoryPriceDiff": null,
-      "marketPriceDiff": -1.6
+      "factoryPrice": 1031000000,
+      "marketPrice": 1290000000,
+      "factoryPriceDiff": 0,
+      "marketPriceDiff": 4.03
     },
     {
       "brandFa": "کوییک",
@@ -975,9 +986,9 @@
       "modelYear": 1404,
       "className": "ESC با رینگ فولادی",
       "factoryPrice": null,
-      "marketPrice": 1205000000,
+      "marketPrice": 1265000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.63
+      "marketPriceDiff": 4.12
     },
     {
       "brandFa": "کوییک",
@@ -986,9 +997,9 @@
       "modelYear": 1404,
       "className": "ESC با رینگ آلومینیومی ",
       "factoryPrice": null,
-      "marketPrice": 1225000000,
+      "marketPrice": 1285000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.61
+      "marketPriceDiff": 4.05
     },
     {
       "brandFa": "کوییک",
@@ -997,9 +1008,9 @@
       "modelYear": 1405,
       "className": "رینگ فولادی",
       "factoryPrice": null,
-      "marketPrice": 1240000000,
+      "marketPrice": 1300000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.59
+      "marketPriceDiff": 4
     },
     {
       "brandFa": "کوییک",
@@ -1008,9 +1019,9 @@
       "modelYear": 1405,
       "className": "ESC با رینگ آلومینیومی ",
       "factoryPrice": null,
-      "marketPrice": 1260000000,
+      "marketPrice": 1320000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.56
+      "marketPriceDiff": 3.94
     },
     {
       "brandFa": "کوییک",
@@ -1019,9 +1030,9 @@
       "modelYear": 1404,
       "className": "استاندارد 85گانه - سایپا",
       "factoryPrice": null,
-      "marketPrice": 1190000000,
+      "marketPrice": 1250000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.17
     },
     {
       "brandFa": "کوییک",
@@ -1030,9 +1041,9 @@
       "modelYear": 1405,
       "className": "استاندارد 85گانه - سایپا",
       "factoryPrice": null,
-      "marketPrice": 1210000000,
+      "marketPrice": 1270000000,
       "factoryPriceDiff": null,
-      "marketPriceDiff": -1.63
+      "marketPriceDiff": 4.1
     },
     {
       "brandFa": "کی ام سی",
@@ -1041,9 +1052,9 @@
       "modelYear": 1404,
       "className": null,
       "factoryPrice": 2600000000,
-      "marketPrice": 2400000000,
+      "marketPrice": 2500000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.17
     },
     {
       "brandFa": "کی ام سی",
@@ -1052,11 +1063,11 @@
       "modelYear": 1405,
       "className": null,
       "factoryPrice": 1768000000,
-      "marketPrice": 2450000000,
+      "marketPrice": 2550000000,
       "factoryPriceDiff": 0,
-      "marketPriceDiff": 0
+      "marketPriceDiff": 4.08
     }
   ],
-  "lastUpdate": "14 دقیقه پیش",
-  "fetchedAt": "2026-07-14T11:08:14.422Z"
+  "lastUpdate": "21 ساعت پیش",
+  "fetchedAt": "2026-07-19T08:45:51.693Z"
 }
