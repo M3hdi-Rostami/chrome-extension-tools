@@ -1,8 +1,8 @@
 {
   "version": "1.50",
-  "builtAt": "2026-07-22T21:40:53.639Z",
-  "apkVersionCode": 8,
-  "apkVersionName": "1.1.5",
+  "builtAt": "2026-07-22T21:55:06.012Z",
+  "apkVersionCode": 9,
+  "apkVersionName": "1.1.6",
   "apkUrl": "https://github.com/M3hdi-Rostami/chrome-extension-tools/releases/download/android-apk/market-prices.apk",
-  "apkSha256": "b7a01d840999307374ec42c60ce24df2e6a709f81bbe9772dcf93ae84e05ed5a"
+  "apkSha256": "acccb5193da6e4ba03c94f51e5bcbe96720d46d0d23917a6f4f1e4e42f507df7"
 }
