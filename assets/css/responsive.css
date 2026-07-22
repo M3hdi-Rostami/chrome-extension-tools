@@ -256,6 +256,7 @@ body[data-panel-breakpoint="wide"] {
   grid-template-columns: 1fr;
   gap: 0.375rem;
   width: 100%;
+  align-content: start;
 }
 
 @container tools (min-width: 400px) {
@@ -351,7 +352,12 @@ body[data-panel-breakpoint="wide"] {
 }
 
 .market-prices-root {
+  flex: 1;
   min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .market-prices-root > .market-header,
@@ -359,17 +365,53 @@ body[data-panel-breakpoint="wide"] {
   flex-shrink: 0;
 }
 
+.market-prices-panel,
+.market-prices-root > .market-view {
+  flex: 1;
+  min-height: 0;
+}
+
+.market-prices-root > .market-bottom-nav {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
 .market-view.hidden {
   display: none !important;
 }
 
 .market-scroll-area {
+  flex: 1;
+  min-height: 0;
   padding-bottom: 0.5rem;
 }
 
-.market-prices-root {
-  position: relative;
-  padding-bottom: 0.25rem;
+.market-more-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.market-more-copyright {
+  margin: 4px 0 0;
+  padding: 12px 4px 4px;
+  text-align: center;
+  font-size: 10px;
+  color: var(--mp-muted);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.market-more-copyright-link {
+  color: var(--mp-accent);
+  font-weight: 700;
+  margin: 0 4px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .market-header-refresh {
@@ -507,13 +549,6 @@ body[data-panel-breakpoint="wide"] {
 .price-hero-card-change.is-flat {
   color: var(--mp-muted);
   background: var(--mp-surface-2);
-}
-
-.market-more-scroll {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-bottom: 8px;
 }
 
 .market-more-section {
