@@ -1,0 +1,191 @@
+<template id="tpl-fill-work-desc">
+    <div class="h-full flex flex-col gap-3 text-sm overflow-y-auto no-scrollbar pb-1">
+
+        <p class="text-xs text-gray-500 leading-relaxed text-center px-1">
+            شماره تسک‌های پیگیر را در ستون «شرح کارکرد» اکسل درج می‌کند
+        </p>
+
+        <details class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <summary class="text-xs font-medium text-gray-600 cursor-pointer select-none">تنظیمات پیگیر</summary>
+            <div class="mt-2 space-y-2">
+                <div>
+                    <label for="fwd-time-entries-url" class="text-[11px] text-gray-600 block mb-1">لینک صفحه زمان‌ها</label>
+                    <input id="fwd-time-entries-url" type="url" dir="ltr"
+                        placeholder="https://rasa123.peygir.net/projects/nanoalvand_ieb/time_entries"
+                        class="w-full text-xs border border-gray-200 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                </div>
+                <p class="text-[10px] text-amber-600 leading-relaxed">
+                    باید در همان مرورگر به پیگیر وارد شده باشید و این صفحه باز باشد.
+                </p>
+            </div>
+        </details>
+
+        <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100 space-y-2">
+            <label class="text-xs font-medium text-gray-600">فایل اکسل شیت کارکرد</label>
+            <div id="fwd-drop-zone"
+                class="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-400 transition-colors">
+                <p id="fwd-file-label" class="text-[11px] text-gray-500">فایل را بکشید یا کلیک کنید</p>
+                <p id="fwd-file-name" class="hidden text-[11px] text-indigo-700 font-medium mt-1 dir-ltr"></p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100 space-y-2">
+            <div class="grid grid-cols-2 gap-2">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[11px] text-gray-600 font-medium" for="fwd-period-start">از تاریخ</label>
+                    <button type="button" id="fwd-period-start" dir="ltr"
+                        class="fwd-date-field group w-full rounded-lg px-3 py-2.5 text-sm text-left focus:outline-none">
+                        <span class="fwd-date-field__value font-medium tracking-wide">۱۴۰۵/۰۴/۲۶</span>
+                        <span class="fwd-date-field__icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[11px] text-gray-600 font-medium" for="fwd-period-end">تا تاریخ</label>
+                    <button type="button" id="fwd-period-end" dir="ltr"
+                        class="fwd-date-field group w-full rounded-lg px-3 py-2.5 text-sm text-left focus:outline-none">
+                        <span class="fwd-date-field__value font-medium tracking-wide">۱۴۰۵/۰۵/۲۵</span>
+                        <span class="fwd-date-field__icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <p id="fwd-period-info" class="text-[11px] text-gray-500">برای تغییر تاریخ روی فیلد کلیک کنید</p>
+        </div>
+
+        <div id="fwd-preview" class="hidden bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-[11px] text-indigo-800 space-y-1 max-h-40 overflow-y-auto">
+            <p class="font-bold">پیش‌نمایش تسک‌ها</p>
+            <div id="fwd-preview-body" class="space-y-0.5 font-mono text-[10px] leading-relaxed" dir="ltr"></div>
+        </div>
+
+        <button type="button" id="fwd-fill-btn"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed text-white font-bold py-2.5 rounded-lg transition-colors">
+            پر کردن شرح کارکرد
+        </button>
+
+        <p id="fwd-status" class="text-[11px] text-center hidden"></p>
+
+        <div id="fwd-datepicker-overlay"
+            class="fixed inset-0 z-[100] hidden items-center justify-center p-4"
+            style="background: rgba(0,0,0,.55)">
+            <div class="w-full max-w-[300px] rounded-2xl shadow-xl overflow-hidden"
+                style="background:#fff; color:#111827" dir="rtl">
+                <div class="px-4 pt-4 pb-2">
+                    <p id="fwd-dp-title" class="text-sm font-medium text-right" style="color:#1f2937">زمان شروع</p>
+                </div>
+                <div class="px-3 pb-3">
+                    <div class="relative rounded-xl overflow-hidden" style="border:1px solid #e5e7eb; background:#fff">
+                        <div class="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 h-10 z-10"
+                            style="border-top:2px solid #4f46e5; border-bottom:2px solid #4f46e5"></div>
+                        <div class="grid grid-cols-3 h-[140px]">
+                            <div id="fwd-dp-day" class="fwd-wheel overflow-y-auto no-scrollbar snap-y snap-mandatory overscroll-contain"></div>
+                            <div id="fwd-dp-month" class="fwd-wheel overflow-y-auto no-scrollbar snap-y snap-mandatory overscroll-contain"></div>
+                            <div id="fwd-dp-year" class="fwd-wheel overflow-y-auto no-scrollbar snap-y snap-mandatory overscroll-contain"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-3 pb-3">
+                    <button type="button" id="fwd-dp-confirm"
+                        class="w-full text-white font-bold py-2.5 rounded-xl transition-colors"
+                        style="background:#4f46e5">
+                        ثبت
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .fwd-date-field {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                min-height: 42px;
+                border: 1px solid #e2e8f0;
+                background: #f8fafc;
+                color: #0f172a;
+                cursor: pointer;
+                transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+            }
+            .fwd-date-field:hover {
+                border-color: #818cf8;
+                background: #f1f5f9;
+            }
+            .fwd-date-field:focus,
+            .fwd-date-field:focus-visible {
+                border-color: #6366f1;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            }
+            .fwd-date-field__value {
+                flex: 1;
+                text-align: left;
+                font-variant-numeric: tabular-nums;
+            }
+            .fwd-date-field__icon {
+                display: inline-flex;
+                color: #64748b;
+                flex-shrink: 0;
+            }
+            .fwd-date-field:hover .fwd-date-field__icon,
+            .fwd-date-field:focus .fwd-date-field__icon {
+                color: #6366f1;
+            }
+            [data-theme="dark"] .fwd-date-field {
+                background: #111621 !important;
+                border-color: #3b465c !important;
+                color: #ffffff !important;
+            }
+            [data-theme="dark"] .fwd-date-field:hover {
+                background: #0d121c !important;
+                border-color: #6366f1 !important;
+            }
+            [data-theme="dark"] .fwd-date-field:focus,
+            [data-theme="dark"] .fwd-date-field:focus-visible {
+                border-color: #818cf8 !important;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+            }
+            [data-theme="dark"] .fwd-date-field__icon {
+                color: #8b95a8;
+            }
+            [data-theme="dark"] .fwd-date-field:hover .fwd-date-field__icon,
+            [data-theme="dark"] .fwd-date-field:focus .fwd-date-field__icon {
+                color: #a5b4fc;
+            }
+            .fwd-wheel {
+                scroll-snap-type: y mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+            .fwd-wheel-item {
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                scroll-snap-align: center;
+                font-size: 15px;
+                color: #9ca3af;
+                font-weight: 500;
+                user-select: none;
+            }
+            .fwd-wheel-item.is-selected {
+                color: #111827 !important;
+                font-weight: 700;
+                font-size: 16px;
+            }
+            .fwd-wheel-spacer {
+                height: 50px;
+                flex-shrink: 0;
+            }
+            #fwd-datepicker-overlay:not(.hidden) {
+                display: flex;
+            }
+        </style>
+    </div>
+</template>
