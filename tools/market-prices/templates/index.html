@@ -2,17 +2,17 @@
     <div class="market-prices-root h-full flex flex-col min-h-0">
         <div class="flex items-center justify-between gap-2 market-header">
             <div>
-                <p class="text-xs text-gray-400">آخرین بروزرسانی قیمت ها</p>
+                <p class="text-xs text-gray-400">آخرین بروزرسانی</p>
                 <p id="market-last-update" class="text-sm font-medium text-gray-600">—</p>
             </div>
-            <button id="market-refresh-btn"
-                class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg transition-colors">
-                <svg id="market-refresh-icon" xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            <button id="market-refresh-btn" type="button" title="بروزرسانی"
+                class="market-header-refresh flex items-center justify-center text-white rounded-full transition-colors"
+                aria-label="بروزرسانی">
+                <svg id="market-refresh-icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
                         d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                بروزرسانی قیمت ها
             </button>
         </div>
 
@@ -85,12 +85,28 @@
 
         <nav class="market-bottom-nav" aria-label="منوی قیمت‌ها">
             <button type="button" class="market-nav-btn is-active" data-market-tab="prices">
-                <span class="market-nav-icon" aria-hidden="true">💰</span>
-                <span class="market-nav-label">طلا و دلار</span>
+                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="market-nav-label">طلا و ارز</span>
             </button>
+
+            <div class="market-nav-fab-wrap">
+                <button type="button" id="market-nav-refresh" class="market-nav-fab" aria-label="بروزرسانی قیمت‌ها" title="بروزرسانی">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </button>
+            </div>
+
             <button type="button" class="market-nav-btn" data-market-tab="cars">
-                <span class="market-nav-icon" aria-hidden="true">🚗</span>
-                <span class="market-nav-label">قیمت خودرو</span>
+                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        d="M8 17h.01M16 17h.01M3 13l1.5-4.5A2 2 0 016.4 7h11.2a2 2 0 011.9 1.5L21 13m-18 0h18m-18 0v4a1 1 0 001 1h1a1 1 0 001-1v-1h12v1a1 1 0 001 1h1a1 1 0 001-1v-4" />
+                </svg>
+                <span class="market-nav-label">خودرو</span>
             </button>
         </nav>
     </div>
