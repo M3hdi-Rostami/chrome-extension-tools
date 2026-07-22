@@ -19,7 +19,7 @@
         <p id="market-current-datetime" class="text-xs text-center font-medium tabular-nums"
             style="color: var(--mp-muted-2, #6b778c);">—</p>
 
-        <div id="market-view-prices" class="market-view flex flex-col flex-1 min-h-0 gap-2">
+        <div id="market-prices-panel" class="market-prices-panel flex flex-col flex-1 min-h-0 gap-2">
             <div id="market-loading" class="hidden flex-1 flex flex-col items-center justify-center gap-3">
                 <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24">
@@ -44,7 +44,14 @@
                     class="text-sm text-indigo-600 hover:text-indigo-500 font-medium">تلاش مجدد</button>
             </div>
 
-            <div id="market-prices-list" class="price-cards-grid flex-1 overflow-y-auto no-scrollbar market-scroll-area">
+            <div id="market-view-currency" class="market-view flex flex-col flex-1 min-h-0">
+                <div id="market-currency-list"
+                    class="price-cards-grid flex-1 overflow-y-auto no-scrollbar market-scroll-area hidden"></div>
+            </div>
+
+            <div id="market-view-gold" class="market-view hidden flex flex-col flex-1 min-h-0">
+                <div id="market-gold-list"
+                    class="price-cards-grid flex-1 overflow-y-auto no-scrollbar market-scroll-area hidden"></div>
             </div>
         </div>
 
@@ -83,17 +90,65 @@
             </div>
         </div>
 
-        <nav class="market-bottom-nav" aria-label="منوی قیمت‌ها">
-            <button type="button" class="market-nav-btn is-active" data-market-tab="prices">
-                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+        <div id="market-view-more" class="market-view hidden flex flex-col flex-1 min-h-0">
+            <div class="market-more-scroll flex-1 overflow-y-auto no-scrollbar market-scroll-area">
+                <section class="market-more-section">
+                    <h3 class="market-more-section-title">ظاهر</h3>
+                    <button type="button" id="market-theme-toggle" class="market-more-row">
+                        <span class="market-more-row-label">تم برنامه</span>
+                        <span id="market-theme-toggle-value" class="market-more-row-value">تم تاریک</span>
+                    </button>
+                </section>
+
+                <section class="market-more-section">
+                    <h3 class="market-more-section-title">اعلان قیمت</h3>
+                    <label class="market-more-row market-more-toggle-row">
+                        <span class="market-more-row-label">هشدار تغییر قیمت</span>
+                        <input type="checkbox" id="market-alerts-enabled" class="market-more-switch" />
+                    </label>
+                    <div class="market-more-field">
+                        <label for="market-alerts-threshold" class="market-more-field-label">آستانه تغییر (٪)</label>
+                        <input id="market-alerts-threshold" type="number" min="0.1" max="50" step="0.1"
+                            inputmode="decimal" class="market-more-input" />
+                    </div>
+                    <p class="market-more-hint">وقتی دلار یا طلای ۱۸ عیار بیش از این درصد تغییر کند، اعلان نمایش داده
+                        می‌شود.</p>
+                </section>
+
+                <section class="market-more-section">
+                    <h3 class="market-more-section-title">درباره</h3>
+                    <div class="market-more-row market-more-row-static">
+                        <span class="market-more-row-label">نسخه افزونه</span>
+                        <span id="market-extension-version" class="market-more-row-value">—</span>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div id="market-price-toast" class="market-price-toast hidden" role="status" aria-live="polite"></div>
+
+        <nav class="market-bottom-nav market-bottom-nav-quad" aria-label="منوی قیمت‌ها">
+            <button type="button" class="market-nav-btn is-active" data-market-tab="currency">
+                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    aria-hidden="true">
                     <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                         d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span class="market-nav-label">طلا و ارز</span>
+                <span class="market-nav-label">ارز</span>
+            </button>
+
+            <button type="button" class="market-nav-btn" data-market-tab="gold">
+                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span class="market-nav-label">طلا</span>
             </button>
 
             <div class="market-nav-fab-wrap">
-                <button type="button" id="market-nav-refresh" class="market-nav-fab" aria-label="بروزرسانی قیمت‌ها" title="بروزرسانی">
+                <button type="button" id="market-nav-refresh" class="market-nav-fab" aria-label="بروزرسانی قیمت‌ها"
+                    title="بروزرسانی">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -102,11 +157,21 @@
             </div>
 
             <button type="button" class="market-nav-btn" data-market-tab="cars">
-                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    aria-hidden="true">
                     <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
                         d="M8 17h.01M16 17h.01M3 13l1.5-4.5A2 2 0 016.4 7h11.2a2 2 0 011.9 1.5L21 13m-18 0h18m-18 0v4a1 1 0 001 1h1a1 1 0 001-1v-1h12v1a1 1 0 001 1h1a1 1 0 001-1v-4" />
                 </svg>
                 <span class="market-nav-label">خودرو</span>
+            </button>
+
+            <button type="button" class="market-nav-btn" data-market-tab="more">
+                <svg class="market-nav-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    aria-hidden="true">
+                    <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                </svg>
+                <span class="market-nav-label">بیشتر</span>
             </button>
         </nav>
     </div>
