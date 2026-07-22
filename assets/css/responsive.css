@@ -246,9 +246,17 @@ body[data-panel-breakpoint="wide"] {
 }
 
 /* ── Market prices ── */
-.market-header {
-  flex-wrap: wrap;
-  gap: 0.5rem;
+.market-header-clock {
+  flex-shrink: 0;
+  width: 100%;
+  margin: 0;
+  padding: 4px 8px 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+  color: var(--mp-muted-2, #6b778c);
 }
 
 .price-cards-grid {
@@ -360,8 +368,7 @@ body[data-panel-breakpoint="wide"] {
   position: relative;
 }
 
-.market-prices-root > .market-header,
-.market-prices-root > #market-current-datetime {
+.market-prices-root > .market-header-clock {
   flex-shrink: 0;
 }
 
@@ -412,23 +419,6 @@ body[data-panel-breakpoint="wide"] {
   margin: 0 4px;
   text-decoration: underline;
   text-underline-offset: 2px;
-}
-
-.market-header-refresh {
-  width: 2.25rem;
-  height: 2.25rem;
-  flex-shrink: 0;
-  background: var(--mp-accent, #00e5a0);
-  color: var(--mp-accent-fg, #111621) !important;
-}
-
-.market-header-refresh:hover {
-  opacity: 0.9;
-}
-
-.market-header-refresh:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
 }
 
 .market-bottom-nav-quad {
@@ -792,8 +782,7 @@ body[data-panel-breakpoint="wide"] {
   height: 1.35rem;
 }
 
-.market-nav-fab svg.spin,
-#market-refresh-icon.spin {
+.market-nav-fab svg.spin {
   animation: market-nav-spin 0.8s linear infinite;
 }
 
