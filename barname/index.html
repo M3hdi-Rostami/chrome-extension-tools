@@ -884,12 +884,15 @@
       animation: timerPulse .8s ease infinite;
     }
 
-    .set-check:disabled {
+    .set-check:disabled,
+    .set-check.locked {
       opacity: .38;
       cursor: not-allowed;
+      pointer-events: none;
     }
 
-    .set-check:disabled:hover {
+    .set-check:disabled:hover,
+    .set-check.locked:hover {
       border-color: var(--border);
       color: var(--muted);
     }
@@ -897,6 +900,16 @@
     .set-weight:disabled {
       opacity: .38;
       cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .set-item.locked {
+      pointer-events: none;
+    }
+
+    .set-item.locked .set-check,
+    .set-item.locked .set-weight {
+      opacity: .38;
     }
 
     .set-weight {
@@ -2594,7 +2607,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.26"
+  "currentVersion": "1.0.27"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -3262,25 +3275,61 @@ const APP_UPDATE_CONFIG = {
     });
   }
 
-  function updateRowState(row, buttons) {
-    const weightInputs = row._weightInputs || [];
-    const allDone = buttons.every(btn => btn.classList.contains('done'));
-    row.classList.toggle('exercise-done', allDone);
+  function setRowLockState(row, buttons, weightInputs, { mode }) {
     buttons.forEach((btn, i) => {
       const isDone = btn.classList.contains('done');
-      const isNextUp = !allDone && !isDone &&
-        buttons.slice(0, i).every(b => b.classList.contains('done'));
-      const isLocked = !isDone && !isNextUp;
+      const isHolding = btn.classList.contains('holding');
+      let isNextUp = false;
+      let isLocked = true;
+
+      if (mode === 'sequential') {
+        isNextUp = !isDone && buttons.slice(0, i).every(b => b.classList.contains('done'));
+        isLocked = !isNextUp && !isHolding;
+      }
 
       btn.classList.toggle('next-up', isNextUp);
-      btn.disabled = isLocked && !btn.classList.contains('holding');
+      btn.disabled = isLocked;
+      btn.classList.toggle('locked', isLocked);
+      btn.setAttribute('aria-disabled', isLocked ? 'true' : 'false');
+
+      const item = btn.closest('.set-item');
+      if (item) item.classList.toggle('locked', isLocked);
 
       const weightInput = weightInputs[i];
       if (weightInput && !weightInput.hidden) {
-        weightInput.disabled = isLocked;
+        weightInput.disabled = !isNextUp;
+        weightInput.tabIndex = isNextUp ? 0 : -1;
       }
     });
-    updateCurrentExercise(row.closest('.day-panel'));
+  }
+
+  function updatePanelSetLocks(panel) {
+    if (!panel) return;
+    const rows = [...panel.querySelectorAll('tr.exercise-row')];
+    let pastCurrentExercise = false;
+
+    rows.forEach(row => {
+      const buttons = [...row.querySelectorAll('.set-check')];
+      const weightInputs = row._weightInputs || [];
+      if (!buttons.length) return;
+
+      const allDone = buttons.every(btn => btn.classList.contains('done'));
+      row.classList.toggle('exercise-done', allDone);
+
+      if (pastCurrentExercise || allDone) {
+        setRowLockState(row, buttons, weightInputs, { mode: 'all-locked' });
+        return;
+      }
+
+      pastCurrentExercise = true;
+      setRowLockState(row, buttons, weightInputs, { mode: 'sequential' });
+    });
+
+    updateCurrentExercise(panel);
+  }
+
+  function updateRowState(row) {
+    updatePanelSetLocks(row.closest('.day-panel'));
   }
 
   function dayHasProgress(panel) {
@@ -3307,12 +3356,13 @@ const APP_UPDATE_CONFIG = {
     panel.querySelectorAll('tr.exercise-row').forEach(row => {
       const buttons = [...row.querySelectorAll('.set-check')];
       buttons.forEach(btn => {
-        btn.classList.remove('done');
+        btn.classList.remove('done', 'holding', 'locked');
         btn.setAttribute('aria-pressed', 'false');
+        btn.disabled = false;
       });
-      updateRowState(row, buttons);
     });
 
+    updatePanelSetLocks(panel);
     stopTimer();
     updateResetButtonVisibility(panel);
     if (document.getElementById('view-progress')?.classList.contains('active')) {
@@ -3349,7 +3399,7 @@ const APP_UPDATE_CONFIG = {
       btn.setAttribute('aria-pressed', 'true');
       saveSetState(exerciseId, setIndex, true);
     }
-    updateRowState(row, buttons);
+    updateRowState(row);
     updateResetButtonVisibility(panel);
     if (document.getElementById('view-progress')?.classList.contains('active')) {
       refreshProgressView();
@@ -3464,46 +3514,37 @@ const APP_UPDATE_CONFIG = {
             if (holdSeconds) {
               if (btn.classList.contains('holding')) {
                 stopTimer();
-                return;
-              }
-              if (btn.classList.contains('done')) {
-                btn.classList.remove('done');
-                btn.setAttribute('aria-pressed', 'false');
-                saveSetState(exerciseId, i, false);
-                updateRowState(row, buttons);
-                updateResetButtonVisibility(panel);
-                if (document.getElementById('view-progress')?.classList.contains('active')) {
-                  refreshProgressView();
-                }
+                updateRowState(row);
                 return;
               }
               activeHoldBtn = btn;
               btn.classList.add('holding');
+              updateRowState(row);
               startHoldTimer(holdSeconds, exerciseName, i + 1, () => {
                 finalizeSetCompletion(btn, exerciseId, i, row, buttons, panel, restSeconds, exerciseName);
               });
               return;
             }
 
-            const isDone = btn.classList.toggle('done');
-            btn.setAttribute('aria-pressed', isDone ? 'true' : 'false');
-            saveSetState(exerciseId, i, isDone);
+            if (btn.classList.contains('done')) return;
 
-            if (isDone && !String(weightInput.value || '').trim()) {
+            btn.classList.add('done');
+            btn.setAttribute('aria-pressed', 'true');
+            saveSetState(exerciseId, i, true);
+
+            if (!String(weightInput.value || '').trim()) {
               setTimeout(() => weightInput.focus(), 30);
             }
 
-            updateRowState(row, buttons);
+            updateRowState(row);
             updateResetButtonVisibility(panel);
             if (document.getElementById('view-progress')?.classList.contains('active')) {
               refreshProgressView();
             }
 
-            if (isDone) {
-              const remaining = buttons.filter(b => !b.classList.contains('done')).length;
-              if (remaining > 0) startRestTimer(restSeconds, exerciseName);
-              else stopTimer();
-            }
+            const remaining = buttons.filter(b => !b.classList.contains('done')).length;
+            if (remaining > 0) startRestTimer(restSeconds, exerciseName);
+            else stopTimer();
           });
 
           buttons.push(btn);
@@ -3517,9 +3558,8 @@ const APP_UPDATE_CONFIG = {
         row.appendChild(col);
         row.classList.add('exercise-row');
         row._weightInputs = weightInputs;
-        updateRowState(row, buttons);
       });
-      updateCurrentExercise(panel);
+      updatePanelSetLocks(panel);
     });
   }
 
