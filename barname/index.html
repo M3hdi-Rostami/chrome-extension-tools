@@ -884,6 +884,21 @@
       animation: timerPulse .8s ease infinite;
     }
 
+    .set-check:disabled {
+      opacity: .38;
+      cursor: not-allowed;
+    }
+
+    .set-check:disabled:hover {
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    .set-weight:disabled {
+      opacity: .38;
+      cursor: not-allowed;
+    }
+
     .set-weight {
       width: 46px;
       height: 28px;
@@ -2579,7 +2594,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.23"
+  "currentVersion": "1.0.25"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -3248,11 +3263,22 @@ const APP_UPDATE_CONFIG = {
   }
 
   function updateRowState(row, buttons) {
+    const weightInputs = row._weightInputs || [];
     const allDone = buttons.every(btn => btn.classList.contains('done'));
     row.classList.toggle('exercise-done', allDone);
     buttons.forEach((btn, i) => {
-      btn.classList.toggle('next-up', !allDone && !btn.classList.contains('done') &&
-        buttons.slice(0, i).every(b => b.classList.contains('done')));
+      const isDone = btn.classList.contains('done');
+      const isNextUp = !allDone && !isDone &&
+        buttons.slice(0, i).every(b => b.classList.contains('done'));
+      const isLocked = !isDone && !isNextUp;
+
+      btn.classList.toggle('next-up', isNextUp);
+      btn.disabled = isLocked && !btn.classList.contains('holding');
+
+      const weightInput = weightInputs[i];
+      if (weightInput && !weightInput.hidden) {
+        weightInput.disabled = isLocked;
+      }
     });
     updateCurrentExercise(row.closest('.day-panel'));
   }
@@ -3430,6 +3456,7 @@ const APP_UPDATE_CONFIG = {
           });
 
           btn.addEventListener('click', () => {
+            if (btn.disabled) return;
             if (!audioCtx) {
               try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
             }
@@ -3489,6 +3516,7 @@ const APP_UPDATE_CONFIG = {
         col.appendChild(wrap);
         row.appendChild(col);
         row.classList.add('exercise-row');
+        row._weightInputs = weightInputs;
         updateRowState(row, buttons);
       });
       updateCurrentExercise(panel);
