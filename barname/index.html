@@ -2568,7 +2568,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.20"
+  "currentVersion": "1.0.21"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -3313,16 +3313,7 @@ const APP_UPDATE_CONFIG = {
             saveSetState(exerciseId, i, isDone);
 
             if (isDone && !String(weightInput.value || '').trim()) {
-              const prevWeight = weightInputs.slice(0, i)
-                .map(inp => String(inp.value || '').trim())
-                .filter(Boolean)
-                .pop();
-              if (prevWeight) {
-                weightInput.value = prevWeight;
-                saveSetWeight(exerciseId, i, prevWeight);
-              } else {
-                setTimeout(() => weightInput.focus(), 30);
-              }
+              setTimeout(() => weightInput.focus(), 30);
             }
 
             updateRowState(row, buttons);
