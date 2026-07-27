@@ -877,6 +877,13 @@
       color: var(--accent2);
     }
 
+    .set-check.holding {
+      background: rgba(52, 211, 153, .18);
+      border-color: rgba(52, 211, 153, .55);
+      color: #34d399;
+      animation: timerPulse .8s ease infinite;
+    }
+
     .set-weight {
       width: 46px;
       height: 28px;
@@ -1060,6 +1067,10 @@
     .rest-timer.urgent .rest-timer-count {
       color: #fbbf24;
       animation: timerPulse .8s ease infinite;
+    }
+
+    .rest-timer.hold-mode .rest-timer-count {
+      color: #34d399;
     }
 
     /* Sub-section inside card */
@@ -2568,7 +2579,7 @@ const APP_UPDATE_CONFIG = {
   "repoName": "chrome-extension-tools",
   "branch": "main",
   "contentPath": "barname",
-  "currentVersion": "1.0.21"
+  "currentVersion": "1.0.22"
 };
 /*__END_APP_UPDATE_CONFIG__*/
 
@@ -3006,6 +3017,25 @@ const APP_UPDATE_CONFIG = {
     return 90;
   }
 
+  function parseHoldSeconds(text) {
+    const normalized = toEnglishDigits(text).trim();
+    if (!/ثانیه|\d+\s*ث/.test(normalized)) return null;
+
+    const rangeFull = normalized.match(/(\d+)\s*[-–]\s*(\d+)\s*ثانیه/);
+    if (rangeFull) return parseInt(rangeFull[2], 10);
+
+    const rangeShort = normalized.match(/(\d+)\s*[-–]\s*(\d+)\s*ث(?!انیه)/);
+    if (rangeShort) return parseInt(rangeShort[2], 10);
+
+    const singleFull = normalized.match(/(\d+)\s*ثانیه/);
+    if (singleFull) return parseInt(singleFull[1], 10);
+
+    const singleShort = normalized.match(/(\d+)\s*ث(?!انیه)/);
+    if (singleShort) return parseInt(singleShort[1], 10);
+
+    return null;
+  }
+
   function formatTime(totalSeconds) {
     const s = Math.max(0, totalSeconds);
     const m = Math.floor(s / 60);
@@ -3054,8 +3084,14 @@ const APP_UPDATE_CONFIG = {
   const timerBar = document.getElementById('rest-timer');
   const timerCount = document.getElementById('rest-timer-count');
   const timerLabel = document.getElementById('rest-timer-label');
+  const timerSkipBtn = document.getElementById('rest-timer-skip');
+  const TIMER_SKIP_REST = 'رد کردن';
+  const TIMER_SKIP_HOLD = 'تمام ست';
   let timerInterval = null;
   let timerRemaining = 0;
+  let timerMode = 'rest';
+  let timerOnComplete = null;
+  let activeHoldBtn = null;
   let audioCtx = null;
 
   function playAlertSound() {
@@ -3086,14 +3122,38 @@ const APP_UPDATE_CONFIG = {
   }
 
   function hideRestTimer() {
-    timerBar.classList.remove('visible', 'urgent');
+    timerBar.classList.remove('visible', 'urgent', 'hold-mode');
     timerBar.setAttribute('aria-hidden', 'true');
     timerBar.hidden = true;
+    timerSkipBtn.textContent = TIMER_SKIP_REST;
+  }
+
+  function clearHoldState() {
+    if (activeHoldBtn) {
+      activeHoldBtn.classList.remove('holding');
+      activeHoldBtn = null;
+    }
+    timerOnComplete = null;
+    timerMode = 'rest';
   }
 
   function stopTimer() {
     clearTimerInterval();
+    clearHoldState();
     hideRestTimer();
+  }
+
+  function finishHoldTimer() {
+    clearTimerInterval();
+    const cb = timerOnComplete;
+    timerOnComplete = null;
+    timerMode = 'rest';
+    if (activeHoldBtn) {
+      activeHoldBtn.classList.remove('holding');
+      activeHoldBtn = null;
+    }
+    hideRestTimer();
+    if (cb) cb();
   }
 
   function tickTimer() {
@@ -3103,31 +3163,73 @@ const APP_UPDATE_CONFIG = {
     if (timerRemaining <= 0) {
       clearTimerInterval();
       playAlertSound();
-      timerLabel.textContent = 'استراحت تمام شد — ست بعدی!';
-      timerCount.textContent = '۰:۰۰';
-      timerBar.classList.remove('urgent');
-      timerBar.hidden = false;
-      timerBar.setAttribute('aria-hidden', 'false');
-      timerBar.classList.add('visible');
-      setTimeout(() => {
-        if (!timerInterval) hideRestTimer();
-      }, 2500);
+      if (timerMode === 'hold') {
+        timerLabel.textContent = 'ست تمام شد!';
+        timerCount.textContent = '۰:۰۰';
+        timerBar.classList.remove('urgent');
+        const cb = timerOnComplete;
+        timerOnComplete = null;
+        timerMode = 'rest';
+        if (activeHoldBtn) {
+          activeHoldBtn.classList.remove('holding');
+          activeHoldBtn = null;
+        }
+        setTimeout(() => {
+          hideRestTimer();
+          if (cb) cb();
+        }, 700);
+      } else {
+        timerLabel.textContent = 'استراحت تمام شد — ست بعدی!';
+        timerCount.textContent = '۰:۰۰';
+        timerBar.classList.remove('urgent');
+        timerBar.hidden = false;
+        timerBar.setAttribute('aria-hidden', 'false');
+        timerBar.classList.add('visible');
+        setTimeout(() => {
+          if (!timerInterval) hideRestTimer();
+        }, 2500);
+      }
     }
   }
 
-  function startRestTimer(seconds, exerciseName) {
-    clearTimerInterval();
-    timerRemaining = seconds;
-    timerCount.textContent = formatTime(timerRemaining);
-    timerLabel.textContent = `استراحت — ${exerciseName}`;
+  function showTimerBar() {
     timerBar.hidden = false;
     timerBar.setAttribute('aria-hidden', 'false');
     timerBar.classList.add('visible');
     timerBar.classList.remove('urgent');
+  }
+
+  function startRestTimer(seconds, exerciseName) {
+    clearTimerInterval();
+    clearHoldState();
+    timerMode = 'rest';
+    timerRemaining = seconds;
+    timerCount.textContent = formatTime(timerRemaining);
+    timerLabel.textContent = `استراحت — ${exerciseName}`;
+    timerSkipBtn.textContent = TIMER_SKIP_REST;
+    timerBar.classList.remove('hold-mode');
+    showTimerBar();
     timerInterval = setInterval(tickTimer, 1000);
   }
 
-  document.getElementById('rest-timer-skip').addEventListener('click', stopTimer);
+  function startHoldTimer(seconds, exerciseName, setNumber, onComplete) {
+    clearTimerInterval();
+    if (activeHoldBtn) activeHoldBtn.classList.remove('holding');
+    timerMode = 'hold';
+    timerRemaining = seconds;
+    timerOnComplete = onComplete;
+    timerCount.textContent = formatTime(timerRemaining);
+    timerLabel.textContent = `${exerciseName} — ست ${toPersianNum(setNumber)}`;
+    timerSkipBtn.textContent = TIMER_SKIP_HOLD;
+    timerBar.classList.add('hold-mode');
+    showTimerBar();
+    timerInterval = setInterval(tickTimer, 1000);
+  }
+
+  timerSkipBtn.addEventListener('click', () => {
+    if (timerMode === 'hold') finishHoldTimer();
+    else stopTimer();
+  });
   document.getElementById('rest-timer-add').addEventListener('click', () => {
     timerRemaining += 15;
     timerCount.textContent = formatTime(timerRemaining);
@@ -3215,6 +3317,22 @@ const APP_UPDATE_CONFIG = {
     });
   }
 
+  function finalizeSetCompletion(btn, exerciseId, setIndex, row, buttons, panel, restSeconds, exerciseName) {
+    if (!btn.classList.contains('done')) {
+      btn.classList.add('done');
+      btn.setAttribute('aria-pressed', 'true');
+      saveSetState(exerciseId, setIndex, true);
+    }
+    updateRowState(row, buttons);
+    updateResetButtonVisibility(panel);
+    if (document.getElementById('view-progress')?.classList.contains('active')) {
+      refreshProgressView();
+    }
+    const remaining = buttons.filter(b => !b.classList.contains('done')).length;
+    if (remaining > 0) startRestTimer(restSeconds, exerciseName);
+    else stopTimer();
+  }
+
   function initSetChecklists() {
     const saved = loadSavedSets();
     const savedWeights = loadSavedWeights();
@@ -3239,6 +3357,7 @@ const APP_UPDATE_CONFIG = {
 
         const setCount = parseSetCount(setsCell.textContent);
         const restSeconds = parseRestSeconds(restCell.textContent);
+        const holdSeconds = parseHoldSeconds(setsCell.textContent);
         const exerciseName = row.querySelector('.exercise-name')?.textContent?.trim() || `حرکت ${exerciseIndex + 1}`;
         const exerciseId = `${dayId}-${exerciseIndex++}`;
 
@@ -3277,7 +3396,9 @@ const APP_UPDATE_CONFIG = {
           btn.type = 'button';
           btn.className = 'set-check';
           btn.textContent = toPersianNum(i + 1);
-          btn.setAttribute('aria-label', `ست ${i + 1} از ${exerciseName}`);
+          btn.setAttribute('aria-label', holdSeconds
+            ? `شروع ست ${i + 1} از ${exerciseName}`
+            : `ست ${i + 1} از ${exerciseName}`);
           btn.dataset.setIndex = String(i);
 
           if (saved[exerciseId]?.[i]) {
@@ -3294,6 +3415,11 @@ const APP_UPDATE_CONFIG = {
           weightInput.placeholder = 'کیلو';
           weightInput.setAttribute('aria-label', `وزن ست ${i + 1} از ${exerciseName}`);
           weightInput.value = formatWeightDisplay(savedWeights[exerciseId]?.[i]);
+          if (holdSeconds) {
+            weightInput.hidden = true;
+            weightInput.setAttribute('aria-hidden', 'true');
+            weightInput.tabIndex = -1;
+          }
 
           weightInput.addEventListener('change', () => {
             saveSetWeight(exerciseId, i, weightInput.value);
@@ -3306,6 +3432,30 @@ const APP_UPDATE_CONFIG = {
           btn.addEventListener('click', () => {
             if (!audioCtx) {
               try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+            }
+
+            if (holdSeconds) {
+              if (btn.classList.contains('holding')) {
+                stopTimer();
+                return;
+              }
+              if (btn.classList.contains('done')) {
+                btn.classList.remove('done');
+                btn.setAttribute('aria-pressed', 'false');
+                saveSetState(exerciseId, i, false);
+                updateRowState(row, buttons);
+                updateResetButtonVisibility(panel);
+                if (document.getElementById('view-progress')?.classList.contains('active')) {
+                  refreshProgressView();
+                }
+                return;
+              }
+              activeHoldBtn = btn;
+              btn.classList.add('holding');
+              startHoldTimer(holdSeconds, exerciseName, i + 1, () => {
+                finalizeSetCompletion(btn, exerciseId, i, row, buttons, panel, restSeconds, exerciseName);
+              });
+              return;
             }
 
             const isDone = btn.classList.toggle('done');
