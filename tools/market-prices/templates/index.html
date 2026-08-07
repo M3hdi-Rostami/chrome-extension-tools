@@ -1,6 +1,16 @@
 <template id="tpl-market-prices">
     <div class="market-prices-root h-full flex flex-col min-h-0">
-        <p id="market-current-datetime" class="market-header-clock">—</p>
+        <div class="market-header-bar">
+            <p id="market-current-datetime" class="market-header-clock">—</p>
+            <button type="button" id="market-share-prices-btn" class="market-share-btn" aria-label="اشتراک کارت قیمت"
+                title="اشتراک کارت قیمت">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                        d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 8l-4-4-4 4M12 4v12" />
+                </svg>
+                <span>اشتراک</span>
+            </button>
+        </div>
 
         <div id="market-prices-panel" class="market-prices-panel flex flex-col flex-1 min-h-0 gap-2">
             <div id="market-loading" class="hidden flex-1 flex flex-col items-center justify-center gap-3">

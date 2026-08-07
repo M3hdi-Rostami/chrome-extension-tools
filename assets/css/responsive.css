@@ -259,6 +259,59 @@ body[data-panel-breakpoint="wide"] {
   color: var(--mp-muted-2, #6b778c);
 }
 
+.market-header-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 8px 8px;
+  position: relative;
+}
+
+.market-header-bar .market-header-clock {
+  width: auto;
+  flex: 1;
+  padding: 0;
+  text-align: center;
+}
+
+.market-share-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid color-mix(in srgb, var(--mp-accent) 35%, var(--mp-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--mp-accent) 12%, transparent);
+  color: var(--mp-accent);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s, background-color 0.15s;
+}
+
+.market-share-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.market-share-btn:hover {
+  background: color-mix(in srgb, var(--mp-accent) 20%, transparent);
+}
+
+.market-share-btn:active {
+  transform: scale(0.96);
+}
+
+.market-share-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
 .price-cards-grid {
   display: grid;
   grid-template-columns: 1fr;
