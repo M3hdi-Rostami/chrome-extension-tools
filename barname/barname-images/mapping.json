@@ -223,5 +223,90 @@
     "start": "machine-press.jpg",
     "end": "machine-press-end.jpg",
     "source": "Machine Bench Press"
+  },
+  "t-bar-row": {
+    "start": "t-bar-row.jpg",
+    "end": "t-bar-row-end.jpg",
+    "source": "Lying T-Bar Row"
+  },
+  "chin-up": {
+    "start": "chin-up.jpg",
+    "end": "chin-up-end.jpg",
+    "source": "Chin-Up"
+  },
+  "incline-curl": {
+    "start": "incline-curl.jpg",
+    "end": "incline-curl-end.jpg",
+    "source": "Incline Dumbbell Curl"
+  },
+  "cross-body-hammer": {
+    "start": "cross-body-hammer.jpg",
+    "end": "cross-body-hammer-end.jpg",
+    "source": "Cross Body Hammer Curl"
+  },
+  "close-grip-bench": {
+    "start": "close-grip-bench.jpg",
+    "end": "close-grip-bench-end.jpg",
+    "source": "Close-Grip Barbell Bench Press"
+  },
+  "arnold-press": {
+    "start": "arnold-press.jpg",
+    "end": "arnold-press-end.jpg",
+    "source": "Arnold Dumbbell Press"
+  },
+  "cable-lateral": {
+    "start": "cable-lateral.jpg",
+    "end": "cable-lateral-end.jpg",
+    "source": "Cable Seated Lateral Raise"
+  },
+  "rope-overhead-triceps": {
+    "start": "rope-overhead-triceps.jpg",
+    "end": "rope-overhead-triceps-end.jpg",
+    "source": "Cable Rope Overhead Triceps Extension"
+  },
+  "front-squat": {
+    "start": "front-squat.jpg",
+    "end": "front-squat-end.jpg",
+    "source": "Front Barbell Squat"
+  },
+  "rear-lunge": {
+    "start": "rear-lunge.jpg",
+    "end": "rear-lunge-end.jpg",
+    "source": "Dumbbell Rear Lunge"
+  },
+  "single-leg-extension": {
+    "start": "single-leg-extension.jpg",
+    "end": "single-leg-extension-end.jpg",
+    "source": "Single-Leg Leg Extension"
+  },
+  "decline-reverse-crunch": {
+    "start": "decline-reverse-crunch.jpg",
+    "end": "decline-reverse-crunch-end.jpg",
+    "source": "Decline Reverse Crunch"
+  },
+  "incline-cable-fly": {
+    "start": "incline-cable-fly.jpg",
+    "end": "incline-cable-fly-end.jpg",
+    "source": "Incline Cable Flye"
+  },
+  "deficit-rdl": {
+    "start": "deficit-rdl.jpg",
+    "end": "deficit-rdl-end.jpg",
+    "source": "Romanian Deadlift from Deficit"
+  },
+  "preacher-curl": {
+    "start": "preacher-curl.jpg",
+    "end": "preacher-curl-end.jpg",
+    "source": "Preacher Curl"
+  },
+  "low-cable-crossover": {
+    "start": "low-cable-crossover.jpg",
+    "end": "low-cable-crossover-end.jpg",
+    "source": "Low Cable Crossover"
+  },
+  "hanging-pike": {
+    "start": "hanging-pike.jpg",
+    "end": "hanging-pike-end.jpg",
+    "source": "Hanging Pike"
   }
 }
